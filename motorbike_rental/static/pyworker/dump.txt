@@ -1,0 +1,202 @@
+
+"""
+
+
+def connect_to_db2():
+    # Connect to an existing database
+    with psycopg.connect("dbname=test user=postgres") as conn:
+
+    # Open a cursor to perform database operations
+     with conn.cursor() as cur:
+
+        # Execute a command: this creates a new table
+        cur.execute(
+            CREATE TABLE test (
+                id serial PRIMARY KEY,
+                num integer,
+                data text)
+            )
+
+        # Pass data to fill a query placeholders and let Psycopg perform
+        # the correct conversion (no SQL injections!)
+        cur.execute(
+            "INSERT INTO test (num, data) VALUES (%s, %s)",
+            (100, "abc'def"))
+
+        # Query the database and obtain data as Python objects.
+        cur.execute("SELECT * FROM test")
+        print(cur.fetchone())
+        # will print (1, 100, "abc'def")
+
+        # You can use `cur.executemany()` to perform an operation in batch
+        cur.executemany(
+            "INSERT INTO test (num) values (%s)",
+            [(33,), (66,), (99,)])
+
+        # You can use `cur.fetchmany()`, `cur.fetchall()` to return a list
+        # of several records, or even iterate on the cursor
+        cur.execute("SELECT id, num FROM test order by num")
+        for record in cur:
+            print(record)
+
+        # Make the changes to the database persistent
+        conn.commit()
+
+        return "Test"
+
+
+def connect_to_db():
+  
+    try: 
+      conStr = "postgres://postgres:mosta@localhost:5432/mybikeshop"
+      p = urlparse(conStr)
+      pg_connection_dict = {
+        'dbname': p.path[1:],
+        'user': p.username,
+        'password': p.password,
+        'port': p.port,
+        'host': p.hostname
+        }
+
+      print(pg_connection_dict)
+      con = psycopg.connect(**pg_connection_dict)
+      print(f"Database connection successful! {con}")
+      con.close()
+
+         
+    except Exception as e:
+        print(f"Error connecting to database: {e}")
+        return None
+
+
+@when("click", "#btnAbout, #btnHome, #btnAdmin, #btnProducts, #btnContact")
+def handler(event):
+    
+    document.getElementById("mainhdr").style.display = "block"
+    choice = event.target.innerText
+    #display("Button clicked! " + choice)
+    match choice:
+        case "Home":
+            document.getElementById("mainhdr").innerHTML = "<h1>" + choice + "</h1>"
+            return choice
+
+        case "Admin":
+            document.getElementById("mainhdr").innerHTML = "<h1>" + choice + "</h1>"
+            return choice
+        
+        case "About":
+            # connect_to_db()
+            document.getElementById("mainhdr").innerHTML = "<h1>" + choice + "</h1>"
+
+            return choice
+        
+        case "Products":
+            document.getElementById("mainhdr").innerHTML = "<h1>" + choice + "</h1>"
+            return choice
+       
+        case "Contact":
+            document.getElementById("mainhdr").innerHTML = "<h1>" + choice + "</h1>"
+            return choice
+       
+        case _:
+            return "Unsupported user choice. Please select a valid option."
+
+
+
+class Student:
+  def __init__(self, name, student_id, gpa):
+    # Initialize student attributes
+    self.name = name
+    self.student_id = student_id
+    self.gpa = gpa
+
+  def __str__(self):
+    # Return a readable string representation
+    return f"Student: {self.name}, ID: {self.student_id}, GPA: {self.gpa}"
+
+# Create a student object
+student = Student("Alice Smith", 12345, 3.8)
+
+# The __str__ method is called when printing the object
+print(student)
+
+# It's also called when using the str() function
+print(str(student))
+
+
+class Book:
+  def __init__(self, title, author, pages):
+    # Initialize book attributes
+    self.title = title
+    self.author = author
+    self.pages = pages
+
+  def __str__(self):
+    # Human-readable string for end users
+    return f"'{self.title}' by {self.author}, {self.pages} pages"
+
+  def __repr__(self):
+    # Formal string for developers
+    return f"Book('{self.title}', '{self.author}', {self.pages})"
+
+# Create a new book
+book = Book("The Hitchhiker's Guide to the Galaxy", "Douglas Adams", 224)
+
+# Use print() function which implicitly calls __str__
+print("Book Information:")
+print(book)
+
+# Use both str() and repr() functions explicitly
+print("\nString representations:")
+print(f"str(): {str(book)}")
+print(f"repr(): {repr(book)}")
+
+# Create a list of books and print it
+books = [
+    Book("1984", "George Orwell", 328),
+    Book("To Kill a Mockingbird", "Harper Lee", 281)
+]
+print("\nBook Collection:")
+for book in books:
+    print(book)  # __str__ is called for each book
+
+
+class Product:
+  def __init__(self, name, price, quantity):
+    # Initialize product attributes
+    self.name = name
+    self.price = price
+    self.quantity = quantity
+
+  def __str__(self):
+    # Format product information as a readable string
+    return f"{self.name} - ${self.price:.2f} (Quantity: {self.quantity})"
+
+  def __repr__(self):
+    # Developer-focused representation
+    return f"Product('{self.name}', {self.price}, {self.quantity})"
+
+# Create some products
+laptop = Product("Laptop", 999.99, 10)
+headphones = Product("Headphones", 59.99, 25)
+
+# Display products using __str__
+print("Available Products:")
+print(laptop)
+print(headphones)
+
+# Compare with repr output
+print("\nRepr Output:")
+print(repr(laptop))
+print(repr(headphones))
+
+
+    
+
+document.getElementById("btnAbout").addEventListener("click", handler)
+
+document.getElementById("btnAdmin").addEventListener("click", handler)
+document.getElementById("btnProducts").addEventListener("click", handler)
+document.getElementById("btnContact").addEventListener("click", handler)
+
+"""

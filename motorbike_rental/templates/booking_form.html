@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Hire Motorbike</title>
+  <link rel="stylesheet" href="../static/assets/css/booking.css">
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="card">
+      <h2>🏍️ Hire a Motorbike</h2>
+
+      <form method="POST">
+        {% csrf_token %}
+
+        <div class="input-group">
+          <label>Name</label>
+          {{ form.customer_name }}
+        </div>
+
+        <div class="input-group">
+          <label>Phone</label>
+          {{ form.customer_phone }}
+        </div>
+
+        <div class="input-group">
+          <label>Motorbike</label>
+          {{ form.motorbike }}
+        </div>
+
+        <div class="input-group">
+          <label>Driver</label>
+          {{ form.driver }}
+        </div>
+
+        <div class="input-group">
+          <label>Start Time</label>
+          {{ form.start_time }}
+        </div>
+
+        <div class="input-group">
+          <label>End Time</label>
+          {{ form.end_time }}
+        </div>
+
+        <div class="price-box">
+          Total Price: <span id="price">£0</span>
+        </div>
+
+        <button type="submit" class="btn">Book Now</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="../static/Js/booking.js"></script>
+</body>
+
+</html>

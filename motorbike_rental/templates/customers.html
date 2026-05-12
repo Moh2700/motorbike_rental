@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hello World!</title>
+  <!-- linking to PyScript assets -->
+  <!--link rel="stylesheet" href="https://pyscript.net/releases/2022.12.1/pyscript.css" />
+    <script defer src="https://pyscript.net/releases/2022.12.1/pyscript.js"></script-->
+
+  <!--link rel="stylesheet" href="https://pyscript.net/releases/2022.12.1/pyscript.css" />
+  <script defer src="https://pyscript.net/releases/2022.12.1/pyscript.js"></script-->
+  <!--py-script defer type="py" src="../static/pyworker/main.py"></py-script-->
+</head>
+
+<body>
+
+  <p>Loop through the items:</p>
+
+  <table border='1'>
+    <tr>
+      <th>ID</th>
+      <th>Firstname</th>
+      <th>Lastname</th>
+    </tr>
+    {% for customers in customerslist %}
+    <tr>
+      <td>{{ customers.id }}</td>
+      <td>{{ customers.first_name }}</td>
+      <td>{{ customers.last_name }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <!-- Put Python code inside the the <py-script> tag -->
+  <!--py-script>
+
+    display("Hello World!")
+    def greet(name):
+    return f"Hello, {name}!"
+
+    name = "Thomas"
+    greeting = greet(name)
+    display(greeting)
+
+    class customer:
+    def __init__(self, name, email):
+    self.name = name
+    self.email = email
+    self.orders = []
+    orders = ["Order 1", "Order 2", "Order 3"]
+    #self.orders.extend(orders)
+
+    # for order in customer.orders:
+    # display(f"Customer {customer.name} has order: {order}")
+
+    customer1 = customer("John Doe", "john.doe@example.com")
+    display(f"Customer: {customer1.name}, Email: {customer1.email}")
+
+
+
+  </py-script-->
+
+
+</body>
+
+</html>

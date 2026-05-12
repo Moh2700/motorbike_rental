@@ -1,0 +1,201 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+
+  <!--link rel="stylesheet" type="text/css" href="../static/assets/css/header.css" /-->
+  <!--link rel="stylesheet" type="text/css" href="../static/assets/css/styles.css" /-->
+   <link href="{% static '/assets/css/header.css' %}" rel="stylesheet">
+    <link href="{% static '/assets/css/styles.css' %}" rel="stylesheet">
+
+  <!--script defer type="text/javascript" src="../static/Js/main.js"></script-->
+
+  <style>
+    /* PRODUCTS */
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+
+    }
+
+
+    .bikecard {
+      background: var(--surface);
+      border: none;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 6px 18px rgba(46, 34, 22, 0.06);
+    }
+
+    /*
+      .card {
+        background: #1a1a1a;
+        padding: 15px;
+        border-radius: 15px;
+        text-align: center;
+        transition: 0.3s;
+      }
+      */
+    .bikecard:hover {
+      transform: scale(1.05);
+    }
+
+    .bikecard img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      background: #ff3c00;
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background: #e63600;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <header class="site-header">
+      <div>
+        <img src="../static/assets/images/colored-logo.png" alt="Motor Bikes Wonders Logo" class="site-logo" />
+      </div>
+      
+      <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
+        <ul>
+          <li style="cursor: pointer">
+            <a id="btnHome" href="/">Home</a>
+          </li>
+
+          <li style="cursor: pointer">
+            <a id="btnAbout" href="/about/">About</a>
+          </li>
+
+          <li style="cursor: pointer">
+            <a id="btnAbout" href="/booking_form/">Booking</a>
+          </li>
+
+          <li style="cursor: pointer">
+            <a id="btnAdmin" href="/admin/">Admin</a>
+          </li>
+
+
+          <li style="cursor: pointer">
+            <a id="btnHireBike" onclick="makeaselection('bikelisting')">Hire A bike</a>
+          </li>
+          <li style="cursor: pointer">
+            <a id="btnProducts" href="/products/">Products</a>
+          </li>
+          <li style="cursor: pointer">
+            <a id="btnContact" href="/contact/">Contact</a>
+          </li>
+          <li style="cursor: pointer">
+            <a id="btnContact" href="/customers/">Customers</a>
+          </li>
+          <li>
+            <div class="dropdown">
+              <!--button class="dropbtn">Services ▼</button-->
+              My Reservations ▼
+
+              <div class="dropdown-content">
+                <a>Reserved Tours </a>
+
+                <a class="drpdown-content">Reserved Lectures</a>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <main  class="site-content" 
+     
+    >
+   
+      
+      <h2 id="mainhdr" style="display: none"></h2>
+
+      <section id="BikeSection" class="content-section" style="visibility: hidden;">
+        <h2>Welcome to Bike Wonders Products </h2>
+
+        <div id="bike-details"></div>
+
+        <div class="products" id="productList">
+
+          {% for motorbikes in bikeslist %}
+          <div class="bikecard" id="{{ motorbikes.id }}">
+            <img src="{{ motorbikes.bike_imgsrc }}" data-bikeid="{{ motorbikes.bike_id }}"
+              data-bikemake="{{ motorbikes.bike_make }}" data-bikemodel="{{ motorbikes.bike_model }}"
+              data-bikeyear="{{ motorbikes.bike_year }}" />
+
+            <p>Make: {{motorbikes.bike_make}}</p>
+            <p>Model: {{ motorbikes.bike_model }}</p>
+            <p>Year: {{ motorbikes.bike_year }}</p>
+            <button>Book Now</button>
+          </div>
+          {% endfor %}
+
+        </div>
+
+
+
+        <script>
+
+          let elements = document.querySelectorAll('img');
+          let container = document.getElementById("bike-details");
+          elements.forEach(element => {
+            element.addEventListener('click', function () {
+              removeContainerChildren(container)
+              showbikedetails(container, element)
+            })
+          })
+
+          function showbikedetails(container, bikeElement) {
+            let data = bikeElement.dataset;
+
+            let nameElement = document.createElement('h1')
+            let nameText = document.createTextNode(data.bikemake);
+            nameElement.appendChild(nameText);
+
+            container.append(nameElement)
+
+          }
+
+          function removeContainerChildren(container) {
+            while (container.firstChild) {
+              container.removeChild(container.firstChild)
+            }
+          }
+
+        </script>
+
+
+      </section>
+
+    </main>
+    <footer class="site-footer">
+      <p>&copy; 2024 My Website. All rights reserved.</p>
+    </footer>
+
+  </div>
+</body>
+
+
+</html>
