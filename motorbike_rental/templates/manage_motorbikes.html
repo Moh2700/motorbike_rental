@@ -1,0 +1,66 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Manage Motorbikes</title>
+    <link rel="stylesheet" href="{% static '/assets/css/motorbikes.css' %}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+            <h1>🏍️ Motorbike Management</h1>
+
+            <input type="text" id="searchInput" placeholder="Search motorbikes...">
+        </div>
+
+        <table id="bikeTable">
+            <thead>
+                <tr>
+                    <th>Brand</th>
+                    <th>Model</th>
+                    <th>Plate</th>
+                    <th>Year</th>
+                    <th>Status</th>
+                    <th>Daily Rate</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for bike in bikes %}
+                <tr>
+                    <td>{{ bike.bike_make }}</td>
+                    <td>{{ bike.bike_model }}</td>
+                    <td>{{ bike.bike_plate_number }}</td>
+                    <td>{{ bike.bike_year }}</td>
+
+                    <td>
+                        {{ bike.bike_status }}
+                        <!--span class="status {{ bike.bike_status }}">
+                            {{ bike.bike_year }}
+                        </span-->
+                    </td>
+
+                    <td>£{{ bike.bike_daily_rate }}</td>
+
+                    <td>
+                        <button class="edit-btn">Edit</button>
+                        <button class="delete-btn">Delete</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+    <script src="{% static '/assets/js/motorbikes.js' %}"></script>
+
+</body>
+
+</html>

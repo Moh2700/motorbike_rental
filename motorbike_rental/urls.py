@@ -21,10 +21,13 @@ urlpatterns = [
   path('', views.index, name='index'),
   path('customers/', views.customers_view, name='customers'),
   path('about/', views.about_view, name='about'),
+  path('popup/', views.popup_view, name='popup'),
+  path('pickup2/', views.pickup2_view, name='pickup2'),
   path('contact/', views.contact_view, name='contact'),
   path('admin/', views.admin_view, name='admin'),
   path('products/', views.products_view, name='products'),
   path('booking_form/', views.booking_form_view, name='booking_form'),
   path('tblmotorbikes/', views.tblmotorbikes_view, name='tblmotorbikes'),
+  path('manage_motorbikes/', views.manage_motorbikes, name='manage_motorbikes'),
 ]
     #path('motorbikes/', views.motorbike_list, name='motorbike_list'),

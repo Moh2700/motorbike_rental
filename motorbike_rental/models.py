@@ -66,7 +66,6 @@ class Note(models.Model):
 
 
 class tblmotorbike (models.Model):
-    
     bike_make = models.CharField(max_length=20)
     bike_model = models.CharField(max_length=10)
     bike_year = models.CharField(max_length=10)

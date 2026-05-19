@@ -1,28 +1,33 @@
-
 :root {
-    --bg: #f6efe4; /* warm beige background */
-    --surface: rgba(255, 248, 240, 0.895); /* card surface (soft beige) */
-    --text: #2e2a23; /* dark brown text */
-    --muted: #7d8b86; /* muted gray/green */
-    --primary: #338000; /* brand green */
-    --accent: #88b070; /* soft accent green */
-    --border: rgba(46,34,22,0.06); /* subtle brown border */
-    --tile-beige: #efe7db; /* beige tile base */
-    --tile-white: #ffffff; /* tile white */
-    --emerald: #065f46;
-}  
-
+  --bg: #f6efe4; /* warm beige background */
+  --surface: rgba(255, 248, 240, 0.895); /* card surface (soft beige) */
+  --text: #2e2a23; /* dark brown text */
+  --muted: #7d8b86; /* muted gray/green */
+  --primary: #338000; /* brand green */
+  --accent: #88b070; /* soft accent green */
+  --border: rgba(46, 34, 22, 0.06); /* subtle brown border */
+  --tile-beige: #efe7db; /* beige tile base */
+  --tile-white: #ffffff; /* tile white */
+  --emerald: #065f46;
+}
 
 body {
-    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-    margin: 0;
-    padding: 0;
-    color: var(--text);
-    background-color: var(--bg);
-    position: relative;
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial;
+  margin: 0;
+  padding: 0;
+  color: var(--text);
+  background-color: var(--bg);
+  position: relative;
 
-    /* decorative background now rendered via pseudo-element at 60% opacity */
-    -webkit-font-smoothing: antialiased;
+  /* decorative background now rendered via pseudo-element at 60% opacity */
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Background overlay using the arabesque motif at 60% opacity */
@@ -39,50 +44,197 @@ body::before {
 } 
 */
 
-
 .content-section {
-    background: var(--surface);
-    padding: 18px;
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 6px 18px rgba(46,34,22,0.06);
-    position: relative;
+  background: var(--surface);
+  padding: 18px;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(46, 34, 22, 0.06);
+  position: relative;
 }
 
 .content-section h2 {
-    font-size: 1.1rem;
-    color: var(--text);
-    margin: 0 0 12px 0;
-}   
+  font-size: 1.1rem;
+  color: var(--text);
+  margin: 0 0 12px 0;
+}
 .container {
-    max-width: 1100px;
-    margin: 0 auto;
-    /* remove top padding so banner can sit flush against the top edge */
-    padding: 0 20px 20px;
-    position: relative;
-    z-index: 1; /* ensure content sits above the background overlay */
+  max-width: 1100px;
+  margin: 0 auto;
+  /* remove top padding so banner can sit flush against the top edge */
+  padding: 0 20px 20px;
+  position: relative;
+  z-index: 1; /* ensure content sits above the background overlay */
 }
 
 .site-content {
-    padding: 40px 0;
-    background-color: var(--surface); 
+  padding: 40px 0;
+  background-color: var(--surface);
 
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(46,34,22,0.1); 
-    position: relative;
-    z-index: 1; /* ensure content sits above the background overlay */
-    background:url( '/static/assets/images/motorback3.jpg' );
-    background-repeat: no-repeat;
-    background-size: cover; background-position: center; height: 100vh; margin-top: 10px; 
-   
-    /*
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(46, 34, 22, 0.1);
+  position: relative;
+  z-index: 1; /* ensure content sits above the background overlay */
+  background: url("/static/assets/images/motorback3.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  margin-top: 10px;
+
+  /*
      background:url({% static '/assets/images/motorback3.jpg' %});
      background-repeat: no-repeat;
      background-size: cover; background-position: center;
      
      */
-    
-    
 }
 
-      
+.bikecard:hover {
+  transform: scale(0.5);
+  transform: scale(1.05);
+  /* transition: transform 0.3s ease; */
+}
+
+.bikecard img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.bikecard {
+  background: var(--surface);
+  border: none;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 6px 18px rgba(46, 34, 22, 0.06);
+}
+
+.motorbikescard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px;
+  background: #ff3c00;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+button:hover {
+  background: #e63600;
+}
+
+/* Popup styles */
+.overlay-container {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.popup-box {
+  background: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  width: 320px;
+  text-align: center;
+  opacity: 0;
+  transform: scale(0.8);
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #444;
+  text-align: left;
+}
+
+.form-input {
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.btn-submit,
+.btn-close-popup {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.btn-submit {
+  background-color: green;
+  color: #fff;
+}
+
+.btn-close-popup {
+  margin-top: 12px;
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+.btn-submit:hover,
+.btn-close-popup:hover {
+  background-color: #4caf50;
+}
+
+/* Keyframes for fadeInUp animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation for popup */
+.overlay-container.show {
+  display: flex;
+  opacity: 1;
+}
+
+.inlinebutton {
+  display: inline-block;
+
+  width: 50%;
+}
+
+/* end of popup styles */
+
+/*pickuplocation  styles*/
