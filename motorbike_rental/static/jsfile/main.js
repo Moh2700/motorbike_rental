@@ -1,12 +1,22 @@
-alert("");
-
 const HireBike = document.getElementById("btnHireBike");
 const navLinks = document.getElementById("navLinks");
+
+const modal = document.getElementById("deleteModal");
+const deleteForm = document.getElementById("deleteForm");
+const modalText = document.getElementById("modalText");
+
+ //const oSection  = document.getElementById("Bike_Details_Section");
+ // const oSection  = document.getElementById("Bike_Details_Section");
+
+const AddEditBikeModal = document.getElementById("AddEditBikeModal");
+
+
+//alert("XXXXXXXXX");
 
 /* Mobile Menu */
 function toggleMenu() {
   navLinks.classList.toggle("active");
-  alert("submenu clicked! VVVVV");
+  //alert("submenu clicked! VVVVV");
 }
 
 /* Submenu */
@@ -64,6 +74,7 @@ function showbikedetails(container, bikeElement) {
 
   let nameElement = document.createElement("h1");
   let nameText = document.createTextNode(data.bikemake);
+
   nameElement.appendChild(nameText);
   container.innerHTML = "";
   container.append(nameElement);
@@ -93,3 +104,72 @@ function makeaselection(option) {
 HireBike.addEventListener("click", function () {
   makeaselection("bikelisting");
 });
+
+function EditMotorbike(id, make, model, plate, year, imgsrc, status, rate) {
+  //document.getElementById("edit-add-ModalTitle").innerHTML =
+  // "✏️ Edit Motorbike";
+ // alert("" + AddEditBikeForm);
+ // AddEditBikeModal.style.display = "flex";
+
+  //frmmotorbike[]["bike_make"].value = make;
+  //AddEditBikeForm["bike_model"].value = model;
+ // AddEditBikeForm["bike_plate_number"].value = plate;
+ // AddEditBikeForm["bike_year"].value = year;
+ // AddEditBikeForm["bike_imgsrc"].value = imgsrc;
+ // AddEditBikeForm["bike_status"].value = status;
+ // AddEditBikeForm["bike_daily_rate"].value = rate;
+
+  //AddEditBikeForm.action = `/motorbikes/edit/${id}/`;
+
+  
+   document.getElementById("Bike_Details_Section").style.display = 'block';
+  
+  document.getElementById("bike_info_title").innerHTML =
+   "✏️ Edit Motorbike";
+  var form = document.getElementById("frmMotorbike").elements;
+
+
+for(var i = 0; i < form.length; i++){
+	if(form[i].type == 'text'){
+	
+    if (form[i].id == 'bike_brand')
+     {
+       	form[i].value = make;
+     }
+
+    if (form[i].id == 'bike_model')
+     {
+       	form[i].value = model;
+     }
+
+    if (form[i].id == 'bike_year')
+     {
+       	form[i].value = year;
+     }
+
+    if (form[i].id == 'bike_status')
+     {
+       	form[i].value = status;
+     }
+
+    if (form[i].id == 'bike_plate_number')
+     {
+       	form[i].value = plate;
+     }
+
+    if (form[i].id == 'bike_img_url')
+     {
+       	form[i].value = imgsrc;
+     }
+
+    if (form[i].id == 'bike_rate')
+     {
+       	form[i].value = rate;
+     }
+
+  }
+     
+}
+ 
+  
+}

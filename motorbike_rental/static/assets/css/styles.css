@@ -6,8 +6,7 @@
   --primary: #338000; /* brand green */
   --accent: #88b070; /* soft accent green */
   --border: rgba(46, 34, 22, 0.06); /* subtle brown border */
-  --tile-beige: #efe7db; /* beige tile base */
-  --tile-white: #ffffff; /* tile white */
+
   --emerald: #065f46;
 }
 
@@ -33,15 +32,16 @@ body {
 /* Background overlay using the arabesque motif at 60% opacity */
 /*
 body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background-image: url( {% '/assets/images/motorback.avif' %});
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    z-index: 0;
-} 
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+   use a static path to avoid template parsing errors 
+  background-image: url("/static/assets/images/motorback.avif");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  z-index: 0;
+}
 */
 
 .content-section {

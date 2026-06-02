@@ -2,6 +2,9 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .models import tblmotorbike, customer
 from django.template import loader
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import MotorbikeForm
+
 
 
 def index(request):
@@ -50,6 +53,12 @@ def booking_form_view(request):
 def about_view(request):
     return render(request, 'about.html')
 
+#def about_view(request):
+#    return render(request, 'about.html')
+
+def menufile_view(request):
+    return render(request, 'menufile.html')
+
 def popup_view(request):
     return render(request, 'popup.html')
 
@@ -70,3 +79,47 @@ def manage_motorbikes(request):
     return render(request, 'manage_motorbikes.html', {
         'bikes': bikes
     })
+
+
+def edit_motorbike(request, bike_id):
+
+    bike = get_object_or_404(tblmotorbike, id=bike_id)
+
+    if request.method == 'POST':
+        form = MotorbikeForm(request.POST, instance=bike)
+        if form.is_valid():
+            form.save()
+            return redirect('manage_motorbikes')
+    else:
+        form = MotorbikeForm(instance=bike)
+
+    return render(request, 'edit_motorbike.html', {
+        'form': form,
+        'bike': bike
+    })
+
+
+def delete_motorbike(request, bike_id):
+
+    bike = get_object_or_404(tblmotorbike, id=bike_id)
+
+    if request.method == 'POST':
+        bike.delete()
+
+    return redirect('manage_motorbikes')
+
+
+def add_motorbike(request):
+
+    if request.method == 'POST':
+        tblmotorbike.objects.create(
+            bike_make=request.POST['bike_make'],
+            bike_model=request.POST['bike_model'],
+            bike_plate_number=request.POST['bike_plate_number'],
+            bike_year=request.POST['bike_year'],
+            bike_imgsrc=request.POST['bike_imgsrc'],
+            bike_status=request.POST['bike_status'],
+            bike_daily_rate=request.POST['bike_daily_rate']
+        )
+
+    return redirect('manage_motorbikes')

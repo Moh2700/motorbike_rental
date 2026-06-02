@@ -1,0 +1,106 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #181824, #35355c);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.page {
+  width: 100%;
+  max-width: 550px;
+  padding: 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 18px;
+  padding: 35px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+}
+
+.top-section {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.top-section h1 {
+  color: #222;
+  margin-bottom: 8px;
+}
+
+.top-section p {
+  color: #777;
+  font-size: 14px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 13px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  transition: all 0.3s;
+}
+
+input:focus,
+select:focus {
+  border-color: #6c63ff;
+  box-shadow: 0 0 6px rgba(108, 99, 255, 0.4);
+  outline: none;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 25px;
+}
+
+.save-btn,
+.cancel-btn {
+  padding: 13px 25px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+  border: none;
+}
+
+.save-btn {
+  background: #6c63ff;
+  color: white;
+}
+
+.save-btn:hover {
+  background: #5548e5;
+}
+
+.cancel-btn {
+  background: #e5e5e5;
+  color: #333;
+}
+
+.cancel-btn:hover {
+  background: #d5d5d5;
+}
