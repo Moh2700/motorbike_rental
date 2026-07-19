@@ -1,0 +1,325 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiring Progress</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="{% static '/assets/css/hireprogress.css' %}">
+    <link rel="stylesheet" href="{% static '/assets/css/footer.css' %}">
+    <link rel="stylesheet" href="{% static '/assets/css/header.css' %}">
+    <link rel="stylesheet" href="{% static '/assets/css/menu.css' %}">
+    <link rel="stylesheet" href="{% static '/assets/css/styles.css' %}">
+
+    <!--link rel="stylesheet" href="{% static 'assets/css/motorbikes.css' %}"-->
+
+
+    <!--script type="module" src="{% static '/jsfile/ukplate.js' %}"></script-->
+    <script defer type="text/javascript" src="{% static '/jsfile/main.js' %}"></script>
+    <!--script defer type="text/javascript" src="{% static '/jsfile/funchelp.js' %}"></script-->
+
+
+</head>
+
+<div class="container">
+
+    <header class="navigation-header">
+        <nav>
+
+            <div class="logo-container">
+                <img src="{% static '/assets/images/colored-logo.png' %}" alt="Motor Bikes Wonders Logo"
+                    class="site-logo" />
+            </div>
+
+
+            <div class="navigation-items" id="navigation-items">
+
+
+                <li style="cursor: pointer" class="menu-item">
+                    <a id="btnDashboard" href="/motorbike_rental">Dashboard</a>
+                </li>
+
+
+
+
+
+
+
+
+            </div>
+
+
+            <div id="btnhamburger" class="hamburger">
+                <span id="openHam">&#9776;</span>
+                <span id="closeHam">&#x2716;</span>
+            </div>
+
+        </nav>
+
+    </header>
+</div>
+
+<main>
+
+
+    <section id="Motorbike_Hiring_Progress" class="container" style=" width: 100%; display:block; padding-top: 20px;">
+
+        {% for booking in motorbike.bookings.all %}
+
+        {% ifchanged booking.customer.username %}
+
+        <div class="progress-page-container dashboard-layout">
+
+
+            <!-- TOP BLOCK: High-Visibility Payment Summary Banner -->
+            <header class="master-payment-banner">
+                <div class="banner-title-block">
+                    <!--span class="order-id">Rental ID: #MN-2026-8942</span-->
+                    <h2><i class="fas fa-receipt"></i> Booking Details</h2>
+                </div>
+
+                <div class="banner-metrics-grid">
+
+                    <div class="customer-meta-item">
+                        <span class="label">Full Name</span>
+                        <span class="value">{{booking.customer.first_name}} {{ booking.customer.last_name }}</span>
+                    </div>
+
+                    <div class="customer-meta-item">
+                        <span class="label">Pickup date</span>
+                        <span class="value">{{ booking.pickup_date }} </span>
+                    </div>
+
+                    <div class="customer-meta-item">
+                        <span class="label">Return date</span>
+                        <span class="value">{{ booking.return_date }}</span>
+                    </div>
+
+                    <div class="customer-meta-item">
+                        <span class="label">Hiring Status</span>
+                        <span class="value">{{ booking.hiring_status }}</span>
+                    </div>
+
+                </div>
+
+
+            </header>
+
+            <!-- TOP BLOCK: High-Visibility Payment Summary Banner -->
+            <header class="master-payment-banner">
+                <div class="banner-title-block">
+                    <!--span class="order-id">Rental ID: #MN-2026-8942</span-->
+                    <h2><i class="fas fa-receipt"></i> Payment Details</h2>
+                </div>
+
+                <div class="banner-metrics-grid">
+                    <div class="metric-item">
+                        <span class="metric-label">Daily Hire Rate</span>
+                        <span class="metric-value">{{booking.motorbike.daily_rate}} / hr</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Security Deposit</span>
+                        <span class="metric-value">£250.00</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Insurance Premium</span>
+                        <span class="metric-value">Included</span>
+                    </div>
+                    <div class="metric-item total-glow">
+                        <span class="metric-label">Estimated Total</span>
+                        <span class="metric-value highlight-price">{{booking.total_price}}</span>
+                    </div>
+                </div>
+
+                <div class="banner-status settlement-pending">
+                    <i class="fas fa-hourglass-half"></i> Awaiting Authorisation
+                </div>
+            </header>
+
+            <!-- COLUMN 1: Customer Info & Hiring Details -->
+            <section class="customer-info-column col-block">
+                <div class="summary-card h-100">
+                    <h3 class="panel-title"><i class="fas fa-user-check"></i> Customer Profile</h3>
+
+                    <div class="customer-profile-details">
+                        <div class="customer-meta-item">
+                            <span class="label">Full Name</span>
+                            <span class="value">{{booking.customer.first_name}} {{ booking.customer.last_name }}</span>
+                        </div>
+                        <div class="customer-meta-item">
+                            <span class="label">Telephone</span>
+                            <span class="value">{{booking.customer.phone_number}}</span>
+                        </div>
+                        <div class="customer-meta-item">
+                            <span class="label">Email Address</span>
+                            <span class="value">{{booking.customer.email }}</span>
+                        </div>
+                        <div class="customer-meta-item full-width">
+                            <span class="label">Billing / Delivery Address</span>
+                            <span class="value">{{booking.customer.address }}</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+
+            <!-- COLUMN 2: Motorbike Information Specifications Sidebar -->
+            <aside class="bike-info-sidebar col-block">
+                <div class="summary-card h-100">
+                    <h3 class="panel-title"><i class="fas fa-motorcycle"></i> Rented Motorbike: {{motorbike.bike_make}}
+                    </h3>
+                    <h2> Model: {{motorbike.bike_model}} </h2>
+                    <div class="bike-image-frame">
+
+                        {% if motorbike.bike_imgsrc %}
+                        <img src="{{ motorbike.bike_imgsrc }}" alt="{{ bike.bike_model }}"
+                            style="width:100%; height:100%; object-fit:cover;">
+                        {% else %}
+                        <div class="bike-img-placeholder"><i class="fas fa-motorcycle"></i></div>
+                        {% endif %}
+
+                        <span class="status-pill status-rented">Rented</span>
+                    </div>
+
+                    <div class="summary-details">
+                        <span class="label">Brand</span>
+                        <h2>{{motorbike.bike_make}}</h2>
+
+                        <div class="meta-grid">
+                            <div class="meta-item">
+                                <span class="label">Model</span>
+                                <span class="value">{{motorbike.bike_model}}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="label">Year</span>
+                                <span class="value">{{motorbike.bike_year}}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="label">Plate Number</span>
+                                <span class="value">{{motorbike.bike_plate_number}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- BOTTOM FULL-WIDTH BLOCK: Horizontal Process Timeline Tracking Matrix -->
+            <main class="tracker-main-panel full-width-block">
+                <div class="tracker-card w-100">
+                    <div class="tracker-header">
+                        <h1>Hire Tracking Progress</h1>
+                        <p>Your motorbike booking parameters are updating live.</p>
+                    </div>
+
+                    <!-- Horizontal Timeline Matrix with Circle Nodes -->
+                    <div class="horizontal-stepper-wrapper">
+                        <div class="horizontal-track-line">
+                            <div class="horizontal-track-fill" style="width: 25%;"></div>
+                        </div>
+
+                        <div class="horizontal-nodes-container">
+
+                            <!-- 1. REQUEST NODE -->
+                            <div class="h-node-item 
+        {% if booking.hiring_status|lower == 'request' %}active{% else %}completed{% endif %}">
+                                <div class="h-node-circle">
+                                    {% if booking.hiring_status|lower == 'request' %}1{% else %}<i
+                                        class="fas fa-check"></i>{% endif %}
+                                </div>
+                                <span class="h-node-label">Request</span>
+                            </div>
+
+                            <!-- 2. VERIFICATION NODE -->
+                            <div
+                                class="h-node-item 
+        {% if booking.hiring_status|lower == 'verification' %}active{% elif booking.hiring_status|lower in 'confirmation,ready,collected' %}completed{% endif %}">
+                                <div class="h-node-circle">
+                                    {% if booking.hiring_status|lower in 'confirmation,ready,collected' %}<i
+                                        class="fas fa-check"></i>{% else %}2{% endif %}
+                                </div>
+                                <span class="h-node-label">Verification</span>
+                            </div>
+
+                            <!-- 3. CONFIRMATION NODE -->
+                            <div
+                                class="h-node-item 
+        {% if booking.hiring_status|lower == 'confirmation' %}active{% elif booking.hiring_status|lower in 'ready,collected' %}completed{% endif %}">
+                                <div class="h-node-circle">
+                                    {% if booking.hiring_status|lower in 'ready,collection' %}<i
+                                        class="fas fa-check"></i>{% else %}3{% endif %}
+                                </div>
+                                <span class="h-node-label">Confirmation</span>
+                            </div>
+
+                            <!-- 4. READY NODE -->
+                            <div
+                                class="h-node-item 
+        {% if booking.hiring_status|lower == 'ready' %}active{% elif booking.hiring_status|lower == 'collection' %}completion{% endif %}">
+                                <div class="h-node-circle">
+                                    {% if booking.hiring_status|lower == 'collection' %}<i class="fas fa-check"></i>{%
+                                    else %}4{% endif %}
+                                </div>
+                                <span class="h-node-label">Ready</span>
+                            </div>
+
+                            <!-- 5. COLLECTED NODE -->
+                            <div
+                                class="h-node-item {% if booking.hiring_status|lower == 'collection' %}active{% endif %}">
+                                <div class="h-node-circle">5</div>
+                                <span class="h-node-label">Collection</span>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                    <!-- Live Step Updates Detail Display & Action Controls Split -->
+                    <div class="bottom-action-split">
+                        <div class="current-step-status-box">
+                            <h4><i class="fas fa-info-circle"></i> Current Status Update:</h4>
+                            <p>Our backend team is verifying your riding licence and profile records. This typically
+                                takes
+                                less than 15 minutes.</p>
+                        </div>
+
+                        <div class="tracker-actions horizontal-stack">
+                            <button class="btn btn-primary" onclick="window.print()">
+                                <i class="fas fa-print"></i> Print Invoice
+                            </button>
+                            <a href="https://wa.me" target="_blank" class="btn btn-secondary">
+                                <i class="fab fa-whatsapp"></i> Chat Support
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+        </div>
+
+
+        {% endifchanged %}
+        {% empty %}
+
+        <h1> No such records</h1>
+        <!--tr>
+            <td colspan="3">No bookings found for this motorbike yet.</td>
+        </tr-->
+        {% endfor %}
+
+    </section>
+</main>
+
+<body>
+
+
+
+
+
+</body>
+
+</html>

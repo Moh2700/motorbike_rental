@@ -25,7 +25,7 @@ body {
   background-color: var(--bg);
   position: relative;
 
-  /* decorative background now rendered via pseudo-element at 60% opacity */
+  /*decorative background now rendered via pseudo-element at 60% opacity */
   -webkit-font-smoothing: antialiased;
 }
 
@@ -58,19 +58,34 @@ body::before {
   color: var(--text);
   margin: 0 0 12px 0;
 }
+
+/*
+.container {
+  padding: 80px 24px;
+  max-width: 1250px;
+  align-items: center;
+  margin: auto;
+}
+  */
+
 .container {
   max-width: 1100px;
   margin: 0 auto;
-  /* remove top padding so banner can sit flush against the top edge */
   padding: 0 20px 20px;
   position: relative;
-  z-index: 1; /* ensure content sits above the background overlay */
+  z-index: 1;
 }
 
+/*
+.container {
+  max-width: 1250px;
+  margin: auto;
+  padding: 80px 24px;
+}
+*/
 .site-content {
   padding: 40px 0;
   background-color: var(--surface);
-
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(46, 34, 22, 0.1);
   position: relative;
@@ -111,6 +126,7 @@ body::before {
   display: flex;
   flex-direction: column;
   box-shadow: 0 6px 18px rgba(46, 34, 22, 0.06);
+  width: 200px;
 }
 
 .motorbikescard {
@@ -136,7 +152,8 @@ button:hover {
 
 /* Popup styles */
 .overlay-container {
-  display: none;
+  /*display: none;*/
+  display: flex;
   position: fixed;
   top: 0;
   left: 0;
@@ -166,6 +183,7 @@ button:hover {
   flex-direction: column;
 }
 
+/*
 .form-label {
   margin-bottom: 10px;
   font-size: 16px;
@@ -182,6 +200,8 @@ button:hover {
   width: 100%;
   box-sizing: border-box;
 }
+
+*/
 
 .btn-submit,
 .btn-close-popup {
@@ -238,3 +258,364 @@ button:hover {
 /* end of popup styles */
 
 /*pickuplocation  styles*/
+
+.booking-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  background-color: #6c63ff;
+  gap: 16px;
+  padding: 0;
+  border-radius: 8px;
+}
+
+.booking-widget {
+  margin-top: 35px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  text-align: left;
+  backdrop-filter: blur(16px);
+  background-color: #6c63ff;
+}
+
+.booking-widget h2 {
+  margin-bottom: 22px;
+  font-size: 1.4rem;
+  font-weight: 100;
+  color: black;
+}
+
+.booking-widget h3 {
+  color: white;
+  background-color: rgb(73, 51, 153);
+  border-radius: 8px;
+  font-size: 1.4rem;
+  font-weight: 100;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  text-align: left;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: white;
+}
+
+.form-group input,
+.form-group select {
+  width: 85%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  height: 40px;
+  background-color: white;
+  /*background-color: #b52a37;*/
+
+  /* background-color: #6c63ff;*/
+}
+
+/*
+.form-group input {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 85%;
+  background-color: #6c63ff;
+}
+*/
+
+#searchInput {
+  padding: 10px;
+  width: 250px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 12px;
+}
+
+table {
+  width: 100%;
+  min-width: 800px;
+  border-collapse: collapse;
+  background: white;
+}
+
+#bikeTtable tr:hover {
+  background-color: red;
+  cursor: pointer;
+}
+
+thead {
+  background: #6c63ff;
+  color: white;
+}
+
+th,
+td {
+  padding: 15px;
+  text-align: left;
+}
+
+tbody tr:nth-child(even) {
+  background: #f7f7f7;
+}
+
+@media (max-width: 768px) {
+  th,
+  td {
+    padding: 10px;
+    font-size: 14px;
+  }
+}
+
+.status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  color: white;
+  font-size: 14px;
+  text-transform: lowercase;
+}
+
+.available {
+  background: #28a745;
+}
+
+.rented {
+  background: #dc3545;
+}
+
+.maintenance {
+  background: #ffc107;
+  color: black;
+}
+
+.edit-btn,
+.delete-btn {
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 2px;
+}
+
+.edit-btn {
+  background: #007bff;
+  color: white;
+}
+
+.delete-btn {
+  background: #dc3545;
+  color: white;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 400px;
+  /*text-align: center;*/
+  animation: popup 0.3s ease;
+}
+
+.modal-content h2 {
+  margin-bottom: 15px;
+}
+
+.modal-content p {
+  margin-bottom: 25px;
+  color: #555;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.cancel-btn,
+.confirm-delete-btn {
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.cancel-btn {
+  background: #ddd;
+}
+
+.confirm-delete-btn {
+  background: #dc3545;
+  color: white;
+}
+
+.confirm-delete-btn:hover {
+  background: #b52a37;
+}
+
+/* Adding motorbikes page styles */
+
+.add-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.add-btn:hover {
+  background: #218838;
+}
+
+/* Modal */
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+
+  justify-content: center;
+  align-items: center;
+}
+
+.add-edit-modal {
+  width: 90%;
+  max-width: 500px;
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  animation: popup 0.3s ease;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 20px;
+}
+
+.close-btn {
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.edit-btn,
+.delete-btn {
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 2px;
+}
+
+.edit-btn {
+  background: #007bff;
+  color: white;
+}
+
+.delete-btn {
+  background: #dc3545;
+  color: white;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 400px;
+  /*text-align: center;*/
+  animation: popup 0.3s ease;
+}
+
+.modal-content h2 {
+  margin-bottom: 15px;
+}
+
+.modal-content p {
+  margin-bottom: 25px;
+  color: #555;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.cancel-btn,
+.confirm-delete-btn {
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.cancel-btn {
+  background: #ddd;
+}
+
+.confirm-delete-btn {
+  background: #dc3545;
+  color: white;
+}
+
+.confirm-delete-btn:hover {
+  background: #b52a37;
+}

@@ -1,4 +1,5 @@
-*, body {
+*,
+body {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
@@ -9,10 +10,11 @@
 .navigation-header {
   background-color: rgb(73, 51, 153);
   padding: 0 15px;
-  height: 60px;
+  height: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 8px;
 }
 
 nav {
@@ -22,26 +24,41 @@ nav {
   justify-content: space-between;
   align-items: center;
 }
-.logo-container > a {
-  color: ghostwhite;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 26px;
-}
+
 .navigation-items {
+  padding-top: 10px;
+  position: absolute;
+  z-index: 20;
+  top: 30px;
+  right: 0;
+  padding-right: 30px;
   display: flex;
-  gap: 20px;
+  list-style: none;
+  /*gap: 10px; */
 }
-.navigation-items > a {
+
+.navigation-items li ul {
+  list-style: none;
+  /*font-weight: 300;*/
+  display: none;
+}
+
+.navigation-items a {
   color: ghostwhite;
   text-decoration: none;
-  font-weight: 500;
-  font-size: 16px;
-  transition: .4s ease-in-out;
+  /*font-weight: 500; */
+  display: block;
+  padding: 8px;
+  /*font-size: 16px; */
+  transition: 0.4s ease-in-out;
 }
-.navigation-items > a:hover {
+.navigation-items a:hover {
   color: white;
+  background-color: #6c63ff;
+  border-radius: 6px;
+  z-index: 70;
 }
+
 .hamburger {
   display: none;
   font-size: 20px;
@@ -49,23 +66,37 @@ nav {
   color: white;
 }
 
-.navigation-items li {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-   color: white;
-        text-decoration: none;
-        padding:5px;
-        display: block;
-        transition: 0.3s;
+/* Submenu */
+.submenu {
+  display: none;
+  position: relative;
+  top: 4px;
+  right: 0;
+  background: rgb(73, 51, 153);
+  /* min-width: 220px; */
+  /* border-radius: 8px; */
+  overflow: hidden;
+  z-index: 9999;
 }
 
-.navigation-items li:hover {
- background: #6c63ff;
- border-radius: 6px;
+.submenu li a {
+  padding: 12px;
 }
 
-@media screen and (max-width:768px) {
+.dropdownsubmenu.active .submenu {
+  display: block;
+  z-index: 9999;
+  /* top: 200px; */
+}
+
+/* Hamburger */
+.menu-toggle {
+  display: none;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
   .hamburger {
     display: flex;
     cursor: pointer;
@@ -79,11 +110,23 @@ nav {
     align-items: center;
     position: absolute;
     right: 0;
-    top: 58px;
+    /*top: 58px;*/
+    border-radius: 8px;
+    top: 82px;
     background-color: rgb(73, 51, 153);
+    /*background-color: rgb(166, 6, 20);*/
+
     width: 100%;
     height: calc(100vh - 58px);
     padding-top: 60px;
     gap: 10vh;
   }
+}
+
+.menu {
+  display: none;
+}
+
+.menu.active {
+  display: block;
 }

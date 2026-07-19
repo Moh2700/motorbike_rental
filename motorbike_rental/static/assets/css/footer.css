@@ -1,0 +1,389 @@
+/* Features Matrix Stylesheet */
+.features-section {
+  background-color: hsl(0, 0%, 7%);
+  color: #ffffff;
+  /* padding: 100px 20px;*/
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  /*padding: 60px 20px;*/
+  /*
+          margin: 0 auto;
+          padding: 0 20px 20px;
+          */
+  border-radius: 8px;
+  top: 150px;
+  max-width: 1100px;
+}
+
+.section-header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 60px auto;
+}
+
+.section-header .sub-title {
+  color: #ff4d4d;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.section-header h2 {
+  font-size: 36px;
+  font-weight: 800;
+  margin-bottom: 15px;
+  letter-spacing: -0.5px;
+}
+
+.section-header h2 span {
+  color: #ff4d4d;
+}
+
+.section-header p {
+  color: #a0a0a0;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Responsive Grid Base */
+.features-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+/* Feature Interactive Cards */
+.feature-card {
+  /*background-color: #1a1a1a;*/
+  background-color: #6c63ff;
+  border: 1px solid #2b2b2b;
+  border-radius: 16px;
+  padding: 40px 30px;
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+    border-color 0.3s ease,
+    box-shadow 0.4s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+  border-color: #ff4d4d;
+  box-shadow: 0 20px 40px rgba(255, 77, 77, 0.1);
+}
+
+/* Glowing Highlight Card Treatment */
+
+/*
+        .feature-card.highlighted {
+          background: linear-gradient(145deg, #1e1e1e, #1a1a1a);
+          border-color: rgba(255, 77, 77, 0.4);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        */
+.card-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: #ff4d4d;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 1px;
+}
+
+/* Visual Anchor Icon Configurations */
+.icon-box {
+  width: 60px;
+  height: 60px;
+  /*background-color: rgba(255, 77, 77, 0.1); */
+  /*background-color: red; */
+
+  /*color: #ff4d4d;*/
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 25px;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.feature-card:hover .icon-box {
+  background-color: #ff4d4d;
+  color: #ffffff;
+}
+
+.feature-card h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.3px;
+}
+
+.feature-card p {
+  color: white;
+  /*font-size: 14px;*/
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+/* Core Cyber-Social Footer Wrapper */
+.social-footer {
+  background-color: #0c0c0e;
+  color: #ffffff;
+  padding: 60px 0 20px 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+}
+
+/* Top Banner Header layout */
+.footer-social-cta {
+  max-width: 1200px;
+  margin: 0 auto 40px auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-social-cta h3 {
+  font-size: 28px;
+  font-weight: 800;
+  margin: 0 0 5px 0;
+  letter-spacing: -0.5px;
+}
+
+.footer-social-cta .highlight {
+  color: #ff4d4d;
+  font-weight: 700;
+}
+
+.community-badge {
+  background: rgba(255, 77, 77, 0.1);
+  border: 1px solid #ff4d4d;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+  color: #ff4d4d;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Social Visual Mini Strip Placeholders */
+.instagram-feed-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 50px;
+  padding: 0 10px;
+}
+
+.feed-grid-item {
+  height: 150px;
+  background-color: #1a1a1e;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  border: 1px solid #222225;
+}
+
+.feed-grid-item span {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  z-index: 2;
+  transition: color 0.3s ease;
+}
+
+.feed-grid-item::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+.feed-grid-item:hover::before {
+  opacity: 0.9;
+}
+
+.feed-grid-item:hover span {
+  color: #ff4d4d;
+}
+
+/* Core Internal Grid split blocks */
+.footer-main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 40px auto;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 60px;
+  border-bottom: 1px solid #1f1f24;
+  padding-bottom: 40px;
+}
+
+.footer-brand h2 {
+  font-size: 32px;
+  margin-bottom: 15px;
+}
+
+.footer-brand h2 span {
+  color: #ff4d4d;
+}
+
+.footer-brand p {
+  color: #8a8a93;
+  line-height: 1.6;
+}
+
+.social-matrix-box h4 {
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #8a8a93;
+  margin-bottom: 20px;
+}
+
+/* Custom Neon Variable Buttons Matrix Grid system */
+.social-matrix {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 15px;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background-color: #16161a;
+  border: 1px solid #222225;
+  border-radius: 12px;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.social-btn i {
+  font-size: 18px;
+}
+
+/* Distinct Individual Colors Matrix Hover Engine variables */
+.social-btn.instagram:hover {
+  border-color: #e1306c;
+  box-shadow: 0 0 15px rgba(225, 48, 108, 0.3);
+  color: #1877f2;
+}
+
+.social-btn.x-twitter:hover {
+  border-color: #1da1f2;
+  box-shadow: 0 0 15px rgba(29, 161, 242, 0.3);
+  color: #1877f2;
+}
+
+.social-btn.facebook:hover {
+  border-color: #1877f2;
+  box-shadow: 0 0 15px rgba(24, 119, 242, 0.3);
+  color: #1877f2;
+}
+
+.social-btn.tiktok:hover {
+  border-color: #00f2fe;
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+  color: #1877f2;
+}
+
+.social-btn.youtube:hover {
+  border-color: #ff0000;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+  color: #1877f2;
+}
+
+.social-btn:hover {
+  transform: translateY(-3px);
+  background-color: #1a1a22;
+}
+
+/* Legal text bottom styles */
+.footer-legal-bar {
+  max-width: 1200px;
+  margin: 30px auto 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  color: #4c4c54;
+  font-size: 13px;
+}
+
+.legal-links a {
+  color: #4c4c54;
+  text-decoration: none;
+  margin-left: 20px;
+}
+
+.legal-links a:hover {
+  color: #ffffff;
+}
+
+/* Responsive Structural Breakpoints adjustments */
+@media (max-width: 900px) {
+  .footer-main-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .instagram-feed-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .footer-social-cta {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .instagram-feed-strip {
+    grid-template-columns: 1fr;
+  }
+}
+
+.img-placeholder-1 {
+  background-image: url("https://images.pexels.com/photos/30979731/pexels-photo-30979731.jpeg");
+  background-size: cover;
+}
+
+.img-placeholder-2 {
+  background-image: url("https://images.pexels.com/photos/23524277/pexels-photo-23524277.jpeg");
+  background-size: cover;
+}
+
+.img-placeholder-3 {
+  background-image: url("https://images.pexels.com/photos/22775778/pexels-photo-22775778.jpeg");
+  background-size: cover;
+}
+
+.img-placeholder-4 {
+  background-image: url("https://images.pexels.com/photos/31625707/pexels-photo-31625707/free-photo-of-yellow-motorcycle-parked-in-a-forest-path.jpeg?auto=compress&w=600");
+  background-size: cover;
+}

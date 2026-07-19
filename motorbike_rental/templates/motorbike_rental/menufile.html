@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard Navbar</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    /* Navbar */
+
+    .navbar {
+
+        background: #1f1f2e;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 25px;
+        color: white;
+    }
+
+    .logo {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    /* Menu */
+
+    .nav-links {
+
+        list-style: none;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .nav-links li {
+        position: relative;
+    }
+
+    .nav-links a {
+
+        color: white;
+        text-decoration: none;
+        padding: 10px;
+        display: block;
+        transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+        background: #6c63ff;
+        border-radius: 6px;
+    }
+
+    /* Submenu */
+    .submenu {
+
+        display: none;
+        position: absolute;
+        top: 45px;
+        left: 0;
+        background: #2a2a40;
+        min-width: 220px;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .submenu li a {
+        padding: 12px;
+    }
+
+    .dropdown.active .submenu {
+        display: block;
+    }
+
+    /* Hamburger */
+
+    .menu-toggle {
+        display: none;
+        font-size: 28px;
+        cursor: pointer;
+    }
+
+    /* Mobile */
+
+    @media (max-width: 768px) {
+
+        .menu-toggle {
+            display: block;
+        }
+
+        .nav-links {
+
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            background: #1f1f2e;
+            padding: 20px;
+        }
+
+        .nav-links.active {
+            display: flex;
+        }
+
+        .submenu {
+            position: static;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+    }
+</style>
+
+
+<script>
+
+    const navLinks = document.getElementById("navLinks");
+
+    /* Mobile Menu */
+    function toggleMenu() {
+        navLinks.classList.toggle("active");
+    }
+
+    /* Submenu */
+    function toggleSubmenu(event) {
+
+        //alert("Submenu clicked!");
+        event.preventDefault();
+        const dropdown = event.target.parentElement;
+        dropdown.classList.toggle("active");
+    }
+
+</script>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+
+        <div class="logo">
+            🏍️ MotoHire
+        </div>
+
+        <!-- Hamburger -->
+
+        <div class="menu-toggle" onclick="toggleMenu()">
+            ☰
+        </div>
+
+        <!-- Menu -->
+        <ul class="nav-links" id="navLinks">
+            <li>
+                <a href="#">
+                    Dashboard
+                </a>
+            </li>
+
+            <!-- Submenu -->
+            <li class="dropdown">
+
+                <a href="#" onclick="toggleSubmenu(event)">
+                    Motorbikes ▼
+                </a>
+
+                <ul class="submenu">
+                    <li>
+                        <a href="#">
+                            Add Motorbike
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#">
+                            Manage Motorbikes
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#">
+                            Available Bikes
+                        </a>
+                    </li>
+
+                </ul>
+
+            </li>
+
+            <li>
+                <a href="#">
+                    Drivers
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    Bookings
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    Reports
+                </a>
+            </li>
+
+        </ul>
+
+    </nav>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

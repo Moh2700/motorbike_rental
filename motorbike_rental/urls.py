@@ -1,22 +1,39 @@
-"""
-URL configuration for motorbike_rental project.
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.urls import path
 from motorbike_rental import views
 
+app_name = 'motorbike_rental'
+
+urlpatterns = [
+    path('', views.IndexView.as_view(), name='index'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('get_user_details/', views.get_user_details, name='get_user_details'),
+    path('edit_bikeuser/<int:user_id>/', views.edit_bikeuser, name='edit_bikeuser'),
+    path('delete_bikeuser/<int:user_id>/', views.delete_bikeuser, name='delete_bikeuser'),
+    path('hire_motorbike/<int:bike_id>/', views.hire_motorbike, name='hire_motorbike'), 
+    path('motorbike_detail/<int:bike_id>/', views.motorbike_detail, name='motorbike_detail'),  
+    path('delete_motorbike/<int:bike_id>/', views.delete_motorbike, name='delete_motorbike'),
+    path('registeruser/', views.registeruser, name='registeruser'),
+    path('menufile/', views.menufile_view, name='menufile'),
+    path('add_motorbike/', views.add_motorbike, name='add_motorbike',),
+    path('edit_motorbike/<int:bike_id>/', views.edit_motorbike, name='edit_motorbike',),
+]
+   #path('<int:pk>/', views.DetailView.as_view(), name='detail'),
+   #path('<int:pk>/results/', views.ResultsView.as_view(), name='results'),
+   #path('<int:question_id>/vote/', views.vote, name='vote'),
+
+'''
+    path(
+        'hire_motorbike/<int:bike_id>/',
+        views.hire_motorbike,
+        name='hire_motorbike',
+    ),
+'''
+
+
+
+'''
 urlpatterns = [
   path('', views.index, name='index'),
   path('customers/', views.customers_view, name='customers'),
@@ -30,16 +47,13 @@ urlpatterns = [
   path('booking_form/', views.booking_form_view, name='booking_form'),
   path('tblmotorbikes/', views.tblmotorbikes_view, name='tblmotorbikes'),
   path('manage_motorbikes/', views.manage_motorbikes, name='manage_motorbikes'),
-  path(
-      'motorbikes/edit/<int:bike_id>/',
-      views.edit_motorbike,
-      name='edit_motorbike',
-  ),
-  path(
-      'motorbikes/delete/<int:bike_id>/',
-      views.delete_motorbike,
-      name='delete_motorbike',
-  ),
+  path('motorbikes/<int:pk>/edit/', views.edit_motorbike, name='edit_motorbike'),
+  path('motorbikes/edit/<int:bike_id>/', views.edit_motorbike, name='edit_motorbike', ),
+  path('motorbikes/delete/<int:bike_id>/', views.delete_motorbike, name='delete_motorbike',),
   path('motorbikes/add/', views.add_motorbike, name='add_motorbike'),
+  path('managing_motorbike/edit/<int:bike_id>/', views.editing_motorbike, name='editing_motorbike'),
+  path('motorbikes/<int:bike_id>/edit/', views.edit_motorbike, name="edit_motorbike"),
+  path('<int:bike_id>/', views.motorbikedetails, name='index'),
 ]
-#path('motorbikes/', views.motorbike_list, name='motorbike_list'),
+
+'''

@@ -1,15 +1,16 @@
+/*
 alert("");
 
 const HireBike = document.getElementById("btnHireBike");
 const navLinks = document.getElementById("navLinks");
 
-/* Mobile Menu */
+
 function toggleMenu() {
   navLinks.classList.toggle("active");
   alert("submenu clicked! VVVVV");
 }
 
-/* Submenu */
+
 function toggleSubmenu(event) {
   event.preventDefault();
   const dropdown = event.target.parentElement;
@@ -93,3 +94,5 @@ function makeaselection(option) {
 HireBike.addEventListener("click", function () {
   makeaselection("bikelisting");
 });
+
+*/

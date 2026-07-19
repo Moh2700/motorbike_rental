@@ -1,0 +1,141 @@
+ <!--nav class="site-navigation"  aria-label="Primary navigation" >
+        <div style ="background-color:orange">
+        <ul>
+
+          <li style="cursor: pointer">
+            <a id="btnHome" href="/">Dashboard</a>
+          </li>
+
+          <li style="cursor: pointer">
+            <a id="btnmenu" href="/menufile/">Menu</a>
+          </li>
+
+          <li style="cursor: pointer">
+            <a id="btnProducts" href="/products/">Accessories</a>
+          </li>
+
+          <li id="mnuMotorbikes">
+
+            <a href="#" onclick="toggleSubmenu(event)" onfocusout="toggleSubmenu(event)">
+              Motorbikes ▼
+            </a>
+
+            <ul id="submnuMotorbikes" class="submenu">
+
+              <li style="width:150px;">
+                <a href="#">
+                  Add Motorbike
+                </a>
+              </li>
+
+              <li style="width:150px;">
+                <a id="btnManageMotorbikes" href="/manage_motorbikes/">Manage Motorbikes</a>
+              </li>
+
+              <li style="width:150px; ">
+                <a href="#">
+                  Available Bikes
+                </a>
+              </li>
+
+            </ul>
+
+
+          </li>
+
+          <li id="mnuAccessories">
+
+            <a href="#" onclick="toggleSubmenu(event)" onfocusout="toggleSubmenu(event)">
+              Accessories ▼
+            </a>
+
+            <ul id="submnuAccessories" class="submenu">
+
+              <li style="width:150px;">
+                <a href="#">
+                  Add Accessory
+                </a>
+              </li>
+
+              <li style="width:150px;">
+                <a id="btnManageAccessory" href="/manage_accessory/">Manage Accessory</a>
+              </li>
+
+              <li style="width:150px; ">
+                <a href="#">
+                  Helmets
+                </a>
+              </li>
+
+              <li style="width:150px; ">
+                <a href="#">
+                  Gloves
+                </a>
+              </li>
+
+              <li style="width:150px; ">
+                <a href="#">
+                  Boots
+                </a>
+              </li>
+
+            </ul>
+
+          </li>
+
+          <li style="cursor: pointer">
+            <a id="btnHireBike">Bookings</a>
+          </li>
+
+          <li style="cursor: pointer">
+            <a id="btnCustomers">Customers</a>
+          </li>
+
+          <li style="cursor: pointer">
+            <a id="btnHireDriver">Drivers</a>
+          </li>
+
+          <li style="cursor: pointer">
+            <a id="btnReports">Reports</a>
+          </li>
+
+          <li style="cursor: pointer">
+            <a id="btnHireBike" onclick="makeaselection('bikelisting')">Bookings</a>
+          </li>
+
+
+
+
+          <li style="cursor: pointer">
+            <a id="btnHome" href="/">Home</a>
+          </li>
+          <li style="cursor: pointer">
+            <a id="btnHome" href="/pickup2/">Pickup Locations</a>
+          </li>
+
+          <i style="cursor: pointer">
+            <a id="btnManageMotorbikes" href="/manage_motorbikes/">Manage Motorbikes</a>
+          </li>
+          <li style="cursor: pointer">
+            <a id="btnAbout" href="/about/">About</a>
+          </li>
+
+
+          <li style="cursor: pointer">
+            <a id="btnAdmin" href="/admin/">Admin</a>
+          </li>
+
+          <li style="cursor: pointer">
+            <a id="btnProducts" href="/products/">Products</a>
+          </li>
+          <li style="cursor: pointer">
+            <a id="btnContact" href="/contact/">Contact</a>
+          </li>
+          <li style="cursor: pointer">
+            <a id="btnContact" href="/customers/">Customers</a>
+          </li>
+
+
+        </ul>
+        <div>
+      </nav-->

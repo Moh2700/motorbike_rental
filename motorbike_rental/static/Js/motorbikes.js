@@ -1,5 +1,6 @@
 //alert("XXXXXX");
 
+/*
 const modal = document.getElementById("deleteModal");
 const deleteForm = document.getElementById("deleteForm");
 const modalText = document.getElementById("modalText");
@@ -67,3 +68,5 @@ window.addEventListener("keydown", function (event) {
     searchMotorbikes();
   }
 });
+
+*/

@@ -1,0 +1,1433 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Page</title>
+
+  <!--style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+
+      font-family: Arial, sans-serif;
+      background: #edf2f7;
+    }
+
+    .wrapper {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 250px;
+      background: #172b4d;
+      color: white;
+      padding: 30px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      margin-top: 40px;
+    }
+
+    .sidebar li {
+      margin: 20px 0;
+    }
+
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+    }
+
+    main {
+      flex: 1;
+      padding: 40px;
+    }
+
+    header {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+
+    }
+
+    .progress-card {
+      margin-top: 40px;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+    }
+
+    .steps {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 30px;
+
+    }
+
+    .circle {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #d6d6d6;
+    }
+
+    .active .circle {
+      background: #28a745;
+      color: white;
+    }
+
+    .current .circle {
+      background: #ff9800;
+      color: white;
+
+    }
+
+    .line {
+      height: 4px;
+      flex: 1;
+      background: #ddd;
+    }
+
+    @media(max-width:900px) {
+      .wrapper {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+      }
+
+      .steps {
+        flex-direction: column;
+
+      }
+
+      .line {
+        width: 4px;
+        height: 50px;
+      }
+
+    }
+
+
+
+
+    .summary {
+
+      display: grid;
+
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+      gap: 25px;
+
+      margin-top: 30px;
+
+    }
+
+    .card {
+
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, .08);
+      transition: .4s;
+      cursor: pointer;
+
+    }
+
+    .card:hover {
+
+      transform: translateY(-8px);
+
+    }
+
+    .card i {
+      font-size: 35px;
+      color: #2563eb;
+      margin-bottom: 15px;
+
+    }
+
+
+    .card {
+
+      background: rgba(255, 255, 255, .75);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, .35);
+
+    }
+  </style-->
+
+  <style>
+    .progress-card {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      margin-top: 30px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, .08);
+    }
+
+
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 35px;
+    }
+
+
+
+    .status-badge {
+      background: #f59e0b;
+      color: white;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 14px;
+
+    }
+
+
+
+    .progress-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+
+
+    .progress-step {
+      text-align: center;
+      min-width: 90px;
+    }
+
+
+
+    .circle {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      background: #d1d5db;
+      color: #374151;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: auto;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+
+
+    .progress-step.completed .circle {
+
+      background: #16a34a;
+
+      color: white;
+
+    }
+
+
+
+    .progress-step p {
+
+      margin-top: 12px;
+
+      font-size: 14px;
+
+    }
+
+
+
+    .progress-line {
+
+      height: 4px;
+
+      width: 80px;
+
+      background: #d1d5db;
+
+    }
+
+
+
+    .progress-step.completed+.progress-line {
+
+      background: #16a34a;
+
+    }
+  </style>
+
+</head>
+
+<body>
+  <h2>Customer Booking History for {{ motorbike.bike_model }}</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Pickup Date</th>
+        <th>Return Date</th>
+        <th>Booking Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Loop through all bookings associated with this specific motorbike -->
+      {% for booking in motorbike.bookings.all %}
+
+      {% ifchanged booking.customer.username %}
+      <tr>
+        <!-- Access the custom customer user profile fields -->
+        <td>
+          <!-- This tag only prints the text if it is different from the previous row -->
+
+          {{ booking.customer.username }}
+
+        </td>
+        <td>{{ booking.customer.email }}</td>
+        <td>{{ booking.pickup_date }}</td>
+        <td>{{ booking.return_date }}</td>
+        <td>{{ booking.booking_status }}</td>
+      </tr>
+
+      {% endifchanged %}
+      {% empty %}
+      <tr>
+        <td colspan="3">No bookings found for this motorbike yet.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <section class="progress-card">
+
+    <h2>
+
+      Hiring Progress
+
+    </h2>
+
+    <div class="steps">
+
+      <div class="step active">
+
+        <div class="circle">
+          ✔
+        </div>
+        <span>
+          Requested
+        </span>
+
+      </div>
+
+      <div class="line"></div>
+
+      <div class="step active">
+        <div class="circle">
+          ✔
+        </div>
+        <span>
+          Verification
+        </span>
+
+      </div>
+
+      <div class="line"></div>
+
+      <div class="step current">
+        <div class="circle">
+          3
+        </div>
+
+        <span>
+          Confirmed
+        </span>
+
+      </div>
+
+      <div class="line"></div>
+
+      <div class="step">
+
+        <div class="circle">
+          4
+        </div>
+        <span>
+          Ready
+        </span>
+
+      </div>
+
+      <div class="line"></div>
+
+      <div class="step">
+        <div class="circle">
+          5
+        </div>
+        <span>
+          Collected
+        </span>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <section class="summary">
+
+    {% for booking in motorbike.bookings.all %}
+    {% ifchanged booking.customer.username %}
+
+    <div class="card">
+
+      <i class="fa-solid fa-motorcycle"></i>
+      <h3>Current Booking</h3>
+      <p>{{ booking.booking_number }}</p>
+
+    </div>
+
+    <div class="card">
+      <i class="fa-solid fa-wallet"></i>
+
+      <h3>Balance</h3>
+      <p>£{{ booking.total_price }}</p>
+    </div>
+
+    <div class="card">
+
+      <i class="fa-solid fa-calendar-days"></i>
+      <h3>Pickup</h3>
+      <p>{{ booking.pickup_date }}</p>
+    </div>
+
+    <div class="card">
+
+      <i class="fa-solid fa-location-dot"></i>
+      <h3>Location</h3>
+      <p>{{ booking.pickup_location }}</p>
+    </div>
+
+    {% endifchanged %}
+    {% empty %}
+    <tr>
+      <td colspan="3">No bookings found for this motorbike yet.</td>
+    </tr>
+    {% endfor %}
+  </section>
+
+
+  <section class="progress-card">
+
+    <div class="progress-header">
+
+      <h2>
+        🏍 Hiring Progress
+      </h2>
+
+      <span class="status-badge">
+        {{ booking.get_status_display }}
+      </span>
+
+    </div>
+
+
+    <div class="progress-container">
+
+
+      {% with current=booking.status %}
+
+
+      <div class="progress-step 
+            {% if current in 'requested verification confirmed ready hired returned completed' %}
+            completed
+            {% endif %}">
+
+        <div class="circle">
+          {% if current in 'verification confirmed ready hired returned completed' %}
+          ✔
+          {% else %}
+          1
+          {% endif %}
+        </div>
+
+        <p>Requested</p>
+
+      </div>
+
+
+      <div class="progress-line"></div>
+
+
+      <div class="progress-step
+            {% if current in 'verification confirmed ready hired returned completed' %}
+            completed
+            {% endif %}">
+
+        <div class="circle">
+          {% if current in 'confirmed ready hired returned completed' %}
+          ✔
+          {% else %}
+          2
+          {% endif %}
+        </div>
+
+        <p>Verification</p>
+
+      </div>
+
+
+
+      <div class="progress-line"></div>
+
+
+      <div class="progress-step
+            {% if current in 'confirmed ready hired returned completed' %}
+            completed
+            {% endif %}">
+
+        <div class="circle">
+          {% if current in 'ready hired returned completed' %}
+          ✔
+          {% else %}
+          3
+          {% endif %}
+        </div>
+
+        <p>Confirmed</p>
+
+      </div>
+
+
+
+      <div class="progress-line"></div>
+
+
+      <div class="progress-step
+            {% if current in 'ready hired returned completed' %}
+            completed
+            {% endif %}">
+
+        <div class="circle">
+          {% if current in 'hired returned completed' %}
+          ✔
+          {% else %}
+          4
+          {% endif %}
+        </div>
+
+        <p>Ready</p>
+
+      </div>
+
+
+
+      <div class="progress-line"></div>
+
+
+      <div class="progress-step
+            {% if current in 'hired returned completed' %}
+            completed
+            {% endif %}">
+
+        <div class="circle">
+
+          {% if current in 'returned completed' %}
+          ✔
+          {% else %}
+          5
+          {% endif %}
+
+        </div>
+
+        <p>Collected</p>
+
+      </div>
+
+
+
+      <div class="progress-line"></div>
+
+
+      <div class="progress-step
+            {% if current == 'completed' %}
+            completed
+            {% endif %}">
+
+        <div class="circle">
+
+          {% if current == 'completed' %}
+          ✔
+          {% else %}
+          6
+          {% endif %}
+
+        </div>
+
+        <p>Completed</p>
+
+      </div>
+
+
+      {% endwith %}
+
+
+    </div>
+
+
+  </section>
+
+
+  <style>
+    /* Core Page Split Architecture layout */
+    .progress-page-container {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 30px;
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #ffffff;
+      background-color: #0c0c0e;
+    }
+
+    /* Tracker Card Element Frameworks */
+    .tracker-card,
+    .summary-card {
+      background-color: #16161a;
+      border: 1px solid #222225;
+      border-radius: 16px;
+      padding: 40px;
+    }
+
+    .tracker-header {
+      margin-bottom: 40px;
+      border-bottom: 1px solid #222225;
+      padding-bottom: 20px;
+    }
+
+    .tracker-header .order-id {
+      color: #ff4d4d;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 700;
+    }
+
+    .tracker-header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin: 10px 0;
+      letter-spacing: -0.5px;
+    }
+
+    .tracker-header p {
+      color: #8a8a93;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* Stepper Engine Structural Rules */
+    .stepper-timeline {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      margin-left: 20px;
+    }
+
+    /* Vertical Core Connector Line */
+    .stepper-timeline::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 20px;
+      bottom: 40px;
+      width: 2px;
+      background-color: #222225;
+      z-index: 1;
+    }
+
+    .step-item {
+      display: flex;
+      gap: 25px;
+      position: relative;
+      padding-bottom: 40px;
+      z-index: 2;
+    }
+
+    .step-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background-color: #222225;
+      color: #4c4c54;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      border: 2px solid #16161a;
+      transition: all 0.3s ease;
+    }
+
+    .step-content h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 5px 0;
+    }
+
+    .step-content p {
+      color: #8a8a93;
+      font-size: 14px;
+      margin: 0 0 8px 0;
+      line-height: 1.5;
+    }
+
+    .step-time {
+      font-size: 12px;
+      color: #4c4c54;
+      font-weight: 600;
+    }
+
+    /* Dynamic State Interactive Matrix Modification rules */
+    .step-item.completed .step-icon {
+      background-color: rgba(46, 204, 113, 0.1);
+      color: #2ecc71;
+      border-color: #2ecc71;
+    }
+
+    .step-item.active .step-icon {
+      background-color: rgba(255, 77, 77, 0.1);
+      color: #ff4d4d;
+      border-color: #ff4d4d;
+      box-shadow: 0 0 15px rgba(255, 77, 77, 0.2);
+    }
+
+    .step-item.active .step-content h3 {
+      color: #ff4d4d;
+    }
+
+    .step-item.active .step-time {
+      color: #ff4d4d;
+    }
+
+    /* Sidebar Information Blocks layout */
+    .summary-card {
+      padding: 20px;
+      position: sticky;
+      top: 30px;
+    }
+
+    .bike-image-frame {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .bike-img-placeholder {
+      height: 180px;
+      background-color: #1a1a22;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: #2d2d35;
+    }
+
+    .status-pill {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .status-rented {
+      background-color: rgba(230, 126, 34, 0.2);
+      color: #e67e22;
+    }
+
+    .bike-brand {
+      color: #8a8a93;
+      font-size: 13px;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .summary-details h2 {
+      font-size: 22px;
+      margin: 5px 0 20px 0;
+    }
+
+    .meta-row {
+      display: flex;
+      gap: 20px;
+      border-bottom: 1px solid #222225;
+      padding-bottom: 15px;
+      margin-bottom: 15px;
+    }
+
+    .meta-item .label {
+      display: block;
+      font-size: 11px;
+      color: #4c4c54;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .meta-item .value {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .price-breakdown .price-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      color: #8a8a93;
+      margin-bottom: 10px;
+    }
+
+    .price-breakdown .price-row.total {
+      border-top: 1px dashed #222225;
+      padding-top: 15px;
+      margin-top: 15px;
+      font-size: 18px;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    /* Action Utility Buttons Styling definitions */
+    .tracker-actions {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background-color: #ff4d4d;
+      color: #ffffff;
+    }
+
+    .btn-secondary {
+      background-color: #222225;
+      color: #ffffff;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    /* Responsive View Matrix Configuration */
+    @media (max-width: 900px) {
+      .progress-page-container {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-card {
+        position: static;
+      }
+    }
+
+
+    /* Core Page Asymmetric Layout Split Architecture */
+    .progress-page-container.three-column-layout {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      /* Splits page into 3 equal structural blocks */
+      gap: 25px;
+      max-width: 1300px;
+      margin: 40px auto;
+      padding: 0 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #ffffff;
+      background-color: #0c0c0e;
+    }
+
+    /* Base structural blocks alignment utilities */
+    .col-block {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .h-100 {
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Balanced Card Framework parameters override */
+    .tracker-card,
+    .summary-card {
+      background-color: #16161a;
+      border: 1px solid #222225;
+      border-radius: 16px;
+      padding: 30px;
+    }
+
+    .payment-card-bg {
+      background: linear-gradient(145deg, #16161a, #1d1d24);
+    }
+
+    .panel-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 0;
+      margin-bottom: 25px;
+      border-bottom: 1px solid #222225;
+      padding-bottom: 15px;
+    }
+
+    /* Meta Parameters Grid for Column 2 specifications block */
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    /* Payment Breakdown List Layout */
+    .price-breakdown-details {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .price-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      color: #8a8a93;
+    }
+
+    .price-line strong {
+      color: #ffffff;
+    }
+
+    .price-line.total-highlight {
+      border-top: 1px dashed #222225;
+      padding-top: 15px;
+      margin-top: 5px;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .final-price {
+      font-size: 22px;
+      color: #ff4d4d;
+    }
+
+    /* Payment Tracking Status Pill badge */
+    .payment-status-badge {
+      text-align: center;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 25px;
+      letter-spacing: 0.5px;
+    }
+
+    .settlement-pending {
+      background-color: rgba(241, 196, 15, 0.1);
+      color: #f1c40f;
+      border: 1px solid rgba(241, 196, 15, 0.3);
+    }
+
+    /* Multi-Button Actions Configuration utilities */
+    .vertical-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .w-100 {
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* Adaptive Breakdown Configurations for Tablet and Small Displays */
+    @media (max-width: 1024px) {
+      .progress-page-container.three-column-layout {
+        grid-template-columns: 1fr;
+        /* Stack columns on smaller screens */
+      }
+    }
+  </style>
+
+
+  <script>
+
+    function setHiringStage(stageIndex) {
+      const nodes = document.querySelectorAll('.node-item');
+      const fillBar = document.querySelector('.progress-fill-fill');
+
+      // Calculate top red filling track percentage line (4 intervals between 5 items = 25% each)
+      const percentFill = stageIndex * 25;
+      if (fillBar) fillBar.style.width = `${percentFill}%`;
+
+      nodes.forEach((node, idx) => {
+        if (idx < stageIndex) {
+          node.className = 'node-item completed';
+          // Switch back standard numeric dots to visual checkmarks dynamically
+          node.querySelector('.node-dot').innerHTML = '<i class="fas fa-check"></i>';
+        } else if (idx === stageIndex) {
+          node.className = 'node-item active';
+          node.querySelector('.node-dot').textContent = idx + 1;
+        } else {
+          node.className = 'node-item';
+          node.querySelector('.node-dot').textContent = idx + 1;
+        }
+      });
+    }
+
+    setHiringStage(3);
+
+    // Example usage: setHiringStage(2); shifts layout immediately to 'Confirmed' stage index setup.
+
+  </script>
+
+  <div class="progress-page-container">
+
+    <!-- Left Side: Interactive Process Timeline Tracker -->
+    <main class="tracker-main">
+      <div class="tracker-card">
+        <div class="tracker-header">
+          <span class="order-id">Rental ID: #MN-2026-8942</span>
+          <h1>Track Your Hire Progress</h1>
+          <p>Your motorbike booking is currently being processed by our garage dispatch matrix.</p>
+        </div>
+
+        <!-- The Visual Stepper Component -->
+        <!-- Toggle classes: 'active' for the current step, 'completed' for past steps -->
+        <div class="stepper-timeline">
+
+          <div class="step-item completed">
+            <div class="step-icon">
+              <i class="fas fa-file-invoice-dollar"></i>
+            </div>
+            <div class="step-content">
+              <h3>Rate Verified</h3>
+              <p>Your rate validation check cleared successfully.</p>
+              <span class="step-time">Mon 10:14 AM</span>
+            </div>
+          </div>
+
+          <div class="step-item active">
+            <div class="step-icon">
+              <i class="fas fa-id-card-alt"></i>
+            </div>
+            <div class="step-content">
+              <h3>Document Verification</h3>
+              <p>Our backend team is verifying your riding licence and profile.</p>
+              <span class="step-time">In Progress</span>
+            </div>
+          </div>
+
+          <div class="step-item locked">
+            <div class="step-icon">
+              <i class="fas fa-clipboard-check"></i>
+            </div>
+            <div class="step-content">
+              <h3>Mechanical Pre-Check</h3>
+              <p>Garage diagnostics review of the fluid, plate, and tyre parameters.</p>
+              <span class="step-time">Pending</span>
+            </div>
+          </div>
+
+          <div class="step-item locked">
+            <div class="step-icon">
+              <i class="fas fa-key"></i>
+            </div>
+            <div class="step-content">
+              <h3>Ready for Collection</h3>
+              <p>Your premium machine is waiting for you at the primary collection bay.</p>
+              <span class="step-time">Pending</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Action Button CTA Sector -->
+        <div class="tracker-actions">
+          <a href="https://wa.me" target="_blank" class="btn btn-secondary">
+            <i class="fab fa-whatsapp"></i> Chat Support
+          </a>
+          <button class="btn btn-primary" onclick="window.print()">
+            <i class="fas fa-print"></i> Print Invoice
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Right Side: Live Sticky Motorbike Summary Sidebar -->
+    <aside class="summary-sidebar">
+      <div class="summary-card">
+        <div class="bike-image-frame">
+          <!-- Replace placeholder text background layer with dynamic model images -->
+          <div class="bike-img-placeholder">
+            <i class="fas fa-motorcycle"></i>
+          </div>
+          <span class="status-pill status-rented">Rented</span>
+        </div>
+
+        <div class="summary-details">
+          <span class="bike-brand">Yamaha</span>
+          <h2>MT-07 Tracer</h2>
+
+          <div class="meta-row">
+            <div class="meta-item">
+              <span class="label">Year</span>
+              <span class="value">2024</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Plate</span>
+              <span class="value">LK24 XRM</span>
+            </div>
+          </div>
+
+          <div class="price-breakdown">
+            <div class="price-row">
+              <span>Daily Rate</span>
+              <span>£12.80 / hr</span>
+            </div>
+            <div class="price-row total">
+              <span>Estimated Total</span>
+              <span>£153.60</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+
+
+
+  <div class="progress-page-container">
+
+    <!-- TOP BLOCK: 5-Stage Horizontal Master Progress Bar -->
+    <header class="master-progress-block">
+      <div class="progress-bar-wrapper">
+        <!-- Background track line -->
+        <div class="progress-track-line">
+          <!-- Adjust width% dynamically to fill the bar: 0% (Req), 25% (Ver), 50% (Con), 75% (Rdy), 100% (Col) -->
+          <div class="progress-fill-fill" style="width: 25%;"></div>
+        </div>
+
+        <!-- Stage Nodes Matrix -->
+        <div class="progress-nodes-container">
+          <!-- Use classes: 'completed' (past steps) or 'active' (current step) -->
+          <div class="node-item completed">
+            <div class="node-dot"><i class="fas fa-check"></i></div>
+            <span class="node-label">Requested</span>
+          </div>
+
+          <div class="node-item active">
+            <div class="node-dot">2</div>
+            <span class="node-label">Verification</span>
+          </div>
+
+          <div class="node-item">
+            <div class="node-dot">3</div>
+            <span class="node-label">Confirmed</span>
+          </div>
+
+          <div class="node-item">
+            <div class="node-dot">4</div>
+            <span class="node-label">Ready</span>
+          </div>
+
+          <div class="node-item">
+            <div class="node-dot">5</div>
+            <span class="node-label">Collected</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Left Side: Interactive Process Timeline Tracker -->
+    <main class="tracker-main">
+      <div class="tracker-card">
+        <div class="tracker-header">
+          <span class="order-id">Rental ID: #MN-2026-8942</span>
+          <h1>Track Your Hire Progress</h1>
+          <p>Your motorbike booking is currently being processed by our garage dispatch matrix.</p>
+        </div>
+
+        <!-- The Visual Stepper Component -->
+        <div class="stepper-timeline">
+          <div class="step-item completed">
+            <div class="step-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+            <div class="step-content">
+              <h3>Rental Requested</h3>
+              <p>Your vehicle booking application form submission has been captured.</p>
+              <span class="step-time">Mon 10:14 AM</span>
+            </div>
+          </div>
+
+          <div class="step-item active">
+            <div class="step-icon"><i class="fas fa-id-card-alt"></i></div>
+            <div class="step-content">
+              <h3>Document Verification</h3>
+              <p>Our backend team is verifying your riding licence and profile.</p>
+              <span class="step-time">In Progress</span>
+            </div>
+          </div>
+
+          <div class="step-item locked">
+            <div class="step-icon"><i class="fas fa-clipboard-check"></i></div>
+            <div class="step-content">
+              <h3>Booking Confirmed</h3>
+              <p>Payment transaction settled. Vehicle reserved exclusively for you.</p>
+              <span class="step-time">Pending</span>
+            </div>
+          </div>
+
+          <div class="step-item locked">
+            <div class="step-icon"><i class="fas fa-key"></i></div>
+            <div class="step-content">
+              <h3>Ready for Collection</h3>
+              <p>Your premium machine is waiting for you at the primary collection bay.</p>
+              <span class="step-time">Pending</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Button CTA Sector -->
+        <div class="tracker-actions">
+          <a href="https://wa.me" target="_blank" class="btn btn-secondary">
+            <i class="fab fa-whatsapp"></i> Chat Support
+          </a>
+          <button class="btn btn-primary" onclick="window.print()">
+            <i class="fas fa-print"></i> Print Invoice
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Right Side: Live Sticky Motorbike Summary Sidebar -->
+    <aside class="summary-sidebar">
+      <div class="summary-card">
+        <div class="bike-image-frame">
+          <div class="bike-img-placeholder"><i class="fas fa-motorcycle"></i></div>
+          <span class="status-pill status-rented">Rented</span>
+        </div>
+
+        <div class="summary-details">
+          <span class="bike-brand">Yamaha</span>
+          <h2>MT-07 Tracer</h2>
+
+          <div class="meta-row">
+            <div class="meta-item">
+              <span class="label">Year</span>
+              <span class="value">2024</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Plate</span>
+              <span class="value">LK24 XRM</span>
+            </div>
+          </div>
+
+          <div class="price-breakdown">
+            <div class="price-row">
+              <span>Daily Rate</span>
+              <span>£12.80 / hr</span>
+            </div>
+            <div class="price-row total">
+              <span>Estimated Total</span>
+              <span>£153.60</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+
+
+
+  <div class="progress-page-container three-column-layout">
+
+    <!-- TOP BLOCK: 5-Stage Horizontal Master Progress Bar -->
+    <header class="master-progress-block">
+      <div class="progress-bar-wrapper">
+        <div class="progress-track-line">
+          <div class="progress-fill-fill" style="width: 25%;"></div>
+        </div>
+
+        <div class="progress-nodes-container">
+          <div class="node-item completed">
+            <div class="node-dot"><i class="fas fa-check"></i></div>
+            <span class="node-label">Requested</span>
+          </div>
+          <div class="node-item active">
+            <div class="node-dot">2</div>
+            <span class="node-label">Verification</span>
+          </div>
+          <div class="node-item">
+            <div class="node-dot">3</div>
+            <span class="node-label">Confirmed</span>
+          </div>
+          <div class="node-item">
+            <div class="node-dot">4</div>
+            <span class="node-label">Ready</span>
+          </div>
+          <div class="node-item">
+            <div class="node-dot">5</div>
+            <span class="node-label">Collected</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- COLUMN 1: Visual Progress Tracking Matrix -->
+    <main class="tracker-main col-block">
+      <div class="tracker-card h-100">
+        <div class="tracker-header">
+          <span class="order-id">Rental ID: #MN-2026-8942</span>
+          <h1>Hire Progress</h1>
+          <p>Your motorbike booking parameters are updating live.</p>
+        </div>
+
+        <div class="stepper-timeline">
+          <div class="step-item completed">
+            <div class="step-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+            <div class="step-content">
+              <h3>Rental Requested</h3>
+              <span class="step-time">Mon 10:14 AM</span>
+            </div>
+          </div>
+
+          <div class="step-item active">
+            <div class="step-icon"><i class="fas fa-id-card-alt"></i></div>
+            <div class="step-content">
+              <h3>Document Verification</h3>
+              <span class="step-time">In Progress</span>
+            </div>
+          </div>
+
+          <div class="step-item locked">
+            <div class="step-icon"><i class="fas fa-clipboard-check"></i></div>
+            <div class="step-content">
+              <h3>Booking Confirmed</h3>
+              <span class="step-time">Pending</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- COLUMN 2: Motorbike Information Specifications Card -->
+    <section class="bike-info-column col-block">
+      <div class="summary-card h-100">
+        <div class="bike-image-frame">
+          <div class="bike-img-placeholder"><i class="fas fa-motorcycle"></i></div>
+          <span class="status-pill status-rented">Rented</span>
+        </div>
+
+        <div class="summary-details">
+          <span class="bike-brand">Yamaha</span>
+          <h2>MT-07 Tracer</h2>
+
+          <div class="meta-grid">
+            <div class="meta-item">
+              <span class="label">Year</span>
+              <span class="value">2024</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Plate Number</span>
+              <span class="value">LK24 XRM</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Status</span>
+              <span class="value">Active Fleet</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COLUMN 3: Payment Breakdown & Action Block -->
+    <section class="payment-column col-block">
+      <div class="summary-card h-100 payment-card-bg">
+        <h3 class="panel-title"><i class="fas fa-credit-card"></i> Payment Summary</h3>
+
+        <div class="price-breakdown-details">
+          <div class="price-line">
+            <span>Daily Hire Rate</span>
+            <strong>£12.80 / hr</strong>
+          </div>
+          <div class="price-line">
+            <span>Security Deposit</span>
+            <span>£250.00</span>
+          </div>
+          <div class="price-line">
+            <span>Insurance Premium</span>
+            <span>Included</span>
+          </div>
+
+          <div class="price-line total-highlight">
+            <span>Estimated Total</span>
+            <span class="final-price">£153.60</span>
+          </div>
+        </div>
+
+        <div class="payment-status-badge settlement-pending">
+          <i class="fas fa-hourglass-half"></i> Awaiting Authorisation
+        </div>
+
+        <div class="tracker-actions vertical-stack">
+          <button class="btn btn-primary w-100" onclick="window.print()">
+            <i class="fas fa-print"></i> Print Invoice
+          </button>
+          <a href="https://wa.me" target="_blank" class="btn btn-secondary w-100">
+            <i class="fab fa-whatsapp"></i> Chat Support
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</body>
+
+</html>
