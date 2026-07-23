@@ -1,0 +1,428 @@
+/* Core Page Split Layout Scheme */
+.progress-page-container.dashboard-layout {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  /* Forms two even utility columns in the center */
+  gap: 25px;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #ffffff;
+
+  /* background-color: #0c0c0e; */
+}
+
+.col-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.full-width-block {
+  grid-column: 1 / -1;
+}
+
+/* Forces an item to break across the entire layout span */
+.w-100 {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.h-100 {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* TOP BLOCK: Payment Summary Banner Rules */
+.master-payment-banner {
+  grid-column: 1 / -1;
+  /*background: linear-gradient(145deg, #16161a, #1d1d24); */
+  background-color: #6c63ff;
+  /* border: 1px solid #222225;*/
+  border-radius: 16px;
+  padding: 25px 35px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.banner-title-block .order-id {
+  color: #ff4d4d;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.banner-title-block h2 {
+  font-size: 20px;
+  margin: 0;
+  font-weight: 700;
+}
+
+.banner-metrics-grid {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.metric-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-label {
+  font-size: 11px;
+  color: #8a8a93;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+
+.metric-value {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.highlight-price {
+  font-size: 20px;
+  color: #ff4d4d;
+  font-weight: 700;
+}
+
+.banner-status {
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.settlement-pending {
+  background-color: rgba(241, 196, 15, 0.1);
+  color: #f1c40f;
+  border: 1px solid rgba(241, 196, 15, 0.2);
+}
+
+/* CARDS: Base Structural Styling */
+.tracker-card,
+.summary-card {
+  /*background-color: #16161a;*/
+  background-color: #6c63ff;
+  border: 1px solid #222225;
+  border-radius: 16px;
+  padding: 30px;
+}
+
+.panel-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #222225;
+  padding-bottom: 12px;
+}
+
+/* COLUMN 1: Customer Profile Grid layout rules */
+.customer-profile-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.customer-meta-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.customer-meta-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.customer-meta-item .label,
+.meta-item .label {
+  display: block;
+  font-size: 11px;
+  color: #4c4c54;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.customer-meta-item .value,
+.meta-item .value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ccccd3;
+}
+
+/* COLUMN 2: Motorbike Information Layout */
+.bike-image-frame {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+
+.bike-img-placeholder {
+  height: 120px;
+  background-color: #1a1a22;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: #2d2d35;
+}
+
+.status-pill {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.status-rented {
+  background-color: rgba(230, 126, 34, 0.2);
+  color: #e67e22;
+}
+
+.bike-brand {
+  color: #8a8a93;
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.summary-details h2 {
+  font-size: 20px;
+  margin: 5px 0 15px 0;
+}
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+/* BOTTOM PANEL: Horizontal Stepper System */
+.tracker-header h1 {
+  font-size: 24px;
+  margin: 0 0 5px 0;
+  font-weight: 800;
+}
+
+.tracker-header p {
+  color: #8a8a93;
+  font-size: 14px;
+  margin: 0 0 30px 0;
+}
+
+.horizontal-stepper-wrapper {
+  position: relative;
+  width: 100%;
+  margin: 25px 0 35px 0;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.horizontal-track-line {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-color: #222225;
+  z-index: 1;
+  transform: translateY(-50%);
+}
+
+.horizontal-track-fill {
+  height: 100%;
+  background-color: #ff4d4d;
+  transition: width 0.4s ease-in-out;
+}
+
+.horizontal-nodes-container {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+}
+
+.h-node-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.h-node-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #16161a;
+  border: 3px solid #222225;
+  color: #8a8a93;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.h-node-label {
+  margin-top: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #8a8a93;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Node active states */
+.h-node-item.completed .h-node-circle {
+  background-color: #2ecc71;
+  border-color: #2ecc71;
+  color: #ffffff;
+}
+
+.h-node-item.completed .h-node-label {
+  color: #2ecc71;
+}
+
+.h-node-item.active .h-node-circle {
+  background-color: #ff4d4d;
+  border-color: #ff4d4d;
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(255, 77, 77, 0.4);
+}
+
+.h-node-item.active .h-node-label {
+  color: #ff4d4d;
+}
+
+/* Action Block Footer Split Layout Rules */
+.bottom-action-split {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+  margin-top: 30px;
+  border-top: 1px solid #222225;
+  padding-top: 25px;
+  flex-wrap: wrap;
+}
+
+.current-step-status-box {
+  background-color: #1f1f24;
+  border-left: 4px solid #ff4d4d;
+  padding: 20px;
+  border-radius: 0 12px 12px 0;
+  flex: 1;
+  min-width: 280px;
+}
+
+.current-step-status-box h4 {
+  margin: 0 0 6px 0;
+  font-size: 13px;
+  color: #ff4d4d;
+  text-transform: uppercase;
+}
+
+.current-step-status-box p {
+  margin: 0;
+  font-size: 14px;
+  color: #ccccd3;
+  line-height: 1.5;
+}
+
+.horizontal-stack {
+  display: flex;
+  gap: 12px;
+}
+
+/* Action Controls layout utility rules */
+.btn {
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  text-decoration: none;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background-color: #ff4d4d;
+  color: #ffffff;
+}
+
+.btn-secondary {
+  background-color: #222225;
+  color: #ffffff;
+}
+
+/* Responsive Grid Conversions for lower viewport parameters */
+@media (max-width: 900px) {
+  .progress-page-container.dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .master-payment-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .banner-metrics-grid {
+    gap: 20px;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .bottom-action-split {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .horizontal-stack {
+    width: 100%;
+  }
+
+  .horizontal-stack .btn {
+    flex: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .customer-profile-details {
+    grid-template-columns: 1fr;
+  }
+
+  .h-node-label {
+    font-size: 9px;
+    letter-spacing: 0;
+  }
+
+  .h-node-circle {
+    width: 30px;
+    height: 30px;
+    font-size: 11px;
+  }
+}

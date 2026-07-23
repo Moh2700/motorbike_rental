@@ -1,0 +1,2294 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bike Wonders </title>
+
+    <!--link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="{% static '/assets/css/hireprogress.css' %}">
+    <link rel="stylesheet" href="{% static '/assets/css/footer.css' %}">
+    <link rel="stylesheet" href="{% static '/assets/css/header.css' %}">
+    <link rel="stylesheet" href="{% static '/assets/css/menu.css' %}">
+    <link rel="stylesheet" href="{% static '/assets/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static '/assets/css/motorbike_booking.css' %}">
+
+    <!--link rel="stylesheet" href="{% static 'assets/css/motorbikes.css' %}"-->
+
+
+    <!--script type="module" src="{% static '/jsfile/ukplate.js' %}"></script-->
+    <script defer type="text/javascript" src="{% static '/jsfile/main.js' %}"></script>
+    <!--script defer type="text/javascript" src="{% static '/jsfile/funchelp.js' %}"></script-->
+
+</head>
+
+<body>
+
+
+    {{ request.session.bikeuser_id|json_script:"user-id-data" }}
+    {{ request.session.bikeuser_username|json_script:"user-username-data" }}
+    {{ request.session.bikeuser_role|json_script:"user-role-data" }}
+
+    <div id="selectedbike">
+        {% if show_motorbikebooking %}
+
+        motorbikebooking: {{ show_motorbikebooking }}
+
+        bookingprogress: {{ show_bookingprogress }}
+
+        {% endif %}
+
+
+        {% if show_bookingprogress %}
+
+        motorbikebooking: {{ show_motorbikebooking }}
+
+        bookingprogress: {{ show_bookingprogress }}
+
+        {% endif %}
+
+    </div>
+
+    <div id="loggeduser">
+        <input type="hidden" id="userRole" value="{{ request.session.bikeuser_role }}">
+        <input type="hidden" id="logusername" value="{{ request.session.bikeuser_username }}">
+        <input type="hidden" id="loguserid" value="{{ request.session.bikeuser_id }}">
+        <input type="hidden" id="logfirstname" value="{{ request.session.bikeuser_first_name }}">
+        <input type="hidden" id="loglastname" value="{{ request.session.bikeuser_last_name }}">
+
+    </div>
+
+
+
+
+    <div class="container">
+
+        <header class="navigation-header">
+            <nav>
+
+                <div class="logo-container">
+                    <img src="{% static '/assets/images/colored-logo.png' %}" alt="Motor Bikes Wonders Logo"
+                        class="site-logo" />
+                </div>
+
+
+                <div class="navigation-items" id="navigation-items">
+
+                    <h3 style="color:white; padding-right:20px;">
+                        {{ request.session.bikeuser_role }} :
+                        Welcome {{ request.session.bikeuser_first_name }}
+                        {{ request.session.bikeuser_last_name }}
+                    </h3>
+
+
+                    <li style="cursor: pointer" class="menu-item">
+                        <form id="frmlogOut" method="POST" action="{% url 'motorbike_rental:logout' %}">
+                            {% csrf_token %}
+                            <a id="btn" onclick="logOutUser(event, document.getElementById('frmlogOut'))"
+                                class="confirm-delete-btn">LogOut</a>
+                        </form>
+                    </li>
+
+                    <!--li style="cursor: pointer" class="menu-item">
+            <a id="btnmanagemotorbikes" href="/motorbike_rental/manage_motorbikes">manage</a>
+          </li-->
+
+                    <li style="cursor: pointer" class="menu-item">
+                        <a id="btnDashboard" href="/motorbike_rental/customer_dashboard">Progress</a>
+                    </li>
+
+                    <li style="cursor: pointer" class="menu-item">
+                        <a id="btnDashboard" href="/motorbike_rental">Dashboard</a>
+                    </li>
+
+                    <li style="cursor: pointer" class="menu-item">
+                        <a id="mnuRegistration">Registration</a>
+                    </li>
+
+                    <li id="mnuSignin" style="cursor: pointer" class="menu-item">
+                        <a id="hyplinkSignin">Sign in </a>
+                    </li>
+
+
+                    <style>
+                        .disabled {
+                            opacity: 0.5;
+                        }
+
+                        .disabled a {
+                            color: #999;
+                            cursor: not-allowed;
+                            pointer-events: none;
+
+                        }
+
+                        .disabled i {
+                            color: #dc3545;
+                            /* Bootstrap danger red */
+                        }
+                    </style>
+
+
+
+                    <!--li id="mnuMotorbikes" class="dropdownsubmenu menu-item"
+            onmouseover=" toggleUserMenu(document.getElementById('mnuMotorbikes'), true)" ,
+            onmouseout=" toggleUserMenu(document.getElementById('mnuMotorbikes'), false)"-->
+                    <li id="mnuMotorbikes" class="dropdownsubmenu menu-item">
+
+
+                        <a onclick="toggleSubmenu(event)">
+                            Motorbikes ▼
+                        </a>
+
+                        <ul id="submnuMotorbikes" class="submenu" onmouseout="toggle_visibility('submnuMotorbikes')">
+
+                            <li style="width:150px;">
+                                <a id="submnuMotorbikeStatus" style="cursor: pointer;">
+                                    Motorbikes Status
+                                </a>
+                            </li>
+
+                            <li style="width:150px;">
+
+                                <a id="submnubikelisting" style="cursor: pointer;">
+                                    Manage Motorbikes
+                                </a>
+                            </li>
+
+                        </ul>
+
+
+                    </li>
+
+
+                    <li id="mnuBookings" class="dropdownsubmenu menu-item">
+
+                        <a onclick="toggleSubmenu(event)">
+                            Bookings ▼
+                        </a>
+
+                        <ul id="submnuBookings" class="submenu" onmouseout="toggle_visibility('submnuBookings')">
+
+                            <li style="width:150px;">
+                                <a href="#">
+                                    New Booking
+                                </a>
+                            </li>
+
+                            <li style="width:150px;" id="submnuAvailBookings">
+                                <a href="#">
+                                    Booking Status
+                                </a>
+                            </li>
+
+                            <li style="width:150px;">
+                                <a>Cancel Booking</a>
+                            </li>
+
+                        </ul>
+
+                    </li>
+
+                    <li id="mnuUsers" class="dropdownsubmenu" class="menu-item">
+
+                        <a onclick="toggleSubmenu(event)">
+                            Users ▼
+                        </a>
+
+                        <ul id="submnuUsers" class="submenu" onmouseout="toggle_visibility('submnuUsers')">
+
+                            <li style="width:150px;" id="submnuMembersListing">
+                                <a href="#">
+                                    Members
+                                </a>
+                            </li>
+
+                            <li style="width:150px;">
+                                <a href="#">
+                                    Admin
+                                </a>
+                            </li>
+
+                            <li style="width:150px;" id="submnuStaff">
+                                <a href="#">
+                                    Staff
+                                </a>
+                            </li>
+
+                            <li style="width:150px;">
+                                <a>Customer</a>
+                            </li>
+
+
+                        </ul>
+
+                    </li>
+
+                    <li style="cursor: pointer" class="menu-item">
+                        <!--a id="btnCustomers" href="/motorbike_rental">Users</a-->
+                        <!--a id="btnCustomers" href="/motorbike_rental/customers">Customers</a-->
+                        <!--a id="btnCustomers" onclick="javascript:alert('Customers not implemented yet')">Customers</a-->
+                    </li>
+
+
+                </div>
+
+
+                <div id="btnhamburger" class="hamburger">
+                    <span id="openHam">&#9776;</span>
+                    <span id="closeHam">&#x2716;</span>
+                </div>
+
+            </nav>
+
+        </header>
+
+        <main class="site-contentxxx">
+
+            <style>
+                .accessories {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 12px;
+                }
+
+                .checkbox-card {
+                    position: relative;
+                    cursor: pointer;
+                }
+
+                .checkbox-card input {
+                    display: none;
+                }
+
+                .checkbox-card span {
+                    display: inline-block;
+                    padding: 12px 14px;
+                    border: 2px solid #ddd;
+                    border-radius: 12px;
+                    background: white;
+                    transition: all 0.3s ease;
+                    font-weight: 600;
+                }
+
+                .checkbox-card:hover span {
+                    border-color: #6c63ff;
+                    transform: translateY(-2px);
+                }
+
+                .checkbox-card input:checked+span {
+                    background: #6c63ff;
+                    color: white;
+                    border-color: #6c63ff;
+                    /*box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3); */
+                }
+
+                .checkbox-card input:checked+span::after {
+                    content: "✓";
+                    margin-left: 8px;
+                    font-weight: bold;
+                }
+
+
+                .modal {
+                    position: fixed;
+                    inset: 0;
+                    background: rgba(0, 0, 0, 0.6);
+                    display: none;
+                    justify-content: center;
+                    align-items: center;
+                    backdrop-filter: blur(5px);
+                }
+
+                .modal-content {
+                    background: #fff;
+                    padding: 30px;
+                    width: 350px;
+                    border-radius: 20px;
+                    text-align: center;
+                    box-shadow: 0 20px 40px rgba(0, 0, 0, .3);
+                    animation: popIn .3s ease;
+                }
+
+                .error-icon {
+                    font-size: 60px;
+                    margin-bottom: 10px;
+                }
+
+                .modal-content h2 {
+                    color: #e53935;
+                    margin-bottom: 10px;
+                }
+
+                .modal-content p {
+                    color: #666;
+                    margin-bottom: 20px;
+                }
+
+                .cancel-btn {
+                    background: #e53935;
+                    color: white;
+                    border: none;
+                    padding: 12px 25px;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    transition: .3s;
+                }
+
+                .cancel-btn:hover {
+                    background: #c62828;
+                    transform: scale(1.05);
+                }
+
+                @keyframes popIn {
+                    from {
+                        transform: scale(0.7);
+                        opacity: 0;
+                    }
+
+                    to {
+                        transform: scale(1);
+                        opacity: 1;
+                    }
+                }
+
+
+                .cards {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    gap: 20px;
+                }
+
+                .card {
+                    background: white;
+                    padding: 20px;
+                    border-radius: 10px;
+                    box-shadow: 0 2px 10px rgba(0, 0, 0, .1);
+                }
+
+                .userrow {
+                    /*background-color: #6c63ff;*/
+                    margin-top: 10px;
+                    margin-bottom: 5px;
+                    padding: 5px;
+                    border-radius: 10px;
+                }
+
+                .userrow:hover {
+                    /*background-color: #493399;*/
+
+                    background: linear-gradient(to right, #ff3c00, #e63600);
+                    color: #ddd;
+                    cursor: pointer
+                }
+
+                .usersearch {
+                    margin-bottom: 10px;
+                    padding: 5px;
+                    border-radius: 5px;
+                    border: 1px solid #ccc;
+                    width: 100%;
+                }
+
+                .messages-container {
+                    margin: 20px 0;
+                }
+
+                .alert {
+                    padding: 12px;
+                    border-radius: 4px;
+                    margin-bottom: 10px;
+                    font-family: sans-serif;
+                }
+
+                /* Style for messages.error */
+                .alert-error {
+                    background-color: #fde8e8;
+                    color: #9b1c1c;
+                    border: 1px solid #f8b4b4;
+                }
+
+                /* Style for messages.success */
+                .alert-success {
+                    background-color: #def7ec;
+                    color: #03543f;
+                    border: 1px solid #bfecdc;
+                }
+
+
+                .alert {
+                    padding: 12px;
+                    border-radius: 4px;
+                    margin-bottom: 10px;
+                    font-family: sans-serif;
+                    opacity: 1;
+                    max-height: 100px;
+                    /* High enough to contain the text */
+                    overflow: hidden;
+                    /* This transition handles everything at once */
+                    transition: opacity 0.6s ease, max-height 0.6s ease, padding 0.6s ease, margin 0.6s ease;
+                }
+
+                /* When JavaScript adds this class, the alert will shrink and fade */
+                .alert.disappear {
+                    opacity: 0;
+                    max-height: 0;
+                    padding-top: 0;
+                    padding-bottom: 0;
+                    margin-bottom: 0;
+                    border-top-width: 0;
+                    border-bottom-width: 0;
+                }
+
+                /* Colors for message tags */
+                .alert-error {
+                    background-color: #fde8e8;
+                    color: #9b1c1c;
+                    border: 1px solid #f8b4b4;
+                }
+
+                .alert-success {
+                    background-color: #def7ec;
+                    color: #03543f;
+                    border: 1px solid #bfecdc;
+                }
+
+
+
+                .containererrormsg {
+
+                    border-radius: 8px;
+                    color: #fff;
+                    align-items: center;
+                    justify-content: center;
+                    text-align: center;
+                    overflow: hidden;
+                }
+            </style>
+
+            <!-- Delete Modal -->
+            <div id="deleteModal" class="modal">
+
+                <div class="modal-content">
+
+                    <h2>⚠️ Record Deletion</h2>
+
+                    <p id="modalText">
+                        Are you sure?
+                    </p>
+
+                    <form method="POST" id="deleteForm">
+
+                        {% csrf_token %}
+
+                        <div class="modal-buttons">
+
+                            <button id="btnCancel" type="button" class="cancel-btn" onclick="closeModal()">
+                                Cancel
+                            </button>
+
+                            <button id="btnDelete" type="button" class="confirm-delete-btn">
+                                Delete
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <div id="errorModal" class="modal">
+                <div class="modal-content">
+                    <div class="error-icon">⚠️</div>
+                    <h2>Access Denied</h2>
+                    <p>You must be at least 18 years old to register.</p>
+
+                    <button onclick="closeError()" class="cancel-btn">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+
+            <section id="User_Registration" class="content-section" style=" margin-bottom: 20px; display:none">
+
+                <div class="booking-widget" id="divUserRegistration" class="modal">
+
+                    <h3 id="User_reg_title"> User Registration Details </h3>
+
+                    <h2 id="user_reg_info" class="text-center mb-4">
+                        🏍 Create Account --- Register to hire motorbikes quickly and securely.
+                    </h2>
+
+                    <form method="POST" action="{% url 'motorbike_rental:registeruser' %}" id="frmUserRegistration">
+                        {% csrf_token %}
+
+                        <div class="booking-grid">
+
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input type="text" id="first_name" name="first_name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input type="text" id="last_name" name="last_name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="useremail" name="email" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" id="username" name="username" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" id="userpassword" name="userpassword" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Confirm password</label>
+                                <input type="password" id="userpassword2" name="userpassword2" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="text" id="phone_number" name="phone_number">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Driving Licence Number</label>
+                                <input type="text" id="driving_licence_number" name="driving_licence_number">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Date of Birth</label>
+                                <input type="date" id="date_of_birth" name="date_of_birth">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Role</label>
+                                <input type="text" id="role" name="role">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Address</label>
+                                <input type="text" id="address" name="address">
+                            </div>
+
+
+                        </div>
+
+                        <hr>
+                        <p class="text-center">
+                            Already have an account?
+                            <a style="cursor: pointer" onclick="showLoginPopup('MotorBike_Signin') "> Sign in</a>
+                        </p>
+
+                        <button type="button" class="btn" onclick="cancelSection('User_Registration')">
+                            Cancel
+                        </button>
+
+                        <button id="btnRegisterUser" type="button" class="btn" onclick="checkRegistration()">
+                            Register
+                        </button>
+
+                    </form>
+
+
+
+                </div>
+
+
+            </section>
+
+            <style>
+                .search-box {
+                    margin-bottom: 20px;
+                    flex: 1;
+                    align-items: end;
+                }
+
+                #searchInput {
+                    width: 100%;
+                    padding: 8px 12px;
+                    border-radius: 8px;
+                    border: 1px solid #ccc;
+                    font-size: 16px;
+
+                }
+
+                .search-box input {
+                    width: 100%;
+                    padding: 8px 12px;
+                    border-radius: 8px;
+                    border: 1px solid #ccc;
+                    font-size: 16px;
+
+                }
+
+                #searchInput:focus {
+                    border-color: #6c63ff;
+                    outline: none;
+                    box-shadow: 0 0 5px rgba(108, 99, 255, 0.4);
+                }
+
+                .parent-container {
+                    display: flex;
+                    /* Activates Flexbox layout */
+                    flex-direction: row;
+                    /* Arranges children in a row (default) */
+                    justify-content: space-between;
+                    /* Spreads them apart. Alternatives: center, flex-start, flex-end */
+                    align-items: center;
+                    /* Aligns them perfectly along their vertical center line */
+                    gap: 20px;
+                    /* Puts a clean 20px gap between the two boxes */
+                    padding-bottom: 20px;
+                }
+
+                /* Optional styling to make the boxes equal width */
+                .box-one,
+                .box-two {
+                    flex: 1;
+                    padding: 20px;
+                    background-color: #f0f0f0;
+                    width: 100%;
+                    padding: 8px 12px;
+                    border-radius: 8px;
+                    border: 1px solid #ccc;
+                    font-size: 16px;
+                }
+
+
+                .box-one :focus,
+                .box-two :focus {
+                    border-color: #6c63ff;
+                    outline: none;
+                    box-shadow: 0 0 5px rgba(108, 99, 255, 0.4);
+                }
+            </style>
+
+            <section id="Motorbike_Management_Section" class="content-section"
+                style=" display:none; margin-bottom: 20px;">
+
+                <div class="table-container">
+
+                    <div class="header">
+                        <h1>🏍️ Motorbike Management</h1>
+
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="Search motorbikes..." />
+                        </div>
+
+                    </div>
+
+                    <table id="bikeTable">
+
+                        <thead>
+                            <tr>
+                                <th>Brand</th>
+                                <th>Model</th>
+                                <th>Plate</th>
+                                <th>Year</th>
+                                <th>Status</th>
+                                <th>Rate</th>
+
+                                {% if request.session.bikeuser_role == 'admin' %}
+
+                                <th>Booking</th>
+                                <th>Actions</th>
+
+                                {%endif %}
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for bike in bikeslist %}
+
+                            {% if request.session.bikeuser_role == 'customer' %}
+
+                            <tr id="selectedbike{{bike.id}}" data-bikeid="{{ bike.id }}"
+                                data-bikemake="{{ bike.bike_make }}" data-bikemodel="{{ bike.bike_model  }}"
+                                data-bikeyear="{{ bike.bike_year }}" data-bikestatus="{{ bike.bike_status }}"
+                                data-bikeplatenumber="{{ bike.bike_plate_number }}"
+                                data-bikeimgsrc="{{ bike.bike_imgsrc }}"
+                                data-bikedailyrate="{{ bike.bike_daily_rate  }}"
+                                onclick="showbikedetails(document.getElementById('frmBikeDetails'), document.getElementById('selectedbike{{bike.id}}'));">
+
+
+                                {% elif request.session.bikeuser_role == 'admin' %}
+
+                            <tr id="selectedbike{{bike.id}}" data-bikeid="{{ bike.id }}"
+                                data-bikemake="{{ bike.bike_make }}" data-bikemodel="{{ bike.bike_model  }}"
+                                data-bikeyear="{{ bike.bike_year }}" data-bikestatus="{{ bike.bike_status }}"
+                                data-bikeplatenumber="{{ bike.bike_plate_number }}"
+                                data-bikeimgsrc="{{ bike.bike_imgsrc }}"
+                                data-bikedailyrate="{{ bike.bike_daily_rate  }}"
+                                onclick="showMotorbikedetails(document.getElementById('selectedbike{{bike.id}}'))">
+
+                                {% endif %}
+
+                                <td>{{ bike.bike_make }}</td>
+                                <td>{{ bike.bike_model }}</td>
+                                <td>{{ bike.bike_plate_number }}</td>
+                                <td>{{ bike.bike_year }}</td>
+                                <td>
+                                    <span style="color:black" class="status {{ bike.bike_status }}">
+                                        {{ bike.bike_status }}
+                                    </span>
+                                </td>
+
+                                <td>£{{ bike.bike_daily_rate }}</td>
+
+                                {% if request.session.bikeuser_role == 'admin' %}
+
+                                <td>
+
+                                    <button type="button" class="edit-btn">
+                                        <a href="{% url 'motorbike_rental:motorbike_detail' bike.id %}">
+                                            <i class="fa-solid fa-file-lines"
+                                                style="text-decoration: none;color:white"></i> View
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </button>
+                                </td>
+
+                                <td>
+
+                                    <button type="button" class="edit-btn"
+                                        onclick="showMotorbikedetails(document.getElementById('selectedbike{{bike.id}}'))">
+                                        <i class="fa-solid fa-pen"></i> Edit
+                                    </button>
+
+                                    <button type="button" class="delete-btn"
+                                        onclick="DeleteMotorbike(document.getElementById('selectedbike{{bike.id}}'))">
+                                        <i class="fa fa-trash"></i> Delete
+                                    </button>
+
+                                </td>
+
+
+
+                                {% endif %}
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </section>
+
+
+            <section id="Motorbike_Listing" class="content-section" style="display: none;">
+                <h2 style="color:white; background-color: #ff3c00; border-radius: 8px;">Bike Wonders Listing --- Double
+                    click
+                    on
+                    the bike to see more details </h2>
+
+                <div class="parent-container">
+                    <input id="searchStatus" class="box-one" placeholder="Search motorbikes..."></input>
+
+                    <select class="box-two" id="bike_status" name="bike_status">
+                        <option value="">All Statuses</option>
+                        <option value="available">Available</option>
+                        <option value="maintenance">Maintenance</option>
+                        <option value="rented">Rented</option>
+                    </select>
+                </div>
+
+                <!--div class="motorbikescard" id="motorbikelist"-->
+                <div id="motorbikelist" class="motorbikescard">
+
+                    {% for bike in bikeslist %}
+
+
+                    <div class="bikecard" id="{{ bike.id }}">
+                        <img id="{{ bike.id }}" src="{{ bike.bike_imgsrc }}" data-bikeid="{{ bike.id }}"
+                            data-bikemake="{{ bike.bike_make }}" data-bikemodel="{{ bike.bike_model  }}"
+                            data-bikeyear="{{ bike.bike_year }}" data-bikestatus="{{ bike.bike_status }}"
+                            data-bikeplatenumber="{{ bike.bike_plate_number }}" data-bikeimgsrc="{{ bike.bike_imgsrc }}"
+                            data-bikedailyrate="{{ bike.bike_daily_rate  }}" style="width:100%" />
+
+                        <p><strong>Make :</strong> {{bike.bike_make}}</p>
+                        <p><strong>Model:</strong> {{ bike.bike_model }}</p>
+                        <p><strong>Year:</strong> {{ bike.bike_year }}</p>
+                        <p><strong>Status:</strong>{{ bike.bike_status }}</p>
+
+
+                        <!-- Conditional Button Disabling -->
+                        {% if bike.bike_status == 'rented' or bike.bike_status == 'maintenance' %}
+                        <button disabled class="disabled-btn">Unavailable</button>
+                        {% else %}
+                        <button
+                            onclick="showbikedetails(document.getElementById('frmBikeDetails'), this.parentElement.querySelector('img'));">
+                            Hire Now
+                        </button>
+                        {% endif %}
+                        <!--button
+              onclick="showbikedetails(document.getElementById('frmBikeDetails'), this.parentElement.querySelector('img'));">
+              Hire Now
+            </button-->
+
+                    </div>
+
+
+                    {% endfor %}
+
+                </div>
+
+            </section>
+
+
+            <section id="Motorbike_Users" class="container" style=" display: none;">
+
+                <div class="booking-widget" id="divUserDetails" class="modal" style="display:block">
+
+                    <h3 id="User_reg_title"> User Account Details </h3>
+
+                    <h2 id="user_reg_info" class="text-center mb-4">
+                        🏍 View Account
+                    </h2>
+
+                    <form action="{% url 'motorbike_rental:edit_bikeuser' 1 %}" id="frmUser">
+                        {% csrf_token %}
+
+                        <!-- This section will visibly display why your fields are failing -->
+                        {% if form.errors %}
+                        <div style="color: red; font-weight: bold;">
+                            Please fix the errors below:
+                            {{ form.errors }}
+                        </div>
+                        {% endif %}
+
+
+                        {{ form.as_p }}
+
+                        <div class="booking-grid">
+
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input type="text" id="first_name" name="first_name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input type="text" id="last_name" name="last_name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="useremail" name="email" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" id="username" name="username" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" id="password1" name="password1" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Confirm password</label>
+                                <input type="password" id="password2" name="password2" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="text" id="phone_number" name="phone_number">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Driving Licence Number</label>
+                                <input type="text" id="driving_licence_number" name="driving_licence_number" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Date of Birth</label>
+                                <input type="date" id="date_of_birth" name="date_of_birth">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Role</label>
+                                <input type="text" id="role" name="role">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Address</label>
+                                <input type="text" id="address" name="address">
+                            </div>
+
+                        </div>
+
+                        <hr>
+
+                        <button id="btnCancelUser" type="button" class="btn" onclick="cancelSection('Motorbike_Users')">
+                            Cancel
+                        </button>
+
+                        <button id="btnshowMembers" type="button" class="btn"
+                            onclick="makeaselection('Motorbike_Users_Listing')">
+                            Members
+                        </button>
+
+                        <button id="btnDeleteUser" type="button" class="btn"
+                            onclick="DeleteUser(document.getElementById('frmUser'), document.getElementById('user_id').value)">
+                            Delete
+                        </button>
+
+                        <button id="btnSaveUser" type="submit" class="btn"
+                            onclick="SaveUserChanges(document.getElementById('frmUser'), document.getElementById('user_id').value)">
+                            Save
+                        </button>
+
+                        <input type="input" id="user_id" value="{{ user.id }}" name="user_id" hidden>
+                    </form>
+
+                </div>
+
+                <br>
+                <div class="usersearch" id="divUserSearch" style="background-color: #6c63ff; margin-bottom: 10px; ">
+
+                    <div class="form-group" style="margin-bottom: 5px; margin-top: 5px; ">
+                        <input type="text" style="width: 90%;" id="userInput" placeholder="Search users..." />
+
+                        <button id="searchUsers" class="btn"
+                            onclick="searchItems(document.getElementById('userInput').value, document.getElementById('userlist'))">Search</button>
+
+                    </div>
+                </div>
+
+                <br>
+
+
+                <div id="userlist" style="display:block">
+
+                    <h2 style="color:white; padding: 10px; background-color: #493399; border-radius: 8px;">Bike Wonders
+                        Users
+                        listing --- Double Click to View User Account Details </h2>
+
+                    {% for user in userlist %}
+
+                    <div id="selecteduser{{user.id}}" data-userid="{{ user.id }}"
+                        data-userfirstname="{{ user.first_name }}" data-userlastname="{{ user.last_name }}"
+                        data-useremail="{{ user.email }}" data-userphone="{{ user.phone_number }}"
+                        data-username="{{ user.username }}" data-userpassword1="{{ user.password }}"
+                        data-userpassword2="{{ user.password }}"
+                        data-userdrivinglicence="{{ user.driving_licence_number }}"
+                        data-userdateofbirth="{{ user.date_of_birth|date:'Y-m-d' }}"
+                        data-useraddress="{{ user.address }}" data-userrole="{{ user.role }}">
+
+                        <div onclick=" showuserdetails(document.getElementById('frmUser'), document.getElementById('selecteduser{{user.id}}'));"
+                            class="userrow">
+                            <p style="font-size: 0.92rem; font-weight: 600;">
+                                <strong> {{user.first_name}} {{ user.last_name }} {{ user.email}}
+                                    {{ user.phone_number }} </strong>
+                            </p>
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+                </div>
+
+            </section>
+
+
+            <section id="Motorbike_Users_Listing" class="container" style="  display: none;">
+
+                <br>
+                <div class="usersearch" id="divSearchUser" style="background-color: #6c63ff; margin-bottom: 10px; ">
+
+                    <div class="form-group" style="margin-bottom: 5px; margin-top: 5px; ">
+                        <input type="text" style="width: 90%;" id="UserSearch" placeholder="Search users..." />
+
+                        <button id="searchUser" class="btn"
+                            onclick="searchItems(document.getElementById('UserSearch').value, document.getElementById('divuserlist'))">Search</button>
+
+                    </div>
+                </div>
+
+                <br>
+
+                <div class="cards" id="divuserlist">
+
+                    {% for user in userlist %}
+
+                    <div class="card" id="selecteduser{{user.id}}" data-userid="{{ user.id }}"
+                        data-userfirstname="{{ user.first_name }}" data-userlastname="{{ user.last_name }}"
+                        data-useremail="{{ user.email }}" data-userphone="{{ user.phone_number }}"
+                        data-username="{{ user.username }}" data-userpassword1="{{ user.password }}"
+                        data-userpassword2="{{ user.password }}"
+                        data-userdrivinglicence="{{ user.driving_licence_number }}"
+                        data-userdateofbirth="{{ user.date_of_birth|date:'Y-m-d' }}"
+                        data-useraddress="{{ user.address }}" data-userrole="{{ user.role }}"
+                        style="padding: 10px; border-radius: 8px; margin-bottom: 5px; cursor:pointer;"
+                        onclick=" getuserdetails(document.getElementById('selecteduser{{user.id}}'));">
+                        <!-- onclick=" showuserdetails(document.getElementById('frmUser'), document.getElementById('selecteduser{{user.id}}'));">  -->
+                        <p><strong>First Name :</strong> {{user.first_name}}</p>
+                        <p><strong>Last Name:</strong> {{ user.last_name }}</p>
+                        <p><strong>Email:</strong> {{ user.email }}</p>
+                        <p><strong>Phone:</strong>{{ user.phone_number }}</p>
+
+                        <div style="margin-top:20px; margin-bottom:5px ;">
+                            <hr>
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+                <br>
+
+                <div id="userlist" style="display:none">
+
+                    <h2 style="color:white; padding: 10px; background-color: #493399; border-radius: 8px;">Bike Wonders
+                        Users
+                        listing --- Double Click to View User Account Details </h2>
+
+                    {% for user in userlist %}
+
+                    <div id="selecteduser" data-userid="{{ user.id }}" data-userfirstname="{{ user.first_name }}"
+                        data-userlastname="{{ user.last_name }}" data-useremail="{{ user.email }}"
+                        data-userphone="{{ user.phone_number }}" data-username="{{ user.username }}"
+                        data-userpassword1="{{ user.password }}" data-userpassword2="{{ user.password }}"
+                        data-userdrivinglicence="{{ user.driving_licence_number }}"
+                        data-userdateofbirth="{{ user.date_of_birth|date:'Y-m-d' }}"
+                        data-useraddress="{{ user.address }}" data-userrole="{{ user.role }}">
+
+                        <div onclick=" showuserdetails(document.getElementById('selecteduser'), document.getElementById('selecteduser{{user.id}}'));"
+                            class="userrow">
+                            <p style="font-size: 0.92rem; font-weight: 600;">
+                                <strong> {{user.first_name}} {{ user.last_name }} {{ user.email}}
+                                    {{ user.phone_number }} </strong>
+                            </p>
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+                </div>
+
+            </section>
+
+
+            <section id="Motorbike_Hiring" class="container" style=" margin-bottom: 20px; display:none">
+
+                <div class="booking-widget" class="modal">
+
+                    <h3 id="bike_info_title"> Motorbike Details </h3>
+
+                    <form method="POST" id="frmBikeDetails">
+
+                        {% csrf_token %}
+
+                        <div class="booking-grid">
+
+                            <div class="form-group">
+                                <label>Brand </label>
+                                <input type="text" id="bike_make" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Model</label>
+                                <input type="text" id="bike_model" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Year</label>
+                                <input type="text" id="bike_year" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Rate</label>
+                                <input type="text" id="bike_daily_rate" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Status</label>
+                                <input type="text" id="bike_status" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Plate Number</label>
+                                <input type="text" id="bike_plate_number" readonly>
+                            </div>
+
+
+                            <!-- Hidden bike id -->
+                            <input type="hidden" id="bike_id" value="{{ bike.bikeid }}">
+
+                            <input type="hidden" id="user_id" value="{{ request.session.bikeuser_id }}">
+
+                            <div class="form-group">
+
+                            </div>
+                            <div class="bikecard" id="divimg" style="margin-bottom: 5px; margin-right: 5px;">
+
+                            </div>
+
+                        </div>
+                        <hr>
+                        <div class="accessories" style=" margin-top:10px; margin-bottom:10px;">
+                            <button type="button" class="hire-btn"
+                                onclick="loadMotorbikeBooking(document.getElementById('frmBikeDetails'))">
+                                View Booking
+                            </button>
+
+
+                            <!-- >
+
+              <form id="frmMotorbikeBooking">
+                {% csrf_token %}
+                <a id="btn" onclick="getuserbooking()" class="confirm-delete-btn"> delete View Booking</a>
+              </form>
+
+
+              {% if bike.bikeid %}
+              <button type="button" class="edit-btn">
+
+                <a href="{% url 'motorbike_rental:motorbike_detail'  bike.bikeid %}">
+                  <i class="fa-solid fa-file-lines" style="text-decoration: none;color:white"></i> View Booking
+                  <i class="fas fa-eye"></i>
+                </a>
+              </button>
+              {% endif %}
+
+            <!-->
+                        </div>
+
+
+
+                    </form>
+
+
+                </div>
+
+                <div class="booking-widget" id="divUserRegistration" class="modal">
+
+                    <h3 id="user_hire_title"> Motorbike Hiring Details </h3>
+
+                    <h2 id="user_hire_info" class="text-center mb-4">
+                        🏍 Hire Motorbike --- Please enter details to hire Motorbikes.
+                    </h2>
+
+                    <form id="frmMotorbikeHire">
+
+                        {% csrf_token %}
+
+                        <div class="booking-grid">
+
+
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="logfull_name" name="full_name"
+                                    value="{{ loguser.first_name }}  {{ loguser.last_name }}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="logemail" name="email" value="{{ loguser.email }}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" id="logphone" name="phone" value="{{ loguser.phone_number }}"
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Driving Licence</label>
+                                <input type="text" id="loglicence" name="licence_number"
+                                    value="{{ loguser.driving_licence_number }}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Pickup Date</label>
+                                <input type="date" id="pickup_date" name="pickup_date" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Return Date</label>
+                                <input type="date" id="return_date" name="return_date" required>
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label>Total Days</label>
+                                <input type="input" id="total_days" name="total_days" readonly>
+                            </div>
+                            <div class="form-group">
+
+                                <label>Total Price</label>
+                                <input type="input" id="total_price" name="total_price" readonly>
+
+                            </div>
+
+                            <input type="hidden" id="bike_id" value="{{ bike.bikeid }}">
+
+
+
+                        </div>
+
+                        <hr>
+                        <div class="accessories" style=" margin-top:10px; margin-bottom:10px;">
+
+                            <label class="checkbox-card">
+                                <input type="checkbox" name="accessories" value="Helmet"
+                                    onclick="calculateMotorbikeRate()">
+                                <span><i class="fa-regular fa-helmet-safety"></i> Helmet</span>
+                            </label>
+
+                            <label class="checkbox-card">
+                                <input type="checkbox" name="accessories" value="Gloves"
+                                    onclick="calculateMotorbikeRate()">
+                                <span>🧤 Gloves</span>
+                            </label>
+
+
+                            <label class="checkbox-card">
+                                <input type="checkbox" name="accessories" value="Boots"
+                                    onclick="calculateMotorbikeRate()">
+                                <span>🥾 Boots</span>
+                            </label>
+
+                            <div class="form-group">
+                                <label>Accessories Selected: <span id="numaccessory">0</span></label><br>
+                                <label>Accessory Cost: <span id="accessorycost">£0.00</span></label><br>
+                                <label>Base Hire Cost: <span id="basehirecost">£0.00</span></label>
+                            </div>
+
+                        </div>
+
+                        <hr>
+
+                        <div class="accessories" style=" margin-top:10px; margin-bottom:10px;">
+                            <button type="button" class="hire-btn"
+                                onclick="HireMotorbike (document.getElementById('frmMotorbikeHire'))">
+                                Hire Now
+                            </button>
+
+                            <button id="btnAvailMotorbikes" type="button" class="btn">
+                                Motorbikes
+                            </button>
+
+                            <button id="btnCalculateRate" type="button" class="btn">
+                                Calculate
+                            </button>
+
+                            <button type="button" class="btn" onclick="cancelSection('Motorbike_Hiring')">
+                                Cancel
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                    <hr>
+
+                </div>
+
+            </section>
+
+
+            <style>
+                .centered-container {
+                    display: grid;
+                    place-items: center;
+                    /* Centers horizontally and vertically */
+                    min-height: 100vh;
+                    /* Makes the section fill the entire screen height */
+                }
+
+                .centered-content {
+                    /* Optional styles for your inner div */
+                    padding: 20px;
+                    background-color: #f0f0f0;
+                }
+            </style>
+
+            <section id="MotorBike_Signin" class="container" style=" display:none;">
+
+                <div id="popupOverlay" class="centered-container">
+
+                    <div class="popup-box" class="centered-content">
+                        <h2 style="color: green;">
+                            <h1>🏍️ Bike Wonders Sign in</h1>
+
+                            <form id="hireForm" class="form-container">
+                                {% csrf_token %}
+
+                                <div class="booking-grid">
+                                    <div class="form-group">
+                                        <label style="margin:5px; height:30px;">Username </label>
+                                        <input type="text" id="username" placeholder="Enter Your Username"
+                                            name="username" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label style="margin:5px; height:30px;">Password</label>
+                                        <input type="password" placeholder="Enter Your Password" id="password"
+                                            name="password" required>
+
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label style="margin:5px;  height:30px;">Email</label>
+                                        <input type="email" placeholder="Enter Your Email" id="email" name="email"
+                                            required>
+                                    </div>
+
+                                    <div>
+                                        <button type="button" style="width:20%" class="btn" id="cmdLogin"
+                                            onclick="loginUser(this.form)">
+                                            OK
+                                        </button>
+                                        <button type="button" style="width:20%" class="btn" id="cmdCancel"
+                                            onclick="cancelSection('MotorBike_Signin')">
+                                            Cancel
+                                        </button>
+                                    </div>
+
+                                </div>
+
+                                <!--label class="form-label" for="name">
+                  Username:
+                </label>
+                <input class="form-input" type="text" placeholder="Enter Your Username" id="username" name="username"
+                  required>
+
+                <label class="form-label" for="password">
+                  Password:
+                </label>
+                <input class="form-input" type="password" placeholder="Enter Your Password" id="password"
+                  name="password" required>
+
+                <label class="form-label" for="email">Email:</label>
+                <input class="form-input" type="email" placeholder="Enter Your Email" id="email" name="email" required-->
+
+                                <!--div>
+                  <button class="inlinebutton" id="cmdLogin" onclick="loginUser(this.form)">
+                    OK
+                  </button>
+                  <button class="inlinebutton" id="cmdCancel" onclick="cancelSection('MotorBike_Signin')">
+                    Cancel
+                  </button>
+                </div-->
+
+                            </form>
+
+
+                    </div>
+                </div>
+            </section>
+
+
+            <section id="Motorbike_Error_Messages" class="content-section containererrormsg" style="display: none;">
+
+                <h2>Motorbike Rental Bike Wonders</h2>
+
+                {% if messages %}
+                {% for message in messages %}
+                <div style="height:100%; width:100%" class="alert alert-{{ message.tags }} fade-message">
+                    <h2>{{ message }}</h2>
+                </div>
+
+                {% endfor %}
+                {% endif %}
+
+
+            </section>
+
+
+            <section id="Bike_Details_Section" class="container" style=" margin-bottom: 20px; display:none">
+                <div class="booking-widget" id="AddEditBikeModal" class="modal">
+
+                    <h3 id="bike_info_title"> Motorbike Details </h3>
+
+                    <!--form method="POST" action="{% url 'motorbike_rental:add_motorbike' %}" id="frmMotorbikeDetails"-->
+                    <form id="frmMotorbikeDetails">
+                        {% csrf_token %}
+
+                        <div class="booking-grid">
+
+                            <div class="form-group">
+                                <label>Brand </label>
+                                <input type="text" id="bike_make" name="bike_make">
+
+                            </div>
+
+                            <div class="form-group">
+                                <label>Model</label>
+                                <input type="text" id="bike_model" name="bike_model">
+
+                            </div>
+
+                            <div class="form-group">
+                                <label>Year</label>
+                                <input type="text" id="bike_year" name="bike_year">
+
+                            </div>
+
+                            <div class="form-group">
+                                <label>Rate</label>
+                                <input type="text" id="bike_daily_rate" name="bike_daily_rate">
+
+                            </div>
+
+                            <div class="form-group">
+                                <label>Status</label>
+                                <!--input type="text" id="bike_status" name="bike_status"-->
+                                <select id="bike_status" name="bike_status">
+                                    <option value="" disabled selected>-- Choose a status --</option>
+                                    <option value="available">Available</option>
+                                    <option value="maintenance">Maintenance</option>
+                                    <option value="rented">Rented</option>
+                                </select>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label>Plate Number</label>
+                                <input type="text" id="bike_plate_number" name="bike_plate_number">
+
+                            </div>
+
+                            <input type="hidden" id="bike_id" name="bike_id">
+
+
+                            <div class="form-group">
+                                <label>Image URL</label>
+                                <input type="text" id="bike_imgsrc" name="bike_imgsrc">
+
+                            </div>
+
+                        </div>
+
+
+                        <button type="button" class="btn" onclick="cancelSection('Bike_Details_Section')">
+                            Cancel
+                        </button>
+
+                        <button type="button" class="btn" onclick="makeaselection('MotorbikeManagement')">
+                            Motorbikes
+                        </button>
+
+                        <button type="button" class="btn"
+                            onclick="clearformdata(document.getElementById('frmMotorbikeDetails'))">
+                            Clear
+                        </button>
+
+
+                        <button type="button" class="btn"
+                            onclick="EditMotorbike(document.getElementById('frmMotorbikeDetails'))">
+                            Edit
+                        </button>
+
+                        <button type="button" class="btn"
+                            onclick="AddMotorbike(document.getElementById('frmMotorbikeDetails'))">
+                            Add
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+
+            <!-- 
+      {% if show_bookingprogress %}
+      <section id="Motorbike_Booking_Progress" class="content-section" style="display:block; padding-top:20px;">
+        {% else %}
+
+        <section id="Motorbike_Booking_Progress" class="content-section" style="display:none; padding-top:20px;">
+
+          {% endif %}
+
+         -->
+            <section id="Motorbike_Booking_Progress" class="content-section" {% if show_motorbikebooking %}
+                style="display:block; padding-top:20px;" {% else %} style="display:none; padding-top:20px;" {% endif %}>
+
+                <section class="booking-card">
+
+                    <div class="booking-info">
+                        <h2> Customer:
+                            {{ user.first_name }} {{ user.last_name }}
+                        </h2>
+                        <p>
+                            Email
+                            <strong>
+                                {{ user.email }}
+                            </strong>
+                        </p>
+
+                    </div>
+
+                    <div class="bike-image">
+                        <img src="{{ motorbike.bike_imgsrc }}" alt="bike">
+                        <!--img src="{% static 'images/bike-placeholder.png' %}" alt="Bike"-->
+                    </div>
+
+                    <div class="booking-info">
+                        <h2>
+                            {{ motorbike.bike_make }} {{ motorbike.bike_model }}
+                        </h2>
+                        <p>
+                            Booking Reference
+                            <strong>
+                                {{ booking.booking_reference }}
+                            </strong>
+                        </p>
+
+                        <p>
+                            Motorbike Registration
+                            <strong>
+                                {{ motorbike.bike_plate_number }}
+                            </strong>
+                        </p>
+
+                        <span class="booking_status">
+                            {{ booking.get_booking_status_display }}
+                        </span>
+
+                    </div>
+
+                </section>
+
+
+
+                <div class="card shadow-lg border-0">
+
+                    <div class="card-header bg-primary text-white">
+                        <h3>
+                            <i class="bi bi-bicycle"></i>
+                            Motorbike Booking Progress
+                        </h3>
+                    </div>
+
+                    <div class="card-body">
+
+                        <!--Booking Details -->
+
+                        <!--div class="row g-3 mb-4">
+
+              <div class="col-lg-3 col-md-6">
+                <label class="form-label fw-bold">
+                  Booking Reference
+                </label>
+
+                <input class="form-control" value="{{ booking.booking_reference }}" readonly>
+              </div>
+
+              <div class="col-lg-3 col-md-6">
+                <label class="form-label fw-bold">
+                  Customer
+                </label>
+
+                <input class="form-control"
+                  value="{{ booking.rentaluser.first_name }} {{ booking.rentaluser.last_name }}" readonly>
+              </div>
+
+              <div class="col-lg-3 col-md-6">
+                <label class="form-label fw-bold">
+                  Motorbike
+                </label>
+
+                <input class="form-control" value="{{ booking.motorbike.make }} {{ booking.motorbike.model }}" readonly>
+              </div>
+
+              <div class="col-lg-3 col-md-6">
+                <label class="form-label fw-bold">
+                  Current Status
+                </label>
+
+                <div class="alert alert-warning mb-0 fw-bold text-center">
+                  {{ booking.booking_status }}
+                </div>
+
+              </div>
+
+            </div-->
+
+                        <!-- Progress Tracker -->
+
+                        <!--h5 class="mb-3">
+
+              Booking Progress
+
+            </h5-->
+
+
+                        <div class="progress-tracker">
+
+                            {% for stage,label in stages %}
+
+                            <div class="step
+                    {% if forloop.counter0 < current_index %}
+                        completed
+                    {% elif forloop.counter0 == current_index %}
+                        active
+                    {% endif %}
+                ">
+
+                                {% if forloop.counter0 < current_index %} <span> ●</span>
+
+                                    {% elif forloop.counter0 == current_index %}
+                                    <span> ●</span>
+
+
+                                    {% else %}
+                                    <span> ●</span>
+                                    {% endif %}
+
+                                    </span>
+
+
+                                    <p>{{ label }}</p>
+
+                            </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                        <hr>
+
+                        <!-- Available Actions -->
+
+                        <h5 class="mb-3">
+
+                            Available Actions
+
+                        </h5>
+
+                        <form method="POST">
+
+                            {% csrf_token %}
+
+                            <div class="row">
+
+                                {% for value,label in actions %}
+
+                                <div class="col-lg-4 col-md-6 mb-3">
+
+                                    <button class="btn btn-success btn-lg w-100" type="submit" name="status"
+                                        value="{{ value }}">
+
+                                        {{ label }}
+
+                                    </button>
+
+                                </div>
+
+                                {% empty %}
+
+                                <div class="col-12">
+
+                                    <div class="alert alert-success">
+
+                                        <h5 class="mb-1">
+
+                                            Booking Completed
+
+                                        </h5>
+
+                                        There are no further actions.
+
+                                    </div>
+
+                                </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                            <!-- Notes -->
+
+                            <div class="mb-3">
+
+                                <label class="form-label fw-bold">
+
+                                    Staff Notes
+
+                                </label>
+
+                                <textarea name="notes" rows="5" class="form-control"
+                                    placeholder="Enter notes..."></textarea>
+
+                            </div>
+
+                            <!-- Notify -->
+
+                            <div class="form-check mb-4">
+
+                                <input class="form-check-input" type="checkbox" name="notify_customer" checked>
+
+                                <label class="form-check-label">
+
+                                    Notify Customer
+
+                                </label>
+
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg">
+
+                                Save Progress
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- 
+      {% if show_motorbikebooking %}
+      <section id="Motorbike_Booking" class="content-section" style="display:block; padding-top:20px;">
+        {% else %}
+
+        <section id="Motorbike_Booking" class="content-section" style="display:none; padding-top:20px;">
+
+          {% endif %}
+       -->
+
+            <section id="Motorbike_Booking" class="content-section" {% if show_motorbikebooking %}
+                style="display:block; padding-top:20px;" {% else %} style="display:none; padding-top:20px;" {% endif %}>
+
+                <section class="booking-card">
+
+                    <!--User Booking Card -->
+                    <div class="booking-info">
+                        <h2>
+                            {{ user.first_name }} {{ user.last_name }}
+                        </h2>
+                        <p>
+                            Email
+                            <strong>
+                                {{ user.email }}
+                            </strong>
+                        </p>
+
+                        <p>
+                            Phone
+                            <strong>
+                                {{ user.phone_number }}
+                            </strong>
+                        </p>
+
+                        <p>
+                            License Number
+                            <strong>
+                                {{ user.driving_licence_number }}
+                            </strong>
+                        </p>
+
+
+                        <p>
+                            Address
+                            <strong>
+                                {{ user.address }}
+                            </strong>
+                        </p>
+
+                        <form id="frmBookingProgress">
+                            {% csrf_token %}
+                            <!--input type="text" id="BookingProgress" name="BookingProgress" value="true">
+
+                  <button type="button" onclick="updateMotorbikeStatus()">Motorbike Status </button-->
+
+                            <input type="hidden" id="bookingprogress" name="action" value="true">
+
+                            <button type="button"
+                                onclick="updateMotorbikeStatus(document.getElementById('frmBookingProgress'))">
+                                Booking Status
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </section>
+
+                <!-- Booking Card -->
+                <section class="booking-card">
+
+                    <div class="bike-image">
+                        <img src="{{ motorbike.bike_imgsrc }}" alt="bike">
+                        <!--img src="{% static 'images/bike-placeholder.png' %}" alt="Bike"-->
+                    </div>
+
+                    <div class="booking-info">
+                        <h2>
+                            {{ motorbike.bike_make }} {{ motorbike.bike_model }}
+                        </h2>
+                        <p>
+                            Booking Reference
+                            <strong>
+                                {{ booking.booking_reference }}
+                            </strong>
+                        </p>
+
+                        <p>
+                            Motorbike Registration
+                            <strong>
+                                {{ motorbike.bike_plate_number }}
+                            </strong>
+                        </p>
+
+                        <span class="booking_status">
+                            {{ booking.get_booking_status_display }}
+                        </span>
+
+                    </div>
+
+                </section>
+
+                <!-- Progress -->
+                <section class="progress-card">
+
+
+                    <div class="booking-header">
+
+
+                        <div class="bike-image">
+
+                            <img src="{{ motorbike.bike_imgsrc }}" alt="bike">
+                            <!--img src="{% static 'images/bike-placeholder.png' %}" alt="Bike"-->
+
+                        </div>
+
+
+                        <div class="bike-info">
+
+                            <h2>
+                                {{ motorbike.bike_make }}
+                                {{ motorbike.bike_model }}
+                            </h2>
+
+
+
+                            <p>
+                                Booking Reference:
+                                <strong>
+                                    {{ booking.booking_reference }}
+                                </strong>
+                            </p>
+
+
+                            <p class="booking-message">
+
+                                {{ booking.get_booking_status_display }}
+
+                            </p>
+
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <div class="booking-summary">
+
+
+                        <div>
+
+                            <label>
+                                Start Date
+                            </label>
+
+                            <h3>
+                                {{ booking.pickup_date }}
+                            </h3>
+
+                        </div>
+
+
+
+                        <div>
+
+                            <label>
+                                Return Date
+                            </label>
+
+                            <h3>
+                                {{ booking.return_date }}
+                            </h3>
+
+                        </div>
+
+
+
+                        <div>
+
+                            <label>
+                                Total Days
+                            </label>
+
+                            <h3>
+                                {{ booking.total_days }}
+                            </h3>
+
+                        </div>
+
+
+
+                        <div>
+
+                            <label>
+                                Total Price
+                            </label>
+
+                            <h3>
+                                £{{ booking.total_price }}
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+                    <h2>
+                        Booking Progress
+                    </h2>
+
+                    <div class="progress-tracker">
+
+                        {% with current=booking.booking_status %}
+                        {% for key, label in stages %}
+
+                        {# 1. Define the status class for the wrapper div #}
+                        {% if forloop.counter0 < current_index %} <div class="step completed">
+                            {% elif key == current %}
+                            <div class="step active">
+                                {% else %}
+                                <div class="step">
+                                    {% endif %}
+
+                                    {# 2. Display the correct status icon #}
+
+                                    {% if forloop.counter0 < 1 %} <span>✓ </span>
+                                        {% elif key == 2 %}
+                                        <span> ● </span>
+                                        {% else %}
+                                        <span> ○ </span>
+                                        {% endif %}
+
+
+                                        {# 3. Display the label #}
+                                        <p>{{ label}}</p>
+
+                                </div> {# Closes the step div correctly in all scenarios #}
+
+                                {% endfor %}
+                                {% endwith %}
+
+                            </div>
+
+
+                </section>
+
+
+                <!-- Collection -->
+                <section class="details">
+
+                    <div class="card">
+
+                        <h3>
+                            Pickup Date:
+                        </h3>
+
+                        <h2>
+                            {{ booking.pickup_date }}
+                        </h2>
+
+                        <p>
+                            09:00 AM
+                        </p>
+
+                    </div>
+
+                    <div class="card">
+
+                        <h3>
+                            Branch
+                        </h3>
+
+                        <h2>
+                            Nottingham
+                        </h2>
+
+                    </div>
+
+                    <div class="card">
+
+                        <h3>
+                            Countdown
+                        </h3>
+
+                        <h2 id="countdown">
+                            Loading...
+                        </h2>
+
+                    </div>
+
+                </section>
+
+                <!-- Activity -->
+                <section class="activity">
+
+                    <h2>
+                        Latest Activity
+                    </h2>
+
+                    <ul>
+
+                        <li>
+                            ✔ Booking Submitted
+                        </li>
+
+                        <li>
+                            ✔ Booking Approved
+                        </li>
+
+                        <li>
+                            ✔ Customer Confirmed
+                        </li>
+
+                        <li>
+                            ● Preparing Motorbike
+                        </li>
+
+                    </ul>
+
+                </section>
+
+            </section>
+
+            <section class="container" style="z-index:-2;">
+                <div class="section-header">
+                    <!--span class="sub-title">Engineered For Adventure</span-->
+                    <h2>Why Rent From Bike Wonders<span>?</span></h2>
+                    <p>We combine premium, precision-tuned machinery with seamless digital tracking to give you the
+                        ultimate
+                        riding
+                        experience.</p>
+                </div>
+
+                <div class="features-grid">
+                    <!-- Feature 1 -->
+                    <div class="feature-card">
+                        <div class="icon-box">
+                            <i class="fas fa-motorcycle"></i>
+                        </div>
+                        <h3>Premium Fleet</h3>
+                        <p>Every motorbike is completely vetted, meticulously maintained, and highly tuned before you
+                            turn the
+                            key.
+                        </p>
+                    </div>
+
+                    <!-- Feature 2 -->
+                    <div class="feature-card highlighted">
+                        <div class="icon-box">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3>Instant Booking</h3>
+                        <p>No tedious queues or endless paperwork. Validate your rate, verify your model, and hit the
+                            highway
+                            instantly.
+                        </p>
+                        <span class="card-badge">Popular Choice</span>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div class="feature-card">
+                        <div class="icon-box">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Fully Insured</h3>
+                        <p>Ride with absolute peace of mind. Every hire package includes comprehensive premium cover
+                            protection.
+                        </p>
+                    </div>
+
+                    <!-- Feature 4 -->
+                    <div class="feature-card">
+                        <div class="icon-box">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h3>24/7 Roadside Help</h3>
+                        <p>Stranded with a puncture or an empty tank? Our mechanical response dispatch matrix handles
+                            problems
+                            instantly.</p>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="container">
+
+                <!-- Top Bar: Dynamic Engagement Banner -->
+                <div class="footer-social-cta">
+                    <div class="cta-text">
+                        <h3>Join the Bike Wonders Crew</h3>
+                        <p>Tag <span class="highlight">#BikeWondersAdventure</span> to get featured on our page!</p>
+                    </div>
+                    <!-- Live Community Counter -->
+                    <div class="community-badge">
+                        <i class="fas fa-users"></i> <span>14.8k+ Active Riders</span>
+                    </div>
+                </div>
+
+                <!-- Middle Grid: Community Feed Placeholders -->
+                <!--div>
+          <div class="card" class="img-placeholder-1"><span>@moto_ride_99</span></div>
+          <div class=" img-placeholder-2"><span>@track_day_uk</span></div>
+          <div class=" img-placeholder-3"><span>@adventure_biker</span></div>
+          <div class=" img-placeholder-4"><span>@urban_scoot_lon</span></div>
+        </div-->
+
+                <div class="motorbikescard">
+
+                    <div class="bikecard" style="width:100%">
+                        <img src="https://images.pexels.com/photos/2569465/pexels-photo-2569465.jpeg" />
+
+                    </div>
+
+
+                    <div class="bikecard" style="width:100%">
+                        <img src="https://images.pexels.com/photos/23524278/pexels-photo-23524278.jpeg" />
+
+                    </div>
+
+                    <div class="bikecard" style="width:100%">
+                        <img src="https://images.pexels.com/photos/30979731/pexels-photo-30979731.jpeg" />
+
+                    </div>
+
+                    <div class="bikecard" style="width:100%">
+                        <img src="https://images.pexels.com/photos/13869680/pexels-photo-13869680.jpeg" />
+
+                    </div>
+
+                </div>
+                <!-- Bottom Core Footer Area -->
+                <div class="footer-main-content">
+                    <div class="footer-brand">
+                        <h2>Bike Wonders<span>.</span></h2>
+                        <p>The ultimate motorcycle rental platform. Grab your keys, drop the clutch, and build your own
+                            story.
+                        </p>
+                    </div>
+
+                    <!-- Mega Social Matrix Block -->
+                    <div class="social-matrix-box">
+                        <h4>Connect With Us</h4>
+                        <div class="social-matrix">
+                            <a href="https://instagram.com" target="_blank" class="social-btn instagram"
+                                aria-label="Instagram">
+                                <i class="fab fa-instagram"></i>
+                                <span class="btn-text">Instagram</span>
+                            </a>
+                            <a href="https://twitter.com" target="_blank" class="social-btn x-twitter"
+                                aria-label="X/Twitter">
+                                <i class="fab fa-twitter"></i>
+                                <span class="btn-text">X / Twitter</span>
+                            </a>
+                            <a href="https://facebook.com" target="_blank" class="social-btn facebook"
+                                aria-label="Facebook">
+                                <i class="fab fa-facebook-f"></i>
+                                <span class="btn-text">Facebook</span>
+                            </a>
+                            <a href="https://tiktok.com" target="_blank" class="social-btn tiktok" aria-label="TikTok">
+                                <i class="fab fa-tiktok"></i>
+                                <span class="btn-text">TikTok</span>
+                            </a>
+                            <a href="https://youtube.com" target="_blank" class="social-btn youtube"
+                                aria-label="YouTube">
+                                <i class="fab fa-youtube"></i>
+                                <span class="btn-text">YouTube</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tiny Legal Sub-Footer -->
+                <div class="footer-legal-bar">
+                    <p>&copy; 2026 MotoRent. Built for the open road.</p>
+                    <div class="legal-links">
+                        <a href="#privacy">Privacy</a>
+                        <a href="#terms">Terms</a>
+                    </div>
+                </div>
+            </footer>
+
+
+        </main>
+
+    </div>
+
+
+
+    <!--footer class="site-footer">
+    <p>&copy; 2024 My Website. All rights reserved.</p>
+  </footer-->
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Select all messages
+            const messages = document.querySelectorAll('.fade-message');
+
+            const fadeOutDuration = 900; // Duration of the fade-out animation in milliseconds
+            const visibleDuration = 35000; // Duration to keep the message visible before fading out
+
+            const totalDuration = visibleDuration + fadeOutDuration;
+
+            const oContainer = document.getElementById("Motorbike_Error_Messages")
+            //oContainer.style.display = "block"
+
+            messages.forEach(function (message) {
+                // 1. Wait 2 minutes (120,000ms), then add the CSS class to begin fading
+                setTimeout(function () {
+                    message.classList.add('disappear');
+
+                    // 2. Permanently delete the element from the webpage layout after the 0.6s animation finishes
+                    setTimeout(function () {
+                        message.remove();
+                    }, 600); // Matches the 0.6s CSS transition speed
+                    oContainer.style.display = "none";
+                }, 5000); // 60,000 milliseconds = Exactly 1 minute
+
+            });
+
+
+        });
+
+
+    </script>
+
+</body>
+
+</html>

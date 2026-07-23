@@ -1,0 +1,33 @@
+.site-header {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  position: relative;
+
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(255, 250, 244, 0.9) 0%,
+      rgba(239, 231, 219, 0.8) 30%,
+      rgba(239, 231, 219, 0.2) 40%,
+      rgba(239, 231, 219, 0.9) 60%,
+      rgba(239, 231, 219, 0.9) 100%
+    ),
+    url("../images/motorback2.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  height: 100px;
+  border-radius: 8px;
+
+  z-index: 1; /* ensure header sits above the background overlay */
+}
+.site-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  display: block;
+  border-radius: 8px;
+}
+
