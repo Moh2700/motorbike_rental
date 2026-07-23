@@ -55,6 +55,10 @@ ALLOWED_HOSTS = [
 
 ALLOWED_HOSTS = ['://herokuapp.com', 'localhost', '127.0.0.1']
 
+# In settings.py
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
+
+
 #AUTH_USER_MODEL = 'motorbike_rental.User'
 
 # Application definition
