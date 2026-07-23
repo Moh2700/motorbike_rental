@@ -52,9 +52,12 @@ ALLOWED_HOSTS = [
     ".herokuapp.com",
 ]
 '''
-
-ALLOWED_HOSTS = ['://herokuapp.com', 'localhost', '127.0.0.1']
-
+# Replace lines 54-58 with this:
+ALLOWED_HOSTS = [
+    'localhost', 
+    '127.0.0.1', 
+    '.herokuapp.com'  # The dot prefix automatically matches all Heroku app subdomains
+]
 # In settings.py
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
 
