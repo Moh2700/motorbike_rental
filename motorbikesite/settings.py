@@ -100,6 +100,19 @@ WSGI_APPLICATION = 'motorbikesite.wsgi.application'
 
 if config("DEBUG", default=True, cast=bool):
 
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": config("DB_NAME", default="dummy_db_name"),
+        "USER": config("DB_USER", default="dummy_user"),
+        "PASSWORD": config("DB_PASSWORD", default="dummy_password"),
+        "HOST": config("DB_HOST", default="localhost"),
+        "PORT": config("DB_PORT", default="5432"),
+    }
+}
+
+'''
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
@@ -110,7 +123,7 @@ if config("DEBUG", default=True, cast=bool):
             "PORT": config("DB_PORT"),
         }
     }
-
+'''
 else:
 
     DATABASES = {
