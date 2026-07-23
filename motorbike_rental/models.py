@@ -162,10 +162,6 @@ def generate_booking_reference():
 
 class Booking(models.Model):
 
-   #customer = models.ForeignKey(
-   #     bikeuser,
-   #     on_delete=models.CASCADE
-   # )
     rentaluser = models.ForeignKey(
          bikeuser,
          on_delete=models.CASCADE
@@ -183,19 +179,10 @@ class Booking(models.Model):
         max_digits=10,
         decimal_places=2
     )
-   # booking_status = models.CharField(
-   #     max_length=20,
-   #     default="pending"
-   # )
-
+  
     booking_date = models.DateTimeField(
         auto_now_add=True
     )
-
-    # booking_reference = models.CharField(
-    #     max_length=20,
-    #     unique=True
-    # )
 
     STATUS_CHOICES = [
         ("pending", "Pending"),

@@ -1052,6 +1052,72 @@ function HireMotorbike(frm) {
   frm.submit();
 }
 
+function updateMotorbikeStatus(frm) {
+  alert(frm["bookingprogress"].value);
+
+  // event.preventDefault();
+  // frm.method = "POST";
+  // frm.action = `/motorbike_rental/booking_details/${frm["bike_id"].value}/`;
+  //frm.submit();
+
+  showprogSection("Motorbike_Booking_Progress");
+
+  alert("");
+}
+function loadMotorbikeBooking(frm) {
+  event.preventDefault();
+  frm.method = "POST";
+  frm.action = `/motorbike_rental/booking_details/${frm["bike_id"].value}/`;
+  frm.submit();
+  showprogSection("Motorbike_Booking");
+
+  /*
+  alert(bikeId);
+  const response = await fetch(`/motorbike_rental/booking_details/${bikeId}/`);
+  const data = await response.json();
+
+  //console.log(data.user.first_name);
+  //console.log(data.booking.booking_reference);
+  //console.log(data.motorbike.make);
+
+  document.querySelector("[id='selectedbike']").innerText =
+    data.motorbike.bike_make;
+  */
+}
+
+function viewMotorbikeBooking(frm) {
+  //fetch("/motorbike_rental/get_user_details/")
+
+  /*
+  fetch(
+    `/motorbike_rental/booking_details/${document.getElementById("frmBikeDetails")["bike_id"].value}/`,
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      document.querySelector("[id='logfull_name']").value = data.full_name;
+      document.querySelector("[id='logemail']").value = data.email;
+      document.querySelector("[id='logphone']").value = data.phone;
+      document.querySelector("[id='loglicence']").value = data.licence;
+
+      document.querySelector("[id='selectedbike']").innerHTML = data;
+      document.querySelector("[id='hdrBikeMake']").textContent = JSON.parse(data.bike_make);
+    });
+
+    */
+  /*
+  fetch("/motorbike_rental/get_user_details/")
+    .then((response) => response.json())
+    .then((data) => {
+      document.querySelector("[id='logfull_name']").value = data.full_name;
+      document.querySelector("[id='logemail']").value = data.email;
+      document.querySelector("[id='logphone']").value = data.phone;
+      document.querySelector("[id='loglicence']").value = data.licence;
+    });
+
+    */
+  showprogSection("Motorbike_Booking");
+}
+
 function getUserCredentials() {
   const frm = document.getElementById("frmMotorbikeHire");
 

@@ -1,0 +1,263 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Customer Dashboard</title>
+
+
+    <link rel="stylesheet" href="{% static '/assets/css/customer_dashboard.css' %}">
+
+    <!--script defer src="{% static '/jsfile/js/customer_dashboard.js' %}">
+    </script-->
+
+    <script>
+
+        const bookingStatus =
+            "{{ booking.booking_status }}";
+
+
+
+    </script>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+
+            <div class="logo">
+
+                🏍
+
+                <h2>Bike Rental</h2>
+
+            </div>
+
+            <ul>
+
+                <li class="active">
+                    <span>🏠</span>
+                    Dashboard
+                </li>
+
+                <li>
+                    <span>📅</span>
+                    My Bookings
+                </li>
+
+                <li>
+                    <span>🛵</span>
+                    Hire History
+                </li>
+
+                <li>
+                    <span>💳</span>
+                    Payments
+                </li>
+
+                <li>
+                    <span>🔔</span>
+                    Notifications
+                </li>
+
+                <li>
+                    <span>👤</span>
+                    Profile
+                </li>
+
+                <li>
+                    <span>🚪</span>
+                    Logout
+                </li>
+
+            </ul>
+
+        </aside>
+
+        <!-- Main Content -->
+        <main>
+
+            <!-- Header -->
+
+            <header>
+
+                <h1>
+
+                    Welcome,
+                    {{ request.session.bikeuser_name }}
+
+                </h1>
+
+                <div class="avatar">
+
+                    👤
+
+                </div>
+
+            </header>
+
+            <!-- Booking Card -->
+            <section class="booking-card">
+
+                <div class="bike-image">
+
+                    <img src="{% static 'images/bike-placeholder.png' %}" alt="Bike">
+
+                </div>
+
+                <div class="booking-info">
+
+                    <h2>
+
+                        Honda CBR650R
+
+                    </h2>
+
+                    <p>
+
+                        Booking Reference
+
+                        <strong>
+
+                            BK-000124
+
+                        </strong>
+
+                    </p>
+
+                    <span class="status">
+                        {{ booking.get_booking_status_display }}
+                    </span>
+
+                </div>
+
+            </section>
+
+            <!-- Progress -->
+            <section class="progress-card">
+
+                <h2>
+
+                    Booking Progress
+
+                </h2>
+
+                <div id="progressTracker">
+
+                </div>
+
+            </section>
+
+            <!-- Collection -->
+            <section class="details">
+
+                <div class="card">
+
+                    <h3>
+
+                        Collection Date
+
+                    </h3>
+
+                    <h2>
+
+                        20 July 2026
+
+                    </h2>
+
+                    <p>
+
+                        09:00 AM
+
+                    </p>
+
+                </div>
+
+                <div class="card">
+
+                    <h3>
+
+                        Branch
+
+                    </h3>
+
+                    <h2>
+
+                        Nottingham
+
+                    </h2>
+
+                </div>
+
+                <div class="card">
+
+                    <h3>
+
+                        Countdown
+
+                    </h3>
+
+                    <h2 id="countdown">
+
+                        Loading...
+
+                    </h2>
+
+                </div>
+
+            </section>
+
+            <!-- Activity -->
+            <section class="activity">
+
+                <h2>
+
+                    Latest Activity
+
+                </h2>
+
+                <ul>
+
+                    <li>
+
+                        ✔ Booking Submitted
+
+                    </li>
+
+                    <li>
+
+                        ✔ Booking Approved
+
+                    </li>
+
+                    <li>
+
+                        ✔ Customer Confirmed
+
+                    </li>
+
+                    <li>
+
+                        ● Preparing Motorbike
+
+                    </li>
+
+                </ul>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>

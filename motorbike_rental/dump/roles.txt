@@ -1,0 +1,253 @@
+| Current Stage | Who      | Action          | Next Stage   |
+| ------------- | -------- | --------------- | ------------ |
+| Request       | Admin    | Review Request  | Pending      |
+| Pending       | Admin    | Approve         | Approved     |
+| Pending       | Admin    | Reject          | Rejected     |
+| Approved      | Customer | Confirm Booking | Confirmed    |
+| Confirmed     | Staff    | Prepare Bike    | Ready        |
+| Ready         | Staff    | Hand Over Bike  | Active       |
+| Active        | Staff    | Receive Bike    | Inspection   |
+| Inspection    | Staff    | Complete Hire   | Completed    |
+| Inspection    | Staff    | Report Damage   | Damage Claim |
+| Any           | Customer | Cancel          | Cancelled    |
+
+
+| Status     | Who performs the action        |
+| ---------- | ------------------------------ |
+| request    | Customer submits booking       |
+| pending    | System/Admin receives request  |
+| approved   | Admin approves booking         |
+| confirmed  | Customer confirms and pays     |
+| ready      | Staff prepares the motorbike   |
+| active     | Staff hands over the motorbike |
+| inspection | Staff receives returned bike   |
+| completed  | Staff closes the booking       |
+| rejected   | Admin rejects booking          |
+| cancelled  | Customer or Admin cancels      |
+
+
+| Button        | Changes status to |
+| ------------- | ----------------- |
+| Approve       | approved          |
+| Reject        | rejected          |
+| Confirm       | confirmed         |
+| Prepare Bike  | ready             |
+| Hand Over     | active            |
+| Receive Bike  | inspection        |
+| Complete Hire | completed         |
+| Cancel        | cancelled         |
+
+
+ <section class="booking-actions">
+
+          <div class="actions-header">
+
+            <h2>
+              Booking Actions
+            </h2>
+
+            <span class="current-status">
+              {{ booking.get_booking_status_display }}
+            </span>
+
+          </div>
+
+
+          <div class="actions-container">
+
+            <!-- ADMIN ACTIONS -->
+
+            {% if request.session.bikeuser_role == "Admin" %}
+
+            {% if booking.workflow_status == "request" %}
+
+            <form method="POST">
+              {% csrf_token %}
+
+              <button class="action-card approve" name="action" value="approve">
+
+                <div class="action-icon">
+                  ✓
+                </div>
+
+                <div>
+                  <h3>
+                    Approve Booking
+                  </h3>
+
+                  <p>
+                    Accept customer booking request
+                  </p>
+                </div>
+
+              </button>
+
+            </form>
+
+
+            <form method="POST">
+              {% csrf_token %}
+
+              <button class="action-card reject" name="action" value="reject">
+
+                <div class="action-icon">
+                  ✕
+                </div>
+
+                <div>
+                  <h3>
+                    Reject Booking
+                  </h3>
+
+                  <p>
+                    Decline this request
+                  </p>
+                </div>
+
+              </button>
+
+            </form>
+
+            {% endif %}
+
+
+
+            {% if booking.workflow_status == "confirmed" %}
+
+            <form method="POST">
+              {% csrf_token %}
+
+              <button class="action-card prepare" name="action" value="prepare">
+
+                <div class="action-icon">
+                  🏍
+                </div>
+
+                <div>
+                  <h3>
+                    Prepare Motorbike
+                  </h3>
+
+                  <p>
+                    Check bike and accessories
+                  </p>
+                </div>
+
+              </button>
+
+            </form>
+
+            {% endif %}
+
+
+            {% endif %}
+
+
+            <!-- CUSTOMER ACTIONS -->
+            {% if request.session.bikeuser_role == "Customer" %}
+
+            {% if booking.booking_status == "approved" %}
+
+            <form method="POST">
+              {% csrf_token %}
+              <button class="action-card confirm" name="action" value="confirm">
+
+                <div class="action-icon">
+                  💳
+                </div>
+
+                <div>
+
+                  <h3>
+                    Confirm Booking
+                  </h3>
+
+                  <p>
+                    Confirm and continue payment
+                  </p>
+
+                </div>
+
+              </button>
+
+            </form>
+
+            {% endif %}
+
+
+            {% endif %}
+
+
+            <!-- STAFF ACTIONS -->
+
+            {% if request.session.bikeuser_role == "Staff" %}
+
+
+            {% if booking.booking_status == "ready" %}
+
+            <form method="POST">
+              {% csrf_token %}
+
+              <button class="action-card active" name="action" value="handover">
+
+                <div class="action-icon">
+                  🔑
+                </div>
+
+                <div>
+
+                  <h3>
+                    Hand Over Bike
+                  </h3>
+
+                  <p>
+                    Start customer hire
+                  </p>
+                </div>
+
+              </button>
+
+            </form>
+
+            {% endif %}
+
+            {% if booking.booking_status == "active" %}
+            <form method="POST">
+              {% csrf_token %}
+
+              <button class="action-card inspection" name="action" value="receive">
+                <div class="action-icon">
+                  🔍
+                </div>
+                <div>
+                  <h3>
+                    Receive Bike
+                  </h3>
+
+                  <p>
+                    Begin inspection
+                  </p>
+
+                </div>
+
+              </button>
+
+            </form>
+
+            {% endif %}
+
+
+            {% endif %}
+
+          </div>
+
+        </section>
+
+
+         {% if booking.booking_status == value %}
+
+                <option value="{{ value }}" selected> {{ label }}</option>
+                {% else %}
+
+                <option value="{{ value }}"> {{ label }}</option>
+                {% endif %}

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+
 from django.http import HttpResponse
 from .models import tblmotorbike, bikeuser, Booking
 from django.template import loader
@@ -8,19 +8,16 @@ from .forms import MemberForm, MotorbikeForm
 from django.http import  HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-#from django.shortcuts import render, redirect
-#from .forms import CustomerRegistrationForm
+
 from django.views.generic.base import TemplateView
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from datetime import datetime
 
-
+from django.db.models import Q
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
-from django.contrib import messages
 from .models import bikeuser  # Your original models.Model class
-#from django.core.cache import cache
+
 from django.views.decorators.cache import never_cache
 
 
@@ -194,17 +191,8 @@ def edit_bikeuser(request, user_id):
           
     else:
         form = MemberForm(instance=user)
-   
-
     return redirect('motorbike_rental:index', {'form': form, 'user': user})  
-'''
-def manage_motorbikes(request):
-    bikes = tblmotorbike.objects.all()
-    return render(request, 'motorbike_rental/manage_motorbikes.html', {
-        'bikes': bikes
-    })
-'''
-from django.db.models import Q
+
 
 '''
 bookings = Booking.objects.filter(
@@ -212,6 +200,378 @@ bookings = Booking.objects.filter(
     Q(booking_status="active") |
     Q(hiring_status="request")
 )
+'''
+def my_bookings(request):
+
+    user_id = request.session["bikeuser_id"]
+
+    bookings = Booking.objects.filter(
+        rentaluser_id=user_id
+    ).select_related("motorbike")
+
+    context = {
+        "bookings": bookings
+    }
+
+    return render(request, "customer/my_bookings.html", context)
+
+def get_booking_details(request, bike_id):
+
+    booking = get_object_or_404(
+        Booking.objects.select_related(
+            "rentaluser",
+            "motorbike"
+        ),
+        motorbike_id=bike_id,
+        booking_status__in=[
+            "Pending",
+            "Approved",
+            "Confirmed",
+            "Ready",
+            "Active"
+        ]
+    )
+
+    return render(request, 'motorbike_rental:index.html', {"booking": booking})
+
+
+def booking_details(request, bike_id):
+
+    user_id = request.session.get("bikeuser_id")
+
+    if not user_id:
+        return redirect("motorbike_rental:index.html")
+
+    user = get_object_or_404(bikeuser, id=user_id)
+
+    booking = get_object_or_404(
+        Booking.objects.select_related("motorbike"),
+        rentaluser_id=user_id,
+        motorbike_id=bike_id,
+    )
+
+
+    # Booking stages
+    stages = [
+        ("REQUESTED", "Requested"),
+        ("Pending", "PENDING"),
+        ("APPROVED", "Approved"),
+        ("PREPARING", "Preparing Bike"),
+        ("READY", "Ready for Collection"),
+        ("ACTIVE", "Active Hire"),
+        ("COMPLETED", "Completed"),
+    ]
+
+    # Find current stage position
+    current_index = 0
+
+    for i, (status, _) in enumerate(stages):
+
+        if status == booking.booking_status:
+            current_index = i
+            break
+
+
+    # Available actions
+    actions = {
+
+        "pending": [
+            ("approved", "Approve Booking"),
+            ("rejected", "Reject Booking")
+        ],
+
+        "approved": [
+            ("preparing", "Start Preparing Bike")
+        ],
+
+        "preparing":[
+                     ("ready", "Bike Ready for Collection")
+                    ],
+
+        "ready": [
+        ("active", "Confirm Collection")
+        ],
+
+        "active": [
+        ("completed", "Complete Hire")
+        ],
+
+        "completed": []
+    }
+
+    '''
+        "REQUESTED": [
+            ("APPROVED", "Approve Booking"),
+            ("REJECTED", "Reject Booking")
+        ],
+
+        "APPROVED": [
+            ("PREPARING", "Start Preparing Bike")
+        ],
+
+        "PREPARING": [
+            ("READY", "Bike Ready for Collection")
+        ],
+
+        "READY": [
+            ("ACTIVE", "Confirm Collection")
+        ],
+
+        "ACTIVE": [
+            ("COMPLETED", "Complete Hire")
+        ],
+
+        "COMPLETED": []
+
+    '''
+    
+
+    # Get actions AFTER status update
+    next_actions = actions.get(
+       booking.booking_status,
+       []
+    )
+
+    context = {
+            "user": user,
+            "booking": booking,
+            "motorbike": booking.motorbike,
+            "show_motorbikebooking": True,
+            "stages": booking.STATUS_CHOICES,
+            "current_index": current_index,
+            "actions": next_actions
+        }
+    print("Current Status:", booking.booking_status)
+    print("Actions:", next_actions) 
+    
+    print(request.POST)
+    print(request.POST.get("booking_status"))
+    print(request.POST.get("notes")) 
+    print("STATUs:", booking.STATUS_CHOICES)    
+    
+    return render(request, "motorbike_rental/index.html", context)  
+    
+
+
+
+    '''
+    if request.method == "POST":
+
+        booking.booking_status = request.POST.get("booking_status")
+        booking.notes = request.POST.get("notes")
+
+        booking.save()
+
+        messages.success(request, "Booking updated successfully.")
+
+        context = {
+           "user": user,
+           "booking": booking,
+           "motorbike": booking.motorbike,
+           "show_motorbikebooking": True,
+           "stages": booking.STATUS_CHOICES,
+           "current_index": current_index,
+           "actions": next_actions
+        }
+        return render(request, "motorbike_rental/index.html", context)
+
+    
+    ACTION_TO_STATUS = {
+        "approve": "Approved",
+        "confirm": "Confirmed",
+        "prepare": "Ready",
+        "collect": "Active",
+        "complete": "Completed",
+        "cancel": "Cancelled",
+    }
+
+    action = request.POST.get("action")
+
+    if action in ACTION_TO_STATUS:
+        booking.booking_status = ACTION_TO_STATUS[action]
+    booking.notes = request.POST.get("notes")
+
+    booking.save()
+
+    '''
+
+    
+
+
+def user_list(request):
+    users = bikeuser.objects.all().order_by("first_name", "last_name")
+    context = {
+        "AllUsers": True,
+        "userlist": users,
+    }
+
+    return render(
+        request,
+        "motorbike_rental/index.html",
+        context
+    )    
+
+def motorbike_list(request):
+    motorbikes = tblmotorbike.objects.all().order_by("bike_make", "bike_model")
+    context = {
+        "AllMotorbikes": True,
+        "bikeslist": motorbikes,
+    }
+
+    return render(
+        request,
+        "motorbike_rental/index.html",
+        context
+    )    
+    
+
+    
+''' 
+# current_index = int(0)
+# current_index = int(current_index) 
+if request.method == "POST":
+        action = request.POST.get("action")
+        show = request.POST.get("bookingprogress")
+       
+        show_motorbikebooking = False
+        show_bookingprogress = False
+
+        if action == "approved":
+            booking.booking_status = "approved"
+            booking.save()
+
+
+        elif action == "rejected":
+            booking.booking_status = "rejected"
+            booking.save()
+
+        
+        
+        if show == "true":
+            #show_motorbikebooking = False
+            #show_bookingprogress = True
+            context = {
+                "user": user,
+                "booking": booking,
+                "motorbike": booking.motorbike,
+                "show_motorbikebooking": False,
+                "show_bookingprogress": True,
+                "stages": booking.STATUS_CHOICES,
+                "current_index": current_index,
+                "actions": next_actions
+            }
+            return render(request, "motorbike_rental/index.html", context)  
+
+        else:
+
+            #show_motorbikebooking = True
+            #show_bookingprogress = False
+            context = {
+                "user": user,
+                "booking": booking,
+                "motorbike": booking.motorbike,
+                "show_motorbikebooking": True,
+                "show_bookingprogress": False,
+                "stages": booking.STATUS_CHOICES,
+                "current_index": current_index,
+                "actions": next_actions
+            }
+            return render(request, "motorbike_rental/index.html", context)  
+
+
+    return render(request, "motorbike_rental/index.html", context)  
+'''             
+          
+   
+'''
+def booking_details(request, bike_id):
+
+    # Logged-in user
+    user_id = request.session.get("bikeuser_id")
+    if not user_id:
+        return JsonResponse({"error": "User not logged in"}, status=401)
+
+    # Get user
+    user = get_object_or_404(bikeuser, id=user_id)
+
+    # Get booking for this user and this motorbike
+    booking = get_object_or_404(
+        Booking.objects.select_related("rentaluser", "motorbike"),
+        rentaluser_id=user_id,
+        motorbike_id=bike_id
+    )
+
+    data = {
+        "user": {
+            "id": user.id,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "full_name": f"{user.first_name} {user.last_name}",
+            "email": user.email,
+            "phone": user.phone_number,
+            "licence": user.driving_licence_number,
+            "address": user.address,
+        },
+        "booking": {
+            "id": booking.id,
+            "booking_reference": booking.booking_reference,
+            "status": booking.booking_status,
+            "status_display": booking.get_booking_status_display(),
+            "pickup_date": booking.pickup_date.strftime("%Y-%m-%d"),
+            "return_date": booking.return_date.strftime("%Y-%m-%d"),
+            
+        },
+        "motorbike": {
+            "id": booking.motorbike.id,
+            "make": booking.motorbike.bike_make,
+            "model": booking.motorbike.bike_model,
+            "registration_number": booking.motorbike.bike_plate_number,
+            "daily_rate": float(booking.motorbike.bike_daily_rate),
+        }
+    }
+
+    return JsonResponse(data)
+
+'''
+
+
+'''
+def booking_details(request, bike_id):
+
+    booking = get_object_or_404(
+        Booking.objects.select_related("rentaluser", "motorbike"),
+        id=bike_id)
+
+    user_id = request.session.get("bikeuser_id")
+    if not user_id:
+        return JsonResponse({"error": "User not logged in"}, status=401)
+   
+    data = {
+        "id": booking.id,
+        "booking_reference": booking.booking_reference,
+        "status": booking.booking_status,
+        "status_display": booking.get_booking_status_display(),
+        "start_date": booking.start_date.strftime("%Y-%m-%d"),
+        "end_date": booking.end_date.strftime("%Y-%m-%d"),
+
+        "rentaluser": {
+            "id": booking.rentaluser.id,
+            "first_name": booking.rentaluser.first_name,
+            "last_name": booking.rentaluser.last_name,
+            "email": booking.rentaluser.email,
+        },
+
+        "motorbike": {
+            "id": booking.motorbike.id,
+            "make": booking.motorbike.make,
+            "model": booking.motorbike.model,
+            "registration_number": booking.motorbike.registration_number,
+            "daily_rate": float(booking.motorbike.daily_rate),
+        }
+    }
+
+    return JsonResponse(data)
+
 '''
 
 def get_user_details(request):
@@ -230,6 +590,15 @@ def get_user_details(request):
         "licence": user.driving_licence_number,
         "address": user.address,
     })
+
+
+'''
+def manage_motorbikes(request):
+    bikes = tblmotorbike.objects.all()
+    return render(request, 'motorbike_rental/manage_motorbikes.html', {
+        'bikes': bikes
+    })
+'''
 
 '''
 def check_bookingstatus(request):
@@ -496,6 +865,9 @@ def tblmotorbikes_view(request):
     return HttpResponse(template.render(context, request))
     # return render(request, 'customers.html')
 
-def menufile_view(request):
-    return render(request, 'motorbike_rental/pickup2.html')
+#def menufile_view(request):
+#    return render(request, 'motorbike_rental/pickup2.html')
 
+
+def menufile_view(request):
+    return render(request, 'motorbike_rental/customer_dashboard.html')

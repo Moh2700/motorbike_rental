@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="{% static '/assets/css/header.css' %}">
   <link rel="stylesheet" href="{% static '/assets/css/menu.css' %}">
   <link rel="stylesheet" href="{% static '/assets/css/styles.css' %}">
+  <link rel="stylesheet" href="{% static '/assets/css/motorbike_booking.css' %}">
 
   <!--link rel="stylesheet" href="{% static 'assets/css/motorbikes.css' %}"-->
 
@@ -28,9 +29,6 @@
 <body>
 
 
-  {{ request.session.bikeuser_id|json_script:"user-id-data" }}
-  {{ request.session.bikeuser_username|json_script:"user-username-data" }}
-  {{ request.session.bikeuser_role|json_script:"user-role-data" }}
 
 
   <div id="loggeduser">
@@ -41,7 +39,6 @@
     <input type="hidden" id="loglastname" value="{{ request.session.bikeuser_last_name }}">
 
   </div>
-
 
 
 
@@ -57,11 +54,11 @@
 
         <div class="navigation-items" id="navigation-items">
 
-          <h3 style="color:white; padding-right:20px;">
+          <!--h3 style="color:white; padding-right:20px;">
             {{ request.session.bikeuser_role }} :
             Welcome {{ request.session.bikeuser_first_name }}
             {{ request.session.bikeuser_last_name }}
-          </h3>
+          </h3-->
 
 
           <li style="cursor: pointer" class="menu-item">
@@ -75,6 +72,10 @@
           <!--li style="cursor: pointer" class="menu-item">
             <a id="btnmanagemotorbikes" href="/motorbike_rental/manage_motorbikes">manage</a>
           </li-->
+
+          <li style="cursor: pointer" class="menu-item">
+            <a id="btnDashboard" href="/motorbike_rental/customer_dashboard">Progress</a>
+          </li>
 
           <li style="cursor: pointer" class="menu-item">
             <a id="btnDashboard" href="/motorbike_rental">Dashboard</a>
@@ -133,6 +134,14 @@
                   Manage Motorbikes
                 </a>
               </li>
+              <li>
+
+                <a href="{% url 'motorbike_rental:motorbike_list' %}">
+                  Browse Motorbikes
+                </a>
+              </li>
+
+
 
             </ul>
 
@@ -177,9 +186,14 @@
             <ul id="submnuUsers" class="submenu" onmouseout="toggle_visibility('submnuUsers')">
 
               <li style="width:150px;" id="submnuMembersListing">
-                <a href="#">
-                  Members
+
+                <a href="{% url 'motorbike_rental:user_list' %}">
+                  Browse Members
                 </a>
+
+                <!--a href="#">
+                  Members
+                </a-->
               </li>
 
               <li style="width:150px;">
@@ -654,7 +668,10 @@
         }
       </style>
 
-      <section id="Motorbike_Management_Section" class="content-section" style=" display:none; margin-bottom: 20px;">
+      <section id="Motorbike_Management_Section" class="content-section" {% if AllMotorbikes %}
+        style="display:block; padding-top:20px;" {% else %} style="display:none; padding-top:20px;" {% endif %}>
+
+        <!--section id="Motorbike_Management_Section" class="content-section" style=" display:none; margin-bottom: 20px;"-->
 
         <div class="table-container">
 
@@ -975,7 +992,10 @@
       </section>
 
 
-      <section id="Motorbike_Users_Listing" class="container" style="  display: none;">
+      <section id="Motorbike_Users_Listing" class="content-section" {% if AllUsers %}
+        style="display:block; padding-top:20px;" {% else %} style="display:none; padding-top:20px;" {% endif %}>
+
+        <!--section id="Motorbike_Users_Listing" class="container" style="  display: none;"-->
 
         <br>
         <div class="usersearch" id="divSearchUser" style="background-color: #6c63ff; margin-bottom: 10px; ">
@@ -1098,12 +1118,10 @@
 
 
               <!-- Hidden bike id -->
-              <input type="input" id="bike_id" value="{{ bike.bikeid }}">
-              <input type="input" id="user_id" value="{{ user.userid }}">
+              <input type="hidden" id="bike_id" value="{{ bike.bikeid }}">
+              <input type="hidden" id="user_id" value="{{ request.session.bikeuser_id }}">
 
-              <div class="form-group">
 
-              </div>
               <div class="bikecard" id="divimg" style="margin-bottom: 5px; margin-right: 5px;">
 
               </div>
@@ -1112,21 +1130,11 @@
             <hr>
             <div class="accessories" style=" margin-top:10px; margin-bottom:10px;">
               <button type="button" class="hire-btn"
-                onclick="ViewBooking (document.getElementById('frmMotorbikeHire'))">
+                onclick="loadMotorbikeBooking(document.getElementById('frmBikeDetails'))">
                 View Booking
               </button>
 
-              {% if bike.bikeid %}
-              <button type="button" class="edit-btn">
-
-                <a href="{% url 'motorbike_rental:motorbike_detail'  bike.bikeid %}">
-                  <i class="fa-solid fa-file-lines" style="text-decoration: none;color:white"></i> View Booking
-                  <i class="fas fa-eye"></i>
-                </a>
-              </button>
-              {% endif %}
             </div>
-
 
           </form>
 
@@ -1134,9 +1142,7 @@
         </div>
 
         <div class="booking-widget" id="divUserRegistration" class="modal">
-
           <h3 id="user_hire_title"> Motorbike Hiring Details </h3>
-
           <h2 id="user_hire_info" class="text-center mb-4">
             🏍 Hire Motorbike --- Please enter details to hire Motorbikes.
           </h2>
@@ -1256,6 +1262,7 @@
 
       </section>
 
+
       <style>
         .centered-container {
           display: grid;
@@ -1280,10 +1287,39 @@
             <h2 style="color: green;">
               <h1>🏍️ Bike Wonders Sign in</h1>
 
-
               <form id="hireForm" class="form-container">
                 {% csrf_token %}
-                <label class="form-label" for="name">
+
+                <div class="booking-grid">
+                  <div class="form-group">
+                    <label style="margin:5px; height:30px;">Username </label>
+                    <input type="text" id="username" placeholder="Enter Your Username" name="username" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label style="margin:5px; height:30px;">Password</label>
+                    <input type="password" placeholder="Enter Your Password" id="password" name="password" required>
+
+                  </div>
+
+                  <div class="form-group">
+                    <label style="margin:5px;  height:30px;">Email</label>
+                    <input type="email" placeholder="Enter Your Email" id="email" name="email" required>
+                  </div>
+
+                  <div>
+                    <button type="button" style="width:20%" class="btn" id="cmdLogin" onclick="loginUser(this.form)">
+                      OK
+                    </button>
+                    <button type="button" style="width:20%" class="btn" id="cmdCancel"
+                      onclick="cancelSection('MotorBike_Signin')">
+                      Cancel
+                    </button>
+                  </div>
+
+                </div>
+
+                <!--label class="form-label" for="name">
                   Username:
                 </label>
                 <input class="form-input" type="text" placeholder="Enter Your Username" id="username" name="username"
@@ -1296,16 +1332,16 @@
                   name="password" required>
 
                 <label class="form-label" for="email">Email:</label>
-                <input class="form-input" type="email" placeholder="Enter Your Email" id="email" name="email" required>
+                <input class="form-input" type="email" placeholder="Enter Your Email" id="email" name="email" required-->
 
-                <div>
+                <!--div>
                   <button class="inlinebutton" id="cmdLogin" onclick="loginUser(this.form)">
                     OK
                   </button>
                   <button class="inlinebutton" id="cmdCancel" onclick="cancelSection('MotorBike_Signin')">
                     Cancel
                   </button>
-                </div>
+                </div-->
 
               </form>
 
@@ -1424,427 +1460,694 @@
 
       </section>
 
-      <section id="Motorbike_Hiring_Progress" class="content-section" style="display: none; padding-top: 20px;">
+      <section id="Motorbike_Booking" class="content-section" {% if show_motorbikebooking %}
+        style="display:block; padding-top:20px;" {% else %} style="display:none; padding-top:20px;" {% endif %}>
 
-        <!--select id="bike-picker" class="form-control">
-          <option value="">-- Choose a Vehicle --</option>
-                 {% for bike in bikeslist %}
-          <option value="{{ bike.id }}" data-detail-url="{% url 'motorbike_rental:motorbike_detail' bike.id %}">
-            {{ bike.bike_make }} {{ bike.bike_model }}
-          </option>
-          {% endfor %}
-        </select-->
+        <!--section class="card shadow-lg border-0 mt-4">
+          <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">
 
-        <!-- Example of a vehicle list/card grid -->
-        <!--div class="bike-selection-grid">
-          {% for bike in bikeslist %}
-          <div class="bike-summary-card">
-            <h3>{{ bike.bike_make }} {{ bike.bike_model }}</h3>
-            <p>Status: {{ bike.bike_status }}</p>
+              <i class="bi bi-gear-fill"></i>
 
-            
-            <button class="btn btn-primary view-details-btn" data-bike-id="{{ bike.id }}">
-              <i class="fas fa-eye"></i> View Rental Progress
-            </button>
+              Booking Workflow
+
+            </h3>
+
           </div>
-          {% endfor %}
-        </div-->
 
 
+          <div class="card-body">
+           
+            <div class="row mb-4">
+              <div class="col-lg-4">
+                <label class="fw-bold">
+                  Booking Reference
+                </label>
+                <input class="form-control" value="{{ booking.booking_reference }}" readonly>
+              </div>
 
-        <h2>Customer Booking History for {{ motorbike.bike_model }}</h2>
+              <div class="col-lg-4">
+                <label class="fw-bold">
+                  Customer
+                </label>
 
-        <div class="progress-page-container dashboard-layout">
+                <input class="form-control"
+                  value="{{ booking.rentaluser.first_name }} {{ booking.rentaluser.last_name }}" readonly>
+              </div>
 
-          <!-- TOP BLOCK: High-Visibility Payment Summary Banner -->
-          <header class="master-payment-banner">
-            <div class="banner-title-block">
-              <span class="order-id">Rental ID: #MN-2026-8942</span>
-              <h2><i class="fas fa-receipt"></i> Payment Settlement Details</h2>
+
+              <div class="col-lg-4">
+                <label class="fw-bold">
+                  Current Status
+                </label>
+                <div class="alert alert-warning text-center mb-0">
+                  <strong>
+                    {{ booking.get_booking_status_display }}
+                  </strong>
+                </div>
+              </div>
+
             </div>
 
-            <div class="banner-metrics-grid">
-              <div class="metric-item">
-                <span class="metric-label">Daily Hire Rate</span>
-                <span class="metric-value">£12.80 / hr</span>
+
+            <h5 class="mb-3">
+              Booking Progress
+            </h5>
+
+            <div class="progress-tracker">
+
+              {% for status,label in stages %}
+
+              <div class="step
+                {% if forloop.counter0 < current_index %}
+                    completed
+                {% elif forloop.counter0 == current_index %}
+                    active
+                {% endif %}
+            ">
+
+                <div class="circle">
+
+                  {% if forloop.counter0 < current_index %} <span> ✓ </span>
+                    {% elif forloop.counter0 == current_index %}
+                    <span> ● </span>
+                    {% else %}
+                    <span> ○ </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <p>{{ label }}</p>
+
               </div>
-              <div class="metric-item">
-                <span class="metric-label">Security Deposit</span>
-                <span class="metric-value">£250.00</span>
-              </div>
-              <div class="metric-item">
-                <span class="metric-label">Insurance Premium</span>
-                <span class="metric-value">Included</span>
-              </div>
-              <div class="metric-item total-glow">
-                <span class="metric-label">Estimated Total</span>
-                <span class="metric-value highlight-price">£153.60</span>
-              </div>
+
+              {% endfor %}
+
             </div>
 
-            <div class="banner-status settlement-pending">
-              <i class="fas fa-hourglass-half"></i> Awaiting Authorisation
-            </div>
-          </header>
 
-          <!-- COLUMN 1: Customer Info & Hiring Details -->
-          <section class="customer-info-column col-block">
-            <div class="summary-card h-100">
-              <h3 class="panel-title"><i class="fas fa-user-check"></i> Customer Profile</h3>
+            <hr>
 
-              <div class="customer-profile-details">
-                <div class="customer-meta-item">
-                  <span class="label">Full Name</span>
-                  <span class="value">Alex Mercer</span>
-                </div>
-                <div class="customer-meta-item">
-                  <span class="label">Telephone</span>
-                  <span class="value">+44 7700 900077</span>
-                </div>
-                <div class="customer-meta-item">
-                  <span class="label">Email Address</span>
-                  <span class="value">alex.mercer@example.com</span>
-                </div>
-                <div class="customer-meta-item full-width">
-                  <span class="label">Billing / Delivery Address</span>
-                  <span class="value">Flat 4B, 42 Park Lane, Nottingham, NG1 4HG</span>
-                </div>
-              </div>
-            </div>
-          </section>
 
-          <!-- COLUMN 2: Motorbike Information Specifications Sidebar -->
-          <aside class="bike-info-sidebar col-block">
-            <div class="summary-card h-100">
-              <h3 class="panel-title"><i class="fas fa-motorcycle"></i> Assigned Vehicle</h3>
-              <div class="bike-image-frame">
-                <div class="bike-img-placeholder"><i class="fas fa-motorcycle"></i></div>
-                <span class="status-pill status-rented">Rented</span>
-              </div>
+          
+            <h5 class="mb-4">
+              Available Actions
+            </h5>
 
-              <div class="summary-details">
-                <span class="bike-brand">Yamaha</span>
-                <h2>MT-07 Tracer</h2>
 
-                <div class="meta-grid">
-                  <div class="meta-item">
-                    <span class="label">Year</span>
-                    <span class="value">2024</span>
-                  </div>
-                  <div class="meta-item">
-                    <span class="label">Plate Number</span>
-                    <span class="value">LK24 XRM</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </aside>
+            <form method="POST">
 
-          <!-- BOTTOM FULL-WIDTH BLOCK: Horizontal Process Timeline Tracking Matrix -->
-          <main class="tracker-main-panel full-width-block">
-            <div class="tracker-card w-100">
-              <div class="tracker-header">
-                <h1>Hire Tracking Progress</h1>
-                <p>Your motorbike booking parameters are updating live.</p>
-              </div>
+              {% csrf_token %}
 
-              <!-- Horizontal Timeline Matrix with Circle Nodes -->
-              <div class="horizontal-stepper-wrapper">
-                <div class="horizontal-track-line">
-                  <div class="horizontal-track-fill" style="width: 25%;"></div>
-                </div>
+              <div class="row">
 
-                <div class="horizontal-nodes-container">
-                  <div class="h-node-item completed">
-                    <div class="h-node-circle"><i class="fas fa-check"></i></div>
-                    <span class="h-node-label">Requested</span>
-                  </div>
+                {% for value,label in actions %}
 
-                  <div class="h-node-item active">
-                    <div class="h-node-circle">2</div>
-                    <span class="h-node-label">Verification</span>
-                  </div>
+                <div class="col-lg-4 col-md-6 mb-3">
 
-                  <div class="h-node-item">
-                    <div class="h-node-circle">3</div>
-                    <span class="h-node-label">Confirmed</span>
-                  </div>
+                  <button type="submit" name="action" value="{{ value }}" class="btn btn-success btn-lg w-100">
 
-                  <div class="h-node-item">
-                    <div class="h-node-circle">4</div>
-                    <span class="h-node-label">Ready</span>
-                  </div>
+                    {{ label }}
 
-                  <div class="h-node-item">
-                    <div class="h-node-circle">5</div>
-                    <span class="h-node-label">Collected</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Live Step Updates Detail Display & Action Controls Split -->
-              <div class="bottom-action-split">
-                <div class="current-step-status-box">
-                  <h4><i class="fas fa-info-circle"></i> Current Status Update:</h4>
-                  <p>Our backend team is verifying your riding licence and profile records. This typically
-                    takes
-                    less than 15 minutes.</p>
-                </div>
-
-                <div class="tracker-actions horizontal-stack">
-                  <button class="btn btn-primary" onclick="window.print()">
-                    <i class="fas fa-print"></i> Print Invoice
                   </button>
-                  <a href="https://wa.me" target="_blank" class="btn btn-secondary">
-                    <i class="fab fa-whatsapp"></i> Chat Support
-                  </a>
+
                 </div>
+
+                {% empty %}
+
+                <div class="col-12">
+
+                  <div class="alert alert-success">
+
+                    <h5 class="mb-1">
+                      Booking Completed
+                    </h5>
+                    There are no further actions.
+                  </div>
+
+                </div>
+
+                {% endfor %}
+
               </div>
-            </div>
-          </main>
-
-        </div>
 
 
-        <!-- templates/motorbike_rental/partials/bike_detail_snippet.html -->
-        {% if bike %}
-        <!-- TOP BLOCK: High-Visibility Payment Summary Banner -->
-        <header class="master-payment-banner">
-          <div class="banner-title-block">
-            <span class="order-id">Rental ID: #{{ booking.id|default:"N/A" }}</span>
-            <h2><i class="fas fa-receipt"></i> Payment Settlement Details</h2>
+             
+              <div class="mb-3">
+                <label class="form-label fw-bold">
+                  Staff Notes
+                </label>
+
+                <textarea name="notes" rows="4" class="form-control"
+                  placeholder="Enter notes...">{{ booking.notes }}</textarea>
+
+              </div>
+
+
+              
+              <div class="form-check mb-4">
+
+                <input class="form-check-input" type="checkbox" name="notify_customer" checked>
+
+                <label class="form-check-label">
+                  Notify customer by email
+                </label>
+
+              </div>
+
+              <button class="btn btn-primary btn-lg">
+                Save Progress
+              </button>
+
+            </form>
+
           </div>
 
-          <div class="banner-metrics-grid">
-            <div class="metric-item">
-              <span class="metric-label">Daily Hire Rate</span>
-              <span class="metric-value">£{{ bike.bike_daily_rate }} / day</span>
-            </div>
-            <div class="metric-item">
-              <span class="metric-label">Total Days</span>
-              <span class="metric-value">{{ booking.total_days|default:"0" }} Days</span>
-            </div>
-            <div class="metric-item">
-              <span class="metric-label">Insurance Premium</span>
-              <span class="metric-value">Included</span>
-            </div>
-            <div class="metric-item total-glow">
-              <span class="metric-label">Estimated Total</span>
-              <span class="metric-value highlight-price">£{{ booking.total_price|default:"0.00" }}</span>
-            </div>
+        </section-->
+
+        <section class="booking-card">
+
+          <div class="bike-image">
+            <img src="{{ motorbike.bike_imgsrc }}" alt="bike">
+
           </div>
 
-          <div class="banner-status settlement-{{ booking.status|lower }}">
-            <i class="fas fa-hourglass-half"></i> {{ booking.status|default:"No Active Booking" }}
-          </div>
-        </header>
+          <div class="booking-info">
+            <h2>
+              {{ motorbike.bike_make }} {{ motorbike.bike_model }}
+            </h2>
+            <p>
+              Booking Reference
+              <strong>
+                {{ booking.booking_reference }}
+              </strong>
+            </p>
 
-        <!-- COLUMN 1: Customer Info -->
-        <section class="customer-info-column col-block">
-          <div class="summary-card h-100">
-            <h3 class="panel-title"><i class="fas fa-user-check"></i> Customer Profile</h3>
-            {% if customer %}
-            <div class="customer-profile-details">
-              <div class="customer-meta-item"><span class="label">Full Name</span><span class="value">{{
-                  customer.first_name }} {{ customer.last_name }}</span></div>
-              <div class="customer-meta-item"><span class="label">Telephone</span><span class="value">{{
-                  customer.phone_number }}</span></div>
-              <div class="customer-meta-item"><span class="label">Email Address</span><span class="value">{{
-                  customer.email }}</span></div>
-              <div class="customer-meta-item full-width"><span class="label">Address</span><span class="value">{{
-                  customer.address }}</span></div>
-            </div>
-            {% else %}
-            <p style="padding:20px; color:#777;">No customer profile linked.</p>
-            {% endif %}
+            <p>
+              Motorbike Registration
+              <strong>
+                {{ motorbike.bike_plate_number }}
+              </strong>
+            </p>
+
+            <span class="booking_status">
+              {{ booking.get_booking_status_display }}
+            </span>
+
           </div>
+
+          <div class="booking-grid" style="padding-top: 10px;">
+
+            <div class="form-group">
+
+              <label style="color:whitesmoke"><strong style="color:black">Full Name:</strong>
+                {{ user.first_name }} {{ user.last_name }}
+              </label>
+
+              <label style="color:whitesmoke"><strong style="color:black">Phone:</strong>
+                {{ user.phone_number }}
+              </label>
+
+              <label style="color:whitesmoke"><strong style="color:black">Email:</strong>
+                {{ user.email }}
+              </label>
+
+              <label style="color:whitesmoke"><strong style="color:black">License :</strong>
+                {{ user.driving_licence_number }}
+              </label>
+
+              <label style="color:whitesmoke"><strong style="color:black">Address :</strong>
+                {{ user.address }}
+              </label>
+
+              <form id="frmBookingProgress">
+                {% csrf_token %}
+                <input type="hidden" id="bookingprogress" name="action" value="true">
+                <button type="button" onclick="updateMotorbikeStatus(document.getElementById('frmBookingProgress'))">
+                  Save Status
+                </button>
+
+              </form>
+
+            </div>
+
+            <div class="form-group">
+              <label>Actions needed</label>
+              <select name="action" class="form-select">
+                <option value="">
+                  -- Select Action --
+                </option>
+                {% for value,label in actions %}
+
+                <option value="{{ value }}">
+                  {{ label }}
+                </option>
+                {% endfor %}
+              </select>
+
+            </div>
+
+            <div class="form-group">
+              <label>Notes </label>
+              <textarea name="notes" rows="4" class="form-control" placeholder="Enter notes...">{{ booking.notes }}
+                </textarea>
+            </div>
+
+          </div>
+
+          <!-- the new design-->
+          <form method="POST">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label class="form-label">Booking Status</label>
+
+              <select name="booking_status" class="form-select">
+                {% for value, label in booking.STATUS_CHOICES %}
+
+                {% if booking.booking_status == value %}
+                <option value="{{ value }}" selected>{{ label }}</option>
+                {% else %}
+                <option value="{{ value }}">{{ label }}</option>
+                {% endif %}
+
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Notes</label>
+
+              <textarea name="notes" class="form-control" rows="5">{{ booking.notes }}</textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              Save Changes
+            </button>
+          </form>
+
+
         </section>
 
-        <!-- COLUMN 2: Motorbike Information -->
-        <aside class="bike-info-sidebar col-block">
-          <div class="summary-card h-100">
-            <h3 class="panel-title"><i class="fas fa-motorcycle"></i> Assigned Vehicle</h3>
-            <div class="bike-image-frame">
-              {% if bike.bike_imgsrc %}
-              <img src="{{ bike.bike_imgsrc }}" alt="{{ bike.bike_model }}"
-                style="width:100%; height:100%; object-fit:cover;">
-              {% else %}
-              <div class="bike-img-placeholder"><i class="fas fa-motorcycle"></i></div>
-              {% endif %}
-              <span class="status-pill status-{{ bike.bike_status|lower }}">{{ bike.bike_status }}</span>
+        <!--section class="booking-card">
+          
+          <div class="booking-info">
+            <h2>
+              {{ user.first_name }} {{ user.last_name }}
+            </h2>
+            <p>
+              Email
+              <strong>
+                {{ user.email }}
+              </strong>
+            </p>
+
+            <p>
+              Phone
+              <strong>
+                {{ user.phone_number }}
+              </strong>
+            </p>
+
+            <p>
+              License Number
+              <strong>
+                {{ user.driving_licence_number }}
+              </strong>
+            </p>
+
+
+            <p>
+              Address
+              <strong>
+                {{ user.address }}
+              </strong>
+            </p>
+
+            <form id="frmBookingProgress">
+              {% csrf_token %}
+              
+              <input type="hidden" id="bookingprogress" name="action" value="true">
+
+              <button type="button" onclick="updateMotorbikeStatus(document.getElementById('frmBookingProgress'))">
+                Booking Status
+              </button>
+
+            </form>
+
+          </div>
+
+        </section-->
+
+        <!-- Booking Card -->
+        <!--section class="booking-card">
+
+          <div class="bike-image">
+            <img src="{{ motorbike.bike_imgsrc }}" alt="bike">
+           
+          </div>
+
+          <div class="booking-info">
+            <h2>
+              {{ motorbike.bike_make }} {{ motorbike.bike_model }}
+            </h2>
+            <p>
+              Booking Reference
+              <strong>
+                {{ booking.booking_reference }}
+              </strong>
+            </p>
+
+            <p>
+              Motorbike Registration
+              <strong>
+                {{ motorbike.bike_plate_number }}
+              </strong>
+            </p>
+
+            <span class="booking_status">
+              {{ booking.get_booking_status_display }}
+            </span>
+
+          </div>
+
+        </section-->
+
+        <!-- Progress -->
+        <section class="progress-card">
+
+          <div class="booking-header">
+
+            <div class="bike-image">
+              <img src="{{ motorbike.bike_imgsrc }}" alt="bike">
             </div>
 
-            <div class="summary-details">
-              <span class="bike-brand">{{ bike.bike_make }}</span>
-              <h2>{{ bike.bike_model }}</h2>
-              <div class="meta-grid">
-                <div class="meta-item"><span class="label">Year</span><span class="value">{{ bike.bike_year }}</span>
-                </div>
-                <div class="meta-item"><span class="label">Plate</span><span class="value">{{
-                    bike.bike_plate_number|default:"N/A" }}</span></div>
+            <div class="bike-info">
+              <h2>
+                {{ motorbike.bike_make }}
+                {{ motorbike.bike_model }}
+              </h2>
+              <p>
+                Booking Reference:
+                <strong>
+                  {{ booking.booking_reference }}
+                </strong>
+              </p>
+
+              <p class="booking-message">
+                {{ booking.get_booking_status_display }}
+              </p>
+
+            </div>
+
+          </div>
+
+          <div class="booking-summary">
+            <div>
+              <label>
+                Start Date
+              </label>
+              <h3>
+                {{ booking.pickup_date }}
+              </h3>
+            </div>
+
+            <div>
+              <label>
+                Return Date
+              </label>
+
+              <h3>
+                {{ booking.return_date }}
+              </h3>
+            </div>
+            <div>
+              <label>
+                Total Days
+              </label>
+              <h3>
+                {{ booking.total_days }}
+              </h3>
+            </div>
+            <div>
+              <label>
+                Total Price
+              </label>
+
+              <h3>
+                £{{ booking.total_price }}
+              </h3>
+
+            </div>
+
+          </div>
+
+          <h2>
+            Booking Progress
+          </h2>
+
+          <div class="progress-tracker">
+
+            {% with current=booking.booking_status %}
+            {% for key, label in stages %}
+
+            {# 1. Define the status class for the wrapper div #}
+            {% if forloop.counter0 < current_index %} <div class="step completed">
+              {% elif key == current %}
+              <div class="step active">
+                {% else %}
+                <div class="step">
+                  {% endif %}
+
+                  {# 2. Display the correct status icon #}
+
+                  {% if forloop.counter0 < 1 %} <span>✓ </span>
+                    {% elif key == 2 %}
+                    <span> ● </span>
+                    {% else %}
+                    <span> ○ </span>
+                    {% endif %}
+
+
+                    {# 3. Display the label #}
+                    <p>{{ label}}</p>
+
+                </div> {# Closes the step div correctly in all scenarios #}
+
+                {% endfor %}
+                {% endwith %}
+
               </div>
-            </div>
-          </div>
-        </aside>
-        {% endif %}
 
+
+        </section>
+
+        <!-- Collection -->
+        <section class="details">
+
+          <div class="card">
+
+            <h3>
+              Pickup Date:
+            </h3>
+
+            <h2>
+              {{ booking.pickup_date }}
+            </h2>
+
+            <p>
+              09:00 AM
+            </p>
+
+          </div>
+
+          <div class="card">
+
+            <h3>
+              Branch
+            </h3>
+
+            <h2>
+              Nottingham
+            </h2>
+
+          </div>
+
+          <div class="card">
+
+            <h3>
+              Countdown
+            </h3>
+
+            <h2 id="countdown">
+              Loading...
+            </h2>
+
+          </div>
+
+        </section>
 
       </section>
 
-      <section class="container" style="z-index:-2;">
-        <div class="section-header">
-          <!--span class="sub-title">Engineered For Adventure</span-->
-          <h2>Why Rent From Bike Wonders<span>?</span></h2>
-          <p>We combine premium, precision-tuned machinery with seamless digital tracking to give you the ultimate
-            riding
-            experience.</p>
+  </div>
+
+
+
+  <section class="container" style="z-index:-2;">
+    <div class="section-header">
+      <!--span class="sub-title">Engineered For Adventure</span-->
+      <h2>Why Rent From Bike Wonders<span>?</span></h2>
+      <p>We combine premium, precision-tuned machinery with seamless digital tracking to give you the ultimate
+        riding
+        experience.</p>
+    </div>
+
+    <div class="features-grid">
+      <!-- Feature 1 -->
+      <div class="feature-card">
+        <div class="icon-box">
+          <i class="fas fa-motorcycle"></i>
         </div>
+        <h3>Premium Fleet</h3>
+        <p>Every motorbike is completely vetted, meticulously maintained, and highly tuned before you turn the
+          key.
+        </p>
+      </div>
 
-        <div class="features-grid">
-          <!-- Feature 1 -->
-          <div class="feature-card">
-            <div class="icon-box">
-              <i class="fas fa-motorcycle"></i>
-            </div>
-            <h3>Premium Fleet</h3>
-            <p>Every motorbike is completely vetted, meticulously maintained, and highly tuned before you turn the key.
-            </p>
-          </div>
-
-          <!-- Feature 2 -->
-          <div class="feature-card highlighted">
-            <div class="icon-box">
-              <i class="fas fa-bolt"></i>
-            </div>
-            <h3>Instant Booking</h3>
-            <p>No tedious queues or endless paperwork. Validate your rate, verify your model, and hit the highway
-              instantly.
-            </p>
-            <span class="card-badge">Popular Choice</span>
-          </div>
-
-          <!-- Feature 3 -->
-          <div class="feature-card">
-            <div class="icon-box">
-              <i class="fas fa-shield-alt"></i>
-            </div>
-            <h3>Fully Insured</h3>
-            <p>Ride with absolute peace of mind. Every hire package includes comprehensive premium cover protection.</p>
-          </div>
-
-          <!-- Feature 4 -->
-          <div class="feature-card">
-            <div class="icon-box">
-              <i class="fas fa-headset"></i>
-            </div>
-            <h3>24/7 Roadside Help</h3>
-            <p>Stranded with a puncture or an empty tank? Our mechanical response dispatch matrix handles problems
-              instantly.</p>
-          </div>
+      <!-- Feature 2 -->
+      <div class="feature-card highlighted">
+        <div class="icon-box">
+          <i class="fas fa-bolt"></i>
         </div>
-      </section>
+        <h3>Instant Booking</h3>
+        <p>No tedious queues or endless paperwork. Validate your rate, verify your model, and hit the highway
+          instantly.
+        </p>
+        <span class="card-badge">Popular Choice</span>
+      </div>
 
-      <footer class="container">
-
-        <!-- Top Bar: Dynamic Engagement Banner -->
-        <div class="footer-social-cta">
-          <div class="cta-text">
-            <h3>Join the Bike Wonders Crew</h3>
-            <p>Tag <span class="highlight">#BikeWondersAdventure</span> to get featured on our page!</p>
-          </div>
-          <!-- Live Community Counter -->
-          <div class="community-badge">
-            <i class="fas fa-users"></i> <span>14.8k+ Active Riders</span>
-          </div>
+      <!-- Feature 3 -->
+      <div class="feature-card">
+        <div class="icon-box">
+          <i class="fas fa-shield-alt"></i>
         </div>
+        <h3>Fully Insured</h3>
+        <p>Ride with absolute peace of mind. Every hire package includes comprehensive premium cover protection.
+        </p>
+      </div>
 
-        <!-- Middle Grid: Community Feed Placeholders -->
-        <!--div>
+      <!-- Feature 4 -->
+      <div class="feature-card">
+        <div class="icon-box">
+          <i class="fas fa-headset"></i>
+        </div>
+        <h3>24/7 Roadside Help</h3>
+        <p>Stranded with a puncture or an empty tank? Our mechanical response dispatch matrix handles problems
+          instantly.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="container">
+
+    <!-- Top Bar: Dynamic Engagement Banner -->
+    <div class="footer-social-cta">
+      <div class="cta-text">
+        <h3>Join the Bike Wonders Crew</h3>
+        <p>Tag <span class="highlight">#BikeWondersAdventure</span> to get featured on our page!</p>
+      </div>
+      <!-- Live Community Counter -->
+      <div class="community-badge">
+        <i class="fas fa-users"></i> <span>14.8k+ Active Riders</span>
+      </div>
+    </div>
+
+    <!-- Middle Grid: Community Feed Placeholders -->
+    <!--div>
           <div class="card" class="img-placeholder-1"><span>@moto_ride_99</span></div>
           <div class=" img-placeholder-2"><span>@track_day_uk</span></div>
           <div class=" img-placeholder-3"><span>@adventure_biker</span></div>
           <div class=" img-placeholder-4"><span>@urban_scoot_lon</span></div>
         </div-->
 
-        <div class="motorbikescard">
+    <div class="motorbikescard">
 
-          <div class="bikecard" style="width:100%">
-            <img src="https://images.pexels.com/photos/2569465/pexels-photo-2569465.jpeg" />
+      <div class="bikecard" style="width:100%">
+        <img src="https://images.pexels.com/photos/2569465/pexels-photo-2569465.jpeg" />
 
-          </div>
+      </div>
 
 
-          <div class="bikecard" style="width:100%">
-            <img src="https://images.pexels.com/photos/23524278/pexels-photo-23524278.jpeg" />
+      <div class="bikecard" style="width:100%">
+        <img src="https://images.pexels.com/photos/23524278/pexels-photo-23524278.jpeg" />
 
-          </div>
+      </div>
 
-          <div class="bikecard" style="width:100%">
-            <img src="https://images.pexels.com/photos/30979731/pexels-photo-30979731.jpeg" />
+      <div class="bikecard" style="width:100%">
+        <img src="https://images.pexels.com/photos/30979731/pexels-photo-30979731.jpeg" />
 
-          </div>
+      </div>
 
-          <div class="bikecard" style="width:100%">
-            <img src="https://images.pexels.com/photos/13869680/pexels-photo-13869680.jpeg" />
+      <div class="bikecard" style="width:100%">
+        <img src="https://images.pexels.com/photos/13869680/pexels-photo-13869680.jpeg" />
 
-          </div>
+      </div>
 
+    </div>
+    <!-- Bottom Core Footer Area -->
+    <div class="footer-main-content">
+      <div class="footer-brand">
+        <h2>Bike Wonders<span>.</span></h2>
+        <p>The ultimate motorcycle rental platform. Grab your keys, drop the clutch, and build your own story.
+        </p>
+      </div>
+
+      <!-- Mega Social Matrix Block -->
+      <div class="social-matrix-box">
+        <h4>Connect With Us</h4>
+        <div class="social-matrix">
+          <a href="https://instagram.com" target="_blank" class="social-btn instagram" aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
+            <span class="btn-text">Instagram</span>
+          </a>
+          <a href="https://twitter.com" target="_blank" class="social-btn x-twitter" aria-label="X/Twitter">
+            <i class="fab fa-twitter"></i>
+            <span class="btn-text">X / Twitter</span>
+          </a>
+          <a href="https://facebook.com" target="_blank" class="social-btn facebook" aria-label="Facebook">
+            <i class="fab fa-facebook-f"></i>
+            <span class="btn-text">Facebook</span>
+          </a>
+          <a href="https://tiktok.com" target="_blank" class="social-btn tiktok" aria-label="TikTok">
+            <i class="fab fa-tiktok"></i>
+            <span class="btn-text">TikTok</span>
+          </a>
+          <a href="https://youtube.com" target="_blank" class="social-btn youtube" aria-label="YouTube">
+            <i class="fab fa-youtube"></i>
+            <span class="btn-text">YouTube</span>
+          </a>
         </div>
-        <!-- Bottom Core Footer Area -->
-        <div class="footer-main-content">
-          <div class="footer-brand">
-            <h2>Bike Wonders<span>.</span></h2>
-            <p>The ultimate motorcycle rental platform. Grab your keys, drop the clutch, and build your own story.</p>
-          </div>
+      </div>
+    </div>
 
-          <!-- Mega Social Matrix Block -->
-          <div class="social-matrix-box">
-            <h4>Connect With Us</h4>
-            <div class="social-matrix">
-              <a href="https://instagram.com" target="_blank" class="social-btn instagram" aria-label="Instagram">
-                <i class="fab fa-instagram"></i>
-                <span class="btn-text">Instagram</span>
-              </a>
-              <a href="https://twitter.com" target="_blank" class="social-btn x-twitter" aria-label="X/Twitter">
-                <i class="fab fa-twitter"></i>
-                <span class="btn-text">X / Twitter</span>
-              </a>
-              <a href="https://facebook.com" target="_blank" class="social-btn facebook" aria-label="Facebook">
-                <i class="fab fa-facebook-f"></i>
-                <span class="btn-text">Facebook</span>
-              </a>
-              <a href="https://tiktok.com" target="_blank" class="social-btn tiktok" aria-label="TikTok">
-                <i class="fab fa-tiktok"></i>
-                <span class="btn-text">TikTok</span>
-              </a>
-              <a href="https://youtube.com" target="_blank" class="social-btn youtube" aria-label="YouTube">
-                <i class="fab fa-youtube"></i>
-                <span class="btn-text">YouTube</span>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tiny Legal Sub-Footer -->
-        <div class="footer-legal-bar">
-          <p>&copy; 2026 MotoRent. Built for the open road.</p>
-          <div class="legal-links">
-            <a href="#privacy">Privacy</a>
-            <a href="#terms">Terms</a>
-          </div>
-        </div>
-      </footer>
+    <!-- Tiny Legal Sub-Footer -->
+    <div class="footer-legal-bar">
+      <p>&copy; 2026 MotoRent. Built for the open road.</p>
+      <div class="legal-links">
+        <a href="#privacy">Privacy</a>
+        <a href="#terms">Terms</a>
+      </div>
+    </div>
+  </footer>
 
 
-    </main>
+  </main>
 
   </div>
 
 
-
-  <!--footer class="site-footer">
-    <p>&copy; 2024 My Website. All rights reserved.</p>
-  </footer-->
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
