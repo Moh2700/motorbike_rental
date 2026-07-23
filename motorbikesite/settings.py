@@ -98,19 +98,28 @@ WSGI_APPLICATION = 'motorbikesite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-if config("DEBUG", default=True, cast=bool):
+DEBUG = config("DEBUG", default=False, cast=bool)
 
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("DB_NAME", default="dummy_db_name"),
-        "USER": config("DB_USER", default="dummy_user"),
-        "PASSWORD": config("DB_PASSWORD", default="dummy_password"),
-        "HOST": config("DB_HOST", default="localhost"),
-        "PORT": config("DB_PORT", default="5432"),
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': "django.db.backends.postgresql",
+            'NAME': config("DB_NAME", default="dummy_db_name"),
+            'USER': config("DB_USER", default="dummy_user"),
+            'PASSWORD': config("DB_PASSWORD", default="dummy_password"),
+            'HOST': config("DB_HOST", default="localhost"),
+            'PORT': config("DB_PORT", default="5432")
+        }
     }
-}
+
+else:
+    DATABASES = {
+        "default": dj_database_url.config(
+            conn_max_age=600,
+            ssl_require=True
+        )
+    }
+
 
 '''
     DATABASES = {
@@ -124,17 +133,6 @@ DATABASES = {
         }
     }
 '''
-else:
-
-    DATABASES = {
-        "default": dj_database_url.config(
-            conn_max_age=600,
-            ssl_require=True
-        )
-    }
-
-
-
 
 '''
 DATABASES = {
