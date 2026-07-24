@@ -107,14 +107,15 @@ if DEBUG:
 else:
 
     DATABASES = {
-       "default": dj_database_url.config(
-        conn_max_age=600,
-        ssl_require=True,
-        default=(
-            f"postgresql://{config('DB_USER')}:{config('DB_PASSWORD')}"
-            f"@{config('DB_HOST')}:{config('DB_PORT')}/{config('DB_NAME')}"
-        ),
-      )
+        "default": dj_database_url.config(
+           # Added defaults to stop python-decouple from crashing during Heroku asset builds
+           default=(
+               f"postgresql://{config('DB_USER', default='dummy_user')}:"
+               f"{config('DB_PASSWORD', default='dummy_password')}@"
+               f"{config('DB_HOST', default='localhost')}:"
+               f"{config('DB_PORT', default='5432')}/dbBike"
+           )
+        )
     }
 
     '''
