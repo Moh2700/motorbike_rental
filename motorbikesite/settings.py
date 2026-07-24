@@ -92,7 +92,7 @@ WSGI_APPLICATION = 'motorbikesite.wsgi.application'
 
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-DEBUG=True
+
 
 if DEBUG:
     DATABASES = {
