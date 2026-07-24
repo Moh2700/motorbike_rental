@@ -95,12 +95,12 @@ DEBUG = config("DEBUG", default=False, cast=bool)
 if DEBUG:
     DATABASES = {
        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": config("DB_NAME"),
-            "USER": config("DB_USER"),
-            "PASSWORD": config("DB_PASSWORD"),
-            "HOST": config("DB_HOST"),
-            "PORT": config("DB_PORT"),
+            'ENGINE': "django.db.backends.postgresql",
+            'NAME': config("DB_NAME", default="dummy_db_name"),
+            'USER': config("DB_USER", default="dummy_user"),
+            'PASSWORD': config("DB_PASSWORD", default="dummy_password"),
+            'HOST': config("DB_HOST", default="localhost"),
+            'PORT': config("DB_PORT", default="5432")
         }
     }
 
