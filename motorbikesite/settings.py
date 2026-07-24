@@ -39,8 +39,17 @@ SECRET_KEY = os.environ.get(
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
+#ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '://herokuapp.com',
+    '.herokuapp.com'
+]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://herokuapp.com'
+]
 
 # Application definition
 
@@ -91,7 +100,6 @@ WSGI_APPLICATION = 'motorbikesite.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DEBUG = config("DEBUG", default=False, cast=bool)
-
 
 
 if DEBUG:
