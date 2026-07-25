@@ -127,24 +127,7 @@ else:
            )
         )
     }
-
-    '''
-    DATABASES = {
-        "default": dj_database_url.config(
-           # If DATABASE_URL isn't found (like locally), it falls back to your local dbBike configuration
-           default=(
-               f"postgresql://{config('DB_USER', default='postgres')}:"
-               f"{config('DB_PASSWORD', default='')}@"
-               f"{config('DB_HOST', default='localhost')}:"
-               f"{config('DB_PORT', default='5432')}/dbBike"
-           )
-        )
-    }
-    '''
-   
-
-
-
+    
 
 
 '''

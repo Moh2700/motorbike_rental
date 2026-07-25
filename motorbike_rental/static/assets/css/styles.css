@@ -25,6 +25,13 @@ body {
   background-color: var(--bg);
   position: relative;
 
+  /*use a static path to avoid template parsing errors */
+
+  background-image: url("/static/assets/images/motorback.avif");
+
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+
   /*decorative background now rendered via pseudo-element at 60% opacity */
   -webkit-font-smoothing: antialiased;
 }
@@ -32,18 +39,17 @@ body {
 /* Background overlay using the arabesque motif at 60% opacity */
 /*
 body::before {
-  content: '';
+  content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
-   use a static path to avoid template parsing errors 
+  use a static path to avoid template parsing errors 
   background-image: url("/static/assets/images/motorback.avif");
   background-repeat: no-repeat;
   background-size: 100% 100%;
   z-index: 0;
 }
 */
-
 .content-section {
   background: var(--surface);
   padding: 18px;
