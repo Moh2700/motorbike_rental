@@ -47,6 +47,17 @@ class motorbike (models.Model):
     bike_year = models.CharField(max_length=10)
     bike_imgsrc = models.CharField(max_length=255)
 
+    """
+    @property
+    def bike_year(self):
+        return self.year('%Y')
+
+    def __init__(self, bikemake, bikemodel, bikeyear, bikeimgsrc ):
+        self.bike_make = bikemake
+        self.bike_model = bikemodel
+        self.bike_year = bikeyear
+        self.bike_imgsrc = bikeimgsrc
+    """
 
     def __str__(self):
         return (
@@ -183,3 +194,50 @@ def save(self, *args, **kwargs):
         self.booking_reference = "BK-" + str(uuid.uuid4())[:8].upper()
 
     super().save(*args, **kwargs)
+
+   
+'''
+class user(models.Model):
+    CUSTOMER = "customer"
+    STAFF = "staff"
+    ADMIN = "admin"
+
+    ROLE_CHOICES = [
+        (CUSTOMER, "Customer"),
+        (STAFF, "Staff"),
+        (ADMIN, "Admin"),
+    ]
+
+    phone_number = models.CharField(max_length=20, unique=True)
+    date_of_birth = models.DateField(null=True, blank=True)
+    email = models.EmailField(unique=True)
+
+    driving_license_number = models.CharField(
+        max_length=50,
+        unique=True,
+        null=True,
+        blank=True
+    )
+
+    address = models.TextField(blank=True)
+
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES,
+        default=CUSTOMER
+    )
+
+    #profile_picture = models.ImageField(
+    #    upload_to="profile_pictures/",
+    #    null=True,
+    #    blank=True
+    #)
+
+    is_verified = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+python         return self.username
+'''
+
