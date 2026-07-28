@@ -377,28 +377,6 @@ function showbikedetails(container, bikeElement) {
   showprogSection("Motorbike_Hiring");
 }
 
-function getuserdetails(userElement) {
-  //alert("You have selected to view user details for xxxxx ");
-
-  const container = document.getElementById("frmUser");
-  let data = userElement.dataset;
-
-  container["last_name"].value = data.userlastname;
-  container["first_name"].value = data.userfirstname;
-  container["email"].value = data.useremail;
-  container["phone_number"].value = data.userphone;
-  container["username"].value = data.username;
-  container["password1"].value = data.userpassword1;
-  container["password2"].value = data.userpassword2;
-  container["user_id"].value = data.userid;
-  container["driving_licence_number"].value = data.userdrivinglicence;
-  container["date_of_birth"].value = data.userdateofbirth;
-  container["role"].value = data.userrole;
-  container["address"].value = data.useraddress;
-
-  showprogSection("Motorbike_Users");
-}
-
 function showuserdetails(container, userElement) {
   //alert("You have selected to view user details for xxxxx ");
 
@@ -1278,15 +1256,59 @@ AvailableBookings.addEventListener("click", function () {
   makeaselection("availablebikelisting");
 });
 */
+
+function getUserDetails(userElement) {
+  showprogSection("Motorbike_Users");
+}
+
+function getuserdetails(userElement) {
+  //alert("You have selected to view user details for xxxxx ");
+
+  const container = document.getElementById("frmUser");
+  let data = userElement.dataset;
+
+  alert(userElement.id);
+  container["last_name"].value = data.userlastname;
+  container["first_name"].value = data.userfirstname;
+  container["email"].value = data.useremail;
+  container["phone_number"].value = data.userphone;
+  container["username"].value = data.username;
+  container["password1"].value = data.userpassword1;
+  container["password2"].value = data.userpassword2;
+  container["user_id"].value = data.userid;
+  container["driving_licence_number"].value = data.userdrivinglicence;
+  container["date_of_birth"].value = data.userdateofbirth;
+  container["role"].value = data.userrole;
+  container["address"].value = data.useraddress;
+
+  alert(data.user_id);
+  showprogSection("Motorbike_Users");
+}
+
+/*
+document.addEventListener("DOMContentLoaded", function () {
+  getuserdetails(userElement);
+});
+*/
+
+document.addEventListener("DOMContentLoaded", function () {
+  document
+    .getElementById("submnuMotorbikeStatus")
+    .addEventListener("click", function () {});
+});
+
+/*
 motorbikeStatus.addEventListener("click", function () {
   makeaselection("motorbikelistingstatus");
 });
+*/
 
 registration.addEventListener("click", function () {
   showprogSection("User_Registration");
 });
 
 signin.addEventListener("click", function () {
+  alert("");
   showprogSection("MotorBike_Signin");
 
   //navigationItems.style.display = "flex";

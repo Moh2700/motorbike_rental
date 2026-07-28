@@ -26,6 +26,6 @@ class CustomerRegistrationForm(UserCreationForm):
             'last_name',
             'username',
             'email',
-            'password1',
+            'password',
             'password2'
         )

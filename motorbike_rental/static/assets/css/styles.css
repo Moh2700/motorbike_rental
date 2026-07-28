@@ -324,6 +324,15 @@ button:hover {
   /* background-color: #6c63ff;*/
 }
 
+.form-group img {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+
+  background-color: white;
+}
+
 /*
 .form-group input {
   display: flex;

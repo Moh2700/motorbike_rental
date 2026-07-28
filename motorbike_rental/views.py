@@ -2,7 +2,7 @@
 from django.http import HttpResponse
 from .models import tblmotorbike, bikeuser, Booking
 from django.template import loader
-from django.views import generic
+#from django.views import generic
 from .forms import MemberForm, MotorbikeForm
 
 from django.http import  HttpResponseRedirect
@@ -25,29 +25,91 @@ def logout_view(request):
 
     # Completely wipes out the session dictionary data instantly
     request.session.flush()
-    messages.info(request, "You have been logged out successfully.")
+    messages.info (request, "You have been logged out successfully.")
     return redirect('motorbike_rental:index')
-    #return redirect('index.html')
-
 
 
 @never_cache
 def login_view(request):
+    # If the user is already logged in, bypass the login page
+    if 'bikeuser_id' in request.session:
+        return redirect('motorbike_rental:index')
 
-    
+    if request.method == "POST":
+
+        # Clear any existing session
+        request.session.flush()
+
+        username_input = request.POST.get("username", "").strip()
+        email_input = request.POST.get("email", "").strip()
+        password_input = request.POST.get("password", "").strip()
+
+        print("========== LOGIN ATTEMPT ==========")
+        print("Username:", username_input)
+        print("Email:", email_input)
+
+        try:
+            # Search by username only
+            user = bikeuser.objects.get(
+                username=username_input,
+                email=email_input,
+                password=password_input,
+            )
+
+            print("User found in database.")
+
+            # Check email
+            if user.email != email_input:
+                print("Login failed: Incorrect email.")
+                messages.error(request, "Access Denied: Incorrect email address.")
+
+            # Check password
+            elif user.password != password_input:
+                print("Login failed: Incorrect password.")
+                messages.error(request, "Access Denied: Incorrect password.")
+
+            else:
+                print("Login successful!")
+
+                # Store session information
+                request.session["bikeuser_id"] = user.id
+                request.session["bikeuser_username"] = user.username
+                request.session["bikeuser_role"] = user.role.lower()
+                request.session["bikeuser_first_name"] = user.first_name
+                request.session["bikeuser_last_name"] = user.last_name
+
+                messages.success(
+                    request,
+                    f"Welcome back, {user.first_name}! Access granted."
+                )
+
+                return redirect("motorbike_rental:index")
+
+        except bikeuser.DoesNotExist:
+            print(f"Login failed: Username '{username_input}' does not exist.")
+            messages.error(request, "Access Denied: Username does not exist.")
+
+        except Exception as e:
+            print("Unexpected login error:", e)
+            messages.error(request, "An unexpected error occurred during login.")
+
+    return render(request, "motorbike_rental/index.html")
+
+
+'''
+def login_view(request):
+
     # If the user is already inside the session table, bypass login
     if 'bikeuser_id' in request.session:
         return redirect('motorbike_rental:index')
 
     if request.method == 'POST':
-       
+
         request.session.flush()
 
         username_input = request.POST.get('username')
         password_input = request.POST.get('password')
-        email_input = request.POST.get('email') 
-
-    
+        email_input = request.POST.get('email')
 
         # 1. Look up the user safely by username only to prevent a crash
         try:
@@ -56,17 +118,16 @@ def login_view(request):
             # 2. Check if the password matches your plain-text database record
             if user.password == password_input:
 
-               
                 # 3. Log them in manually by assigning items to the session cookie
                 request.session['bikeuser_id'] = user.id
                 request.session['bikeuser_username'] = user.username
                 request.session['bikeuser_role'] = user.role.lower()
                 request.session['bikeuser_first_name'] = user.first_name
                 request.session['bikeuser_last_name'] = user.last_name
-                
+
                 messages.success(request, f"Welcome back, {user.first_name}! Access granted.")
                 return redirect('motorbike_rental:index')
-               
+
             else:
                 messages.error(request, "Access Denied: Incorrect password.")
 
@@ -74,133 +135,241 @@ def login_view(request):
             messages.error(request, "Access Denied: Username does not exist.")
 
     # Render your actual login HTML page on a GET request
-    return render(request, 'login.html')
+    return render(request, 'motorbike_rental/index.html')
 
-
-
-
-'''
-def login_view(request):
-    # If the user is already inside the session table, let them proceed directly to the index
-    if 'bikeuser_id' in request.session:
-        return redirect('motorbike_rental:index')
-
-    if request.method == 'POST':
-        username_input = request.POST.get('username')
-        password_input = request.POST.get('password')
-        email_input = request.POST.get('email') 
-
-        try:
-            # 1. Check if the user is inside the bikeuser database table
-            user = bikeuser.objects.get(username=username_input, email=email_input, password=password_input)
-
-            if (user.password == password_input) and (user.email == email_input) and (user.username == username_input):
-                # 3. Log them in by saving their credentials to the session
-                request.session['bikeuser_id'] = user.id
-                request.session['bikeuser_username'] = user.username
-                request.session['bikeuser_role'] = user.role
-                
-                messages.success(request, f"Welcome back, {user.first_name}! Access granted.")
-                
-                # 4. Proceed to the main application interface
-                return redirect('motorbike_rental:index')
-            else:
-                # Runs if the user exists, but the password was typed incorrectly
-                messages.error(request, "Access Denied: Invalid username or password.")
-            
-            # 2. If they are inside the table, verify their password matches securely
-           # if check_password(password_input, user.password):
-                
-                # 3. Log them in by saving their credentials to the session
-            #    request.session['bikeuser_id'] = user.id
-            #    request.session['bikeuser_username'] = user.username
-            #    request.session['bikeuser_role'] = user.role
-            
-            #    messages.success(request, f"Welcome back, {user.first_name}! Access granted.")
-                
-                # 4. Proceed to the main application interface
-            #    return redirect('motorbike_rental:index')
-            #else:
-                # Runs if the user exists, but the password was typed incorrectly
-            #    messages.error(request, "Access Denied: Invalid password.")
-                
-        except bikeuser.DoesNotExist:
-            # Runs if the user is completely missing from the bikeuser database table
-            messages.error(request, "Access Denied: Username does not exist in our records.")
-
-    # Render the login form if it's a GET request or authentication failed
-    return redirect('motorbike_rental:index')
 '''
 
 class IndexView(TemplateView):
-    
+
     template_name = 'motorbike_rental/index.html'
     def get_context_data(self, **kwargs):
+
         # Call the base implementation to get the default context
         context = super().get_context_data(**kwargs)
-        
-        # Add your different database querysets
-        # Fetch all motorbikes from the database
-        context['bikeslist'] = tblmotorbike.objects.all()
 
-        # Fetch all users from the database
-        context['userlist'] = bikeuser.objects.all()
+        role = self.request.session.get("bikeuser_role")
+        user_id = self.request.session.get("bikeuser_id")
+
+        if role in ["staff", "admin"]:
+
+            #bookings = Booking.objects.all()
+            #Fetch all users from the database
+            context['userlist'] = bikeuser.objects.all()
+
+            # Fetch all motorbikes from the database
+            context['bikeslist'] = tblmotorbike.objects.all()
+
+        else:
+            context['bikeslist'] = tblmotorbike.objects.filter(id=user_id)
+            context['userlist'] = bikeuser.objects.filter(id=user_id)
+
         return context
+
+
+
+
+def show_booking_details(request, booking_id):
+
+    booking = get_object_or_404(
+        Booking,
+        id=booking_id
+    )
+
+    # Find current stage position
+    current_index = 0
+
+    stages = [
+        ("pending", "Pending"),
+        ("approved", "Approved"),
+        ("preparing", "Preparing Bike"),
+        ("ready", "Ready for Collection"),
+        ("active", "Active Hire"),
+        ("completed", "Completed"),
+        ("rejected", "Rejected"),
+        ("cancelled", "Cancelled"),
+    ]
     
-        #context['latest_articles'] = Article.objects.filter(is_published = True).order_by('-pub_date')[:5]
-        #context['upcoming_events'] = Event.objects.filter(status='active').order_by('event_date' )[:3]
-        #context['featured_products'] = Product.objects.filter(is_featured = True)[:4]
+    for i, (status, _) in enumerate(stages):
+    
+        if status == booking.booking_status:
+            current_index = i
+            break
+
+    # Available actions depending on current status
+    actions = {
+        "pending": [
+            ("approved", "Approve Booking"),
+            ("rejected", "Reject Booking"),
+        ],
+   
+        "approved": [
+            ("preparing", "Start Preparing Bike"),
+        ],
+
+        "preparing": [
+            ("ready", "Bike Ready for Collection"),
+        ],
+
+        "ready": [
+            ("active", "Confirm Customer Collection"),
+        ],
+
+        "active": [
+            ("completed", "Complete Hire"),
+        ],
+
+        "completed": [],
+
+        "rejected": [],
+
+        "cancelled": [],
+    }
+
+
+    # Update booking status
+    if request.method == "POST":
+
+        new_status = request.POST.get("next_status")
+
+        available_statuses = [
+            status[0]
+            for status in actions.get(
+                booking.booking_status,
+                []
+            )
+        ]
+
+
+        if new_status in available_statuses:
+
+            old_status = booking.booking_status
+
+            booking.booking_status = new_status
+            booking.save()
+
+
+            print(
+                f"Booking {booking.id} changed "
+                f"from {old_status} to {new_status}"
+            )
+
+
+            messages.success(
+                request,
+                "Booking status updated successfully."
+            )
+
+
+        else:
+
+            messages.error(
+                request,
+                "Invalid booking status change."
+            )
+
+        
+
+        return redirect(
+            "motorbike_rental:show_booking_details",
+            booking_id=booking.id
+        )
+
+
+    next_actions = actions.get(
+        booking.booking_status,
+        []
+    )
+
+    print("Booking Status:", booking.booking_status)
+    print("Next Actions:", next_actions)
+    
+    return render(
+        request,
+        "motorbike_rental/index.html",
+        {
+            "user": booking.rentaluser,
+            "booking": booking,
+            "motorbike": booking.motorbike,
+            "show_motorbikebooking": True,
+            "errormsg": False,
+            "stages": booking.STATUS_CHOICES,
+            "current_index": current_index,
+            "actions": next_actions
+        }
+    )
+
+def all_bookings(request):
+
+    bookings = Booking.objects.select_related(
+        "rentaluser",
+        "motorbike"
+    ).all().order_by("-booking_date")
+
+    context = {
+        "bookings": bookings,
+        "show_allmotorbikebookings": True
+    }
+    return render(
+            request,
+            "motorbike_rental/index.html",
+            context
+    )
 
 def motorbike_detail(request, bike_id):
     # Fetch the specific motorbike or show a 404 error page
     motorbike = get_object_or_404(tblmotorbike, id=bike_id)
-    
     # We pass the motorbike object directly to the template
-    
     return render(request, 'motorbike_rental/motorbikedetail.html', {'motorbike': motorbike})
-
-    #return render(request, 'motorbike_rental/motorbike_detail1.html', {'motorbike': motorbike})
 
 def delete_bikeuser(request, user_id):
     # 1. Fetch the user row or throw a 404 page if they don't exist
     user = get_object_or_404(bikeuser, id=user_id)
-    
     # 2. Check if the deletion request is submitted via POST
     if request.method == "POST":
         user.delete()  # Removes the row from your database completely
-        
         # 3. Redirect back to your home page layout using your namespace
         return redirect('motorbike_rental:index')
-        
     # 4. Fallback safeguard: If a user tries to access this URL directly via GET, 
     # redirect them home without doing anything.
     return redirect('motorbike_rental:index')
-
 
 def edit_bikeuser(request, user_id):
     user = get_object_or_404(bikeuser, id=user_id)
 
     if request.method == "POST":
+        user.refresh_from_db()
         form = MemberForm(request.POST, instance=user)
+
+        print("POST DATA:", request.POST)   # <-- print submitted data here
+           
+        print("FORM DATA:", form.data)      # <-- print form data
+
         if form.is_valid():
-            form.save()
-            return redirect('motorbike_rental:index')
+
+            print("POST DATA:")
+            for key, value in request.POST.items():
+                print(key, "=", value)
+                print("Errors:", form.errors)
+                
+            user.role = request.POST.get("role").lower()
+
+            saved_user = form.save()
+
+            print(saved_user.first_name)
+            print(saved_user.last_name)
+            print(saved_user.email)
+            print(saved_user.role)
+            print(saved_user.phone_number)
+
+            return redirect("motorbike_rental:index")
         else:
-            # DEBUGGING: This prints validation errors to your terminal console
             print("Form Validation Errors:", form.errors)
-          
+
     else:
         form = MemberForm(instance=user)
-    return redirect('motorbike_rental:index', {'form': form, 'user': user})  
 
+    return redirect("motorbike_rental:index")
 
-'''
-bookings = Booking.objects.filter(
-    Q(booking_status="pending") |
-    Q(booking_status="active") |
-    Q(hiring_status="request")
-)
-'''
 def my_bookings(request):
 
     user_id = request.session["bikeuser_id"]
@@ -233,7 +402,6 @@ def get_booking_details(request, bike_id):
     )
 
     return render(request, 'motorbike_rental:index.html', {"booking": booking})
-
 
 def booking_details(request, bike_id):
 
@@ -284,16 +452,16 @@ def booking_details(request, bike_id):
             ("preparing", "Start Preparing Bike")
         ],
 
-        "preparing":[
-                     ("ready", "Bike Ready for Collection")
-                    ],
+        "preparing": [
+            ("ready", "Bike Ready for Collection")
+        ],
 
         "ready": [
-        ("active", "Confirm Collection")
+            ("active", "Confirm Collection")
         ],
 
         "active": [
-        ("completed", "Complete Hire")
+            ("completed", "Complete Hire")
         ],
 
         "completed": []
@@ -395,15 +563,40 @@ def booking_details(request, bike_id):
 
     '''
 
-    
+def users_by_role(request, role):
+    users = bikeuser.objects.filter(role__iexact=role)
 
-
-def user_list(request):
-    users = bikeuser.objects.all().order_by("first_name", "last_name")
     context = {
         "AllUsers": True,
         "userlist": users,
+        "role": role.title()
     }
+    return render(
+        request,
+        "motorbike_rental/index.html",
+        context
+    )    
+    
+def user_list(request):
+    users = bikeuser.objects.all().order_by("first_name", "last_name")
+
+    role = request.session.get("bikeuser_role")
+    user_id = request.session.get("bikeuser_id")
+
+    context = {
+        "AllUsers": True,
+        "userlist": users,
+        "MotorbikeUsers": False,
+    }
+
+    if role in ["staff", "admin"]:
+        # Fetch all users from the database
+        context['userlist'] = bikeuser.objects.all()
+        # Fetch all motorbikes from the database
+        context['bikeslist'] = tblmotorbike.objects.all()
+    else:
+        context['bikeslist'] = tblmotorbike.objects.filter(id=user_id)
+        context['userlist'] = bikeuser.objects.filter(id=user_id)
 
     return render(
         request,
@@ -423,157 +616,7 @@ def motorbike_list(request):
         "motorbike_rental/index.html",
         context
     )    
-    
-
-    
-''' 
-# current_index = int(0)
-# current_index = int(current_index) 
-if request.method == "POST":
-        action = request.POST.get("action")
-        show = request.POST.get("bookingprogress")
-       
-        show_motorbikebooking = False
-        show_bookingprogress = False
-
-        if action == "approved":
-            booking.booking_status = "approved"
-            booking.save()
-
-
-        elif action == "rejected":
-            booking.booking_status = "rejected"
-            booking.save()
-
-        
-        
-        if show == "true":
-            #show_motorbikebooking = False
-            #show_bookingprogress = True
-            context = {
-                "user": user,
-                "booking": booking,
-                "motorbike": booking.motorbike,
-                "show_motorbikebooking": False,
-                "show_bookingprogress": True,
-                "stages": booking.STATUS_CHOICES,
-                "current_index": current_index,
-                "actions": next_actions
-            }
-            return render(request, "motorbike_rental/index.html", context)  
-
-        else:
-
-            #show_motorbikebooking = True
-            #show_bookingprogress = False
-            context = {
-                "user": user,
-                "booking": booking,
-                "motorbike": booking.motorbike,
-                "show_motorbikebooking": True,
-                "show_bookingprogress": False,
-                "stages": booking.STATUS_CHOICES,
-                "current_index": current_index,
-                "actions": next_actions
-            }
-            return render(request, "motorbike_rental/index.html", context)  
-
-
-    return render(request, "motorbike_rental/index.html", context)  
-'''             
-          
-   
-'''
-def booking_details(request, bike_id):
-
-    # Logged-in user
-    user_id = request.session.get("bikeuser_id")
-    if not user_id:
-        return JsonResponse({"error": "User not logged in"}, status=401)
-
-    # Get user
-    user = get_object_or_404(bikeuser, id=user_id)
-
-    # Get booking for this user and this motorbike
-    booking = get_object_or_404(
-        Booking.objects.select_related("rentaluser", "motorbike"),
-        rentaluser_id=user_id,
-        motorbike_id=bike_id
-    )
-
-    data = {
-        "user": {
-            "id": user.id,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-            "full_name": f"{user.first_name} {user.last_name}",
-            "email": user.email,
-            "phone": user.phone_number,
-            "licence": user.driving_licence_number,
-            "address": user.address,
-        },
-        "booking": {
-            "id": booking.id,
-            "booking_reference": booking.booking_reference,
-            "status": booking.booking_status,
-            "status_display": booking.get_booking_status_display(),
-            "pickup_date": booking.pickup_date.strftime("%Y-%m-%d"),
-            "return_date": booking.return_date.strftime("%Y-%m-%d"),
-            
-        },
-        "motorbike": {
-            "id": booking.motorbike.id,
-            "make": booking.motorbike.bike_make,
-            "model": booking.motorbike.bike_model,
-            "registration_number": booking.motorbike.bike_plate_number,
-            "daily_rate": float(booking.motorbike.bike_daily_rate),
-        }
-    }
-
-    return JsonResponse(data)
-
-'''
-
-
-'''
-def booking_details(request, bike_id):
-
-    booking = get_object_or_404(
-        Booking.objects.select_related("rentaluser", "motorbike"),
-        id=bike_id)
-
-    user_id = request.session.get("bikeuser_id")
-    if not user_id:
-        return JsonResponse({"error": "User not logged in"}, status=401)
-   
-    data = {
-        "id": booking.id,
-        "booking_reference": booking.booking_reference,
-        "status": booking.booking_status,
-        "status_display": booking.get_booking_status_display(),
-        "start_date": booking.start_date.strftime("%Y-%m-%d"),
-        "end_date": booking.end_date.strftime("%Y-%m-%d"),
-
-        "rentaluser": {
-            "id": booking.rentaluser.id,
-            "first_name": booking.rentaluser.first_name,
-            "last_name": booking.rentaluser.last_name,
-            "email": booking.rentaluser.email,
-        },
-
-        "motorbike": {
-            "id": booking.motorbike.id,
-            "make": booking.motorbike.make,
-            "model": booking.motorbike.model,
-            "registration_number": booking.motorbike.registration_number,
-            "daily_rate": float(booking.motorbike.daily_rate),
-        }
-    }
-
-    return JsonResponse(data)
-
-'''
-
+      
 def get_user_details(request):
 
     user_id = request.session.get("bikeuser_id")
@@ -590,38 +633,6 @@ def get_user_details(request):
         "licence": user.driving_licence_number,
         "address": user.address,
     })
-
-
-'''
-def manage_motorbikes(request):
-    bikes = tblmotorbike.objects.all()
-    return render(request, 'motorbike_rental/manage_motorbikes.html', {
-        'bikes': bikes
-    })
-'''
-
-'''
-def check_bookingstatus(request):
-
-    bookings = Booking.objects.filter(
-        Q(booking_status__in=[
-            "pending",
-            "active"
-        ]) |
-        Q(hiring_status="request")
-    )
-
-    context = {
-        "bookings": bookings
-    }
-
-    return render(
-        request,
-        "admin/bookings.html",
-        context
-    )
-'''
-
 
 def hire_motorbike(request, bike_id):
     bike = get_object_or_404(tblmotorbike, id=bike_id)
@@ -675,6 +686,17 @@ def hire_motorbike(request, bike_id):
           
     return render(request, 'motorbike_rental:index.html', {'bike': bike})
 
+def add_bikeuser(request):
+    if request.method == "POST":
+        form = MemberForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect("motorbike_rental:index")
+    else:
+        form = MemberForm()
+
+    return render(request, "add_bikeuser.html", {"form": form})
 
 def add_motorbike(request):
     if request.method == 'POST':
@@ -723,7 +745,6 @@ def add_motorbike(request):
     
     return render(request, 'motorbike_rental/index.html')
 
-
 def edit_motorbike(request, bike_id):
     bike = get_object_or_404(tblmotorbike, id=bike_id)
 
@@ -739,7 +760,6 @@ def edit_motorbike(request, bike_id):
 
     return render(request, 'motorbike_rental/index.html', {'form': form})
 
-
 def delete_motorbike(request, bike_id):
 
     bike = get_object_or_404(tblmotorbike, id=bike_id)
@@ -748,7 +768,6 @@ def delete_motorbike(request, bike_id):
         bike.delete()
         return redirect('motorbike_rental:index')
     return redirect('motorbike_rental:index')
-
 
 def registeruser(request):
 
@@ -780,66 +799,6 @@ def registeruser(request):
     
     return render(request, 'motorbike_rental/index.html')
 
-
-'''
-class IndexView(TemplateView):
-    template_name = 'myapp/index.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-
-        # 1. Public Content (Visible to everyone)
-        context['public_articles'] = Article.objects.filter(is_published=True)[:5]
-
-        # 2. Premium Content (Logged-in users only)
-        if user.is_authenticated:
-            context['premium_content'] = PremiumContent.objects.all()
-        else:
-            context['premium_content'] = None
-
-        # 3. Staff Content (Users with explicit permissions or staff flags)
-        if user.is_staff or user.has_perm('myapp.view_adminlog'):
-            context['admin_logs'] = AdminLog.objects.order_by('-timestamp')[:10]
-            
-        return context
-'''        
-
-
-'''
-class IndexView(generic.ListView):
-    template_name = 'motorbike_rental/index.html'
-    context_object_name = 'bikeslist'
-
-    def get_queryset(self):
-        # Fetch all motorbikes from the database
-        return tblmotorbike.objects.all()
-
-class IndexView(generic.ListView):
-    template_name = 'motorbike_rental/index.html'
-    context_object_name = 'userlist'
-
-    def get_queryset(self):
-        # Fetch all users from the database
-        return bikeuser.objects.all()
-'''    
-
-'''
-def index(request):
-    # Fetch all motorbikes from the database
-    motorbikes = tblmotorbike.objects.all()
-    # Load the 'index.html' template
-    template = loader.get_template('index.html')
-    # Create a context dictionary to pass to the template
-    context = {
-        'bikeslist': motorbikes
-    } 
-    # Render the template with the context and return an HttpResponse  
-    return HttpResponse(template.render(context, request))
-    # return render(request, 'index.html')
-'''
-
-
 def customers_view(request):
     # Fetch all customers from the database
     customers = bikeuser.objects.all()
@@ -865,9 +824,3 @@ def tblmotorbikes_view(request):
     return HttpResponse(template.render(context, request))
     # return render(request, 'customers.html')
 
-#def menufile_view(request):
-#    return render(request, 'motorbike_rental/pickup2.html')
-
-
-def menufile_view(request):
-    return render(request, 'motorbike_rental/customer_dashboard.html')

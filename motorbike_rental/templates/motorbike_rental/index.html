@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bike Wonders XXXXX</title>
+  <title>Bike Wonders</title>
 
   <!--link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"-->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -21,7 +21,7 @@
 
 
   <!--script type="module" src="{% static '/jsfile/ukplate.js' %}"></script-->
-  <script defer type="text/javascript" src="{% static '/js/main.js' %}"></script>
+  <script defer type="text/javascript" src="{% static '/jsfile/main.js' %}"></script>
   <!--script defer type="text/javascript" src="{% static '/jsfile/funchelp.js' %}"></script-->
 
 </head>
@@ -31,7 +31,7 @@
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-    background-attachment: fixed; /* optional */
+    background-attachment: fixed; 
 ">
 
   <div id="loggeduser">
@@ -55,11 +55,11 @@
 
         <div class="navigation-items" id="navigation-items">
 
-          <!--h3 style="color:white; padding-right:20px;">
-            {{ request.session.bikeuser_role }} :
-            Welcome {{ request.session.bikeuser_first_name }}
+          <h3 style="color:white; padding-right:20px;">
+            Role: {{ request.session.bikeuser_role }}
+            User: {{ request.session.bikeuser_first_name }}
             {{ request.session.bikeuser_last_name }}
-          </h3-->
+          </h3>
 
 
           <li style="cursor: pointer" class="menu-item">
@@ -70,13 +70,10 @@
             </form>
           </li>
 
-          <!--li style="cursor: pointer" class="menu-item">
-            <a id="btnmanagemotorbikes" href="/motorbike_rental/manage_motorbikes">manage</a>
-          </li-->
 
-          <li style="cursor: pointer" class="menu-item">
+          <!--li style="cursor: pointer" class="menu-item">
             <a id="btnDashboard" href="/motorbike_rental/customer_dashboard">Progress</a>
-          </li>
+          </li-->
 
           <li style="cursor: pointer" class="menu-item">
             <a id="btnDashboard" href="/motorbike_rental">Dashboard</a>
@@ -110,23 +107,9 @@
           </style>
 
 
+          {% if request.session.bikeuser_role == "Admin" or request.session.bikeuser_role == "admin" %}
 
-          <!--li id="mnuMotorbikes" class="dropdownsubmenu menu-item"
-            onmouseover=" toggleUserMenu(document.getElementById('mnuMotorbikes'), true)" ,
-            onmouseout=" toggleUserMenu(document.getElementById('mnuMotorbikes'), false)"-->
-          <li id="mnuMotorbikes" class="dropdownsubmenu menu-item 
-            {% 
-              if request.session.bikeuser_role == 'Admin' 
-              or request.session.bikeuser_role == 'Staff' 
-              or request.session.bikeuser_role == 'Customer'
-            %}
-              
-              menu-disabled-item
-              
-            {% endif 
-               
-            %}">
-
+          <li id="mnuMotorbikes" class="dropdownsubmenu">
 
             <a onclick="toggleSubmenu(event)">
               Motorbikes ▼
@@ -140,49 +123,17 @@
                 </a>
               </li>
 
-              <li style="width:150px;">
-
+              <!--li style="width:150px;">
                 <a id="submnubikelisting" style="cursor: pointer;">
                   Manage Motorbikes
                 </a>
-              </li>
-              <li>
+              </li-->
 
+              <li>
                 <a href="{% url 'motorbike_rental:motorbike_list' %}">
                   Browse Motorbikes
                 </a>
-              </li>
 
-
-
-            </ul>
-
-
-          </li>
-
-
-          <li id="mnuBookings" class="dropdownsubmenu menu-item">
-
-            <a onclick="toggleSubmenu(event)">
-              Bookings ▼
-            </a>
-
-            <ul id="submnuBookings" class="submenu" onmouseout="toggle_visibility('submnuBookings')">
-
-              <li style="width:150px;">
-                <a href="#">
-                  New Booking
-                </a>
-              </li>
-
-              <li style="width:150px;" id="submnuAvailBookings">
-                <a href="#">
-                  Booking Status
-                </a>
-              </li>
-
-              <li style="width:150px;">
-                <a>Cancel Booking</a>
               </li>
 
             </ul>
@@ -203,9 +154,6 @@
                   Browse Members
                 </a>
 
-                <!--a href="#">
-                  Members
-                </a-->
               </li>
 
               <li style="width:150px;">
@@ -229,11 +177,120 @@
 
           </li>
 
-          <li style="cursor: pointer" class="menu-item">
-            <!--a id="btnCustomers" href="/motorbike_rental">Users</a-->
-            <!--a id="btnCustomers" href="/motorbike_rental/customers">Customers</a-->
-            <!--a id="btnCustomers" onclick="javascript:alert('Customers not implemented yet')">Customers</a-->
+          {% elif request.session.bikeuser_role == "Staff" or request.session.bikeuser_role == "staff" %}
+
+          <li id="mnuBookings" class="dropdownsubmenu menu-item">
+
+            <a onclick="toggleSubmenu(event)">
+              Bookings ▼
+            </a>
+
+            <ul id="submnuBookings" class="submenu" onmouseout="toggle_visibility('submnuBookings')">
+
+              <li>
+
+                <a href="{% url 'motorbike_rental:all_bookings' %}">
+                  Browse Bookings
+                </a>
+                <!--a href="{% url 'motorbike_rental:all_bookings' %}">
+                  <i class="bi bi-calendar-check"></i>
+                  Manage Bookings
+                </a-->
+              </li>
+
+              <li style="width:150px;">
+                <a href="#">
+                  New Booking
+                </a>
+              </li>
+
+              <li style="width:150px;" id="submnuAvailBookings">
+                <a href="#">
+                  Booking Status
+                </a>
+              </li>
+
+              <li style="width:150px;">
+                <a>Cancel Booking</a>
+              </li>
+
+            </ul>
+
           </li>
+
+
+          {% elif request.session.bikeuser_role == "Customer" or request.session.bikeuser_role == "customer" %}
+
+          <li id="mnuMotorbikes" class="dropdownsubmenu">
+
+            <a onclick="toggleSubmenu(event)">
+              Motorbikes ▼
+            </a>
+
+            <ul id="submnuMotorbikes" class="submenu" onmouseout="toggle_visibility('submnuMotorbikes')">
+
+              <li style="width:150px;">
+                <a id="submnuMotorbikeStatus" style="cursor: pointer;">
+                  Motorbikes Status
+                </a>
+              </li>
+
+              <!--li style="width:150px;">
+                <a id="submnubikelisting" style="cursor: pointer;">
+                  Manage Motorbikes
+                </a>
+              </li-->
+
+              <li>
+                <a href="{% url 'motorbike_rental:motorbike_list' %}">
+                  Browse Motorbikes
+                </a>
+
+              </li>
+
+            </ul>
+
+          </li>
+
+          <li id="mnuUsers" class="dropdownsubmenu" class="menu-item">
+
+            <a onclick="toggleSubmenu(event)">
+              Users ▼
+            </a>
+
+            <ul id="submnuUsers" class="submenu" onmouseout="toggle_visibility('submnuUsers')">
+
+              <li style="width:150px;" id="submnuMembersListing">
+
+                <a href="{% url 'motorbike_rental:user_list' %}">
+                  Browse Members
+                </a>
+
+
+              </li>
+
+              <li style="width:150px;">
+                <a href="#">
+                  Admin
+                </a>
+              </li>
+
+              <li style="width:150px;" id="submnuStaff">
+                <a href="#">
+                  Staff
+                </a>
+              </li>
+
+              <li style="width:150px;">
+                <a>Customer</a>
+              </li>
+
+
+            </ul>
+
+          </li>
+
+          {% endif %}
 
 
         </div>
@@ -250,252 +307,6 @@
 
     <main class="site-contentxxx">
 
-      <style>
-        .accessories {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 12px;
-        }
-
-        .checkbox-card {
-          position: relative;
-          cursor: pointer;
-        }
-
-        .checkbox-card input {
-          display: none;
-        }
-
-        .checkbox-card span {
-          display: inline-block;
-          padding: 12px 14px;
-          border: 2px solid #ddd;
-          border-radius: 12px;
-          background: white;
-          transition: all 0.3s ease;
-          font-weight: 600;
-        }
-
-        .checkbox-card:hover span {
-          border-color: #6c63ff;
-          transform: translateY(-2px);
-        }
-
-        .checkbox-card input:checked+span {
-          background: #6c63ff;
-          color: white;
-          border-color: #6c63ff;
-          /*box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3); */
-        }
-
-        .checkbox-card input:checked+span::after {
-          content: "✓";
-          margin-left: 8px;
-          font-weight: bold;
-        }
-
-
-        .modal {
-          position: fixed;
-          inset: 0;
-          background: rgba(0, 0, 0, 0.6);
-          display: none;
-          justify-content: center;
-          align-items: center;
-          backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-          background: #fff;
-          padding: 30px;
-          width: 350px;
-          border-radius: 20px;
-          text-align: center;
-          box-shadow: 0 20px 40px rgba(0, 0, 0, .3);
-          animation: popIn .3s ease;
-        }
-
-        .error-icon {
-          font-size: 60px;
-          margin-bottom: 10px;
-        }
-
-        .modal-content h2 {
-          color: #e53935;
-          margin-bottom: 10px;
-        }
-
-        .modal-content p {
-          color: #666;
-          margin-bottom: 20px;
-        }
-
-        .cancel-btn {
-          background: #e53935;
-          color: white;
-          border: none;
-          padding: 12px 25px;
-          border-radius: 10px;
-          cursor: pointer;
-          font-size: 16px;
-          transition: .3s;
-        }
-
-        .cancel-btn:hover {
-          background: #c62828;
-          transform: scale(1.05);
-        }
-
-        @keyframes popIn {
-          from {
-            transform: scale(0.7);
-            opacity: 0;
-          }
-
-          to {
-            transform: scale(1);
-            opacity: 1;
-          }
-        }
-
-
-        .cards {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-          gap: 20px;
-        }
-
-        .card {
-          background: white;
-          padding: 20px;
-          border-radius: 10px;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, .1);
-        }
-
-        .userrow {
-          /*background-color: #6c63ff;*/
-          margin-top: 10px;
-          margin-bottom: 5px;
-          padding: 5px;
-          border-radius: 10px;
-        }
-
-        .userrow:hover {
-          /*background-color: #493399;*/
-
-          background: linear-gradient(to right, #ff3c00, #e63600);
-          color: #ddd;
-          cursor: pointer
-        }
-
-        .usersearch {
-          margin-bottom: 10px;
-          padding: 5px;
-          border-radius: 5px;
-          border: 1px solid #ccc;
-          width: 100%;
-        }
-
-        .messages-container {
-          margin: 20px 0;
-        }
-
-        .alert {
-          padding: 12px;
-          border-radius: 4px;
-          margin-bottom: 10px;
-          font-family: sans-serif;
-        }
-
-        /* Style for messages.error */
-        .alert-error {
-          background-color: #fde8e8;
-          color: #9b1c1c;
-          border: 1px solid #f8b4b4;
-        }
-
-        /* Style for messages.success */
-        .alert-success {
-          background-color: #def7ec;
-          color: #03543f;
-          border: 1px solid #bfecdc;
-        }
-
-
-        .alert {
-          padding: 12px;
-          border-radius: 4px;
-          margin-bottom: 10px;
-          font-family: sans-serif;
-          opacity: 1;
-          max-height: 100px;
-          /* High enough to contain the text */
-          overflow: hidden;
-          /* This transition handles everything at once */
-          transition: opacity 0.6s ease, max-height 0.6s ease, padding 0.6s ease, margin 0.6s ease;
-        }
-
-        /* When JavaScript adds this class, the alert will shrink and fade */
-        .alert.disappear {
-          opacity: 0;
-          max-height: 0;
-          padding-top: 0;
-          padding-bottom: 0;
-          margin-bottom: 0;
-          border-top-width: 0;
-          border-bottom-width: 0;
-        }
-
-        /* Colors for message tags */
-        .alert-error {
-          background-color: #fde8e8;
-          color: #9b1c1c;
-          border: 1px solid #f8b4b4;
-        }
-
-        .alert-success {
-          background-color: #def7ec;
-          color: #03543f;
-          border: 1px solid #bfecdc;
-        }
-
-
-
-        .containererrormsg {
-
-          border-radius: 8px;
-          color: #fff;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-          overflow: hidden;
-        }
-
-
-
-        /* menu restrictions */
-        .menu-disabled {
-          pointer-events: none;
-          /* Prevents clicking */
-          cursor: not-allowed;
-          /* Shows 🚫 cursor */
-          opacity: 0.45;
-          /* Greyed out */
-          color: #999 !important;
-          user-select: none;
-          /* Prevent text selection */
-        }
-
-        .menu-disabled i {
-          color: #999 !important;
-        }
-
-        .menu-disabled-item {
-          pointer-events: none;
-          cursor: not-allowed;
-          opacity: 0.45;
-        }
-      </style>
 
       <!-- Delete Modal -->
       <div id="deleteModal" class="modal">
@@ -612,7 +423,6 @@
                 <input type="text" id="address" name="address">
               </div>
 
-
             </div>
 
             <hr>
@@ -631,10 +441,7 @@
 
           </form>
 
-
-
         </div>
-
 
       </section>
 
@@ -707,8 +514,6 @@
 
       <section id="Motorbike_Management_Section" class="content-section" {% if AllMotorbikes %}
         style="display:block; padding-top:20px;" {% else %} style="display:none; padding-top:20px;" {% endif %}>
-
-        <!--section id="Motorbike_Management_Section" class="content-section" style=" display:none; margin-bottom: 20px;"-->
 
         <div class="table-container">
 
@@ -873,8 +678,10 @@
 
       </section>
 
+      <section id="Motorbike_Users" class="content-section" {% if MotorbikeUsers %}
+        style="display:block; padding-top:20px;" {% else %} style="display:none; padding-top:20px;" {% endif %}>
 
-      <section id="Motorbike_Users" class="container" style=" display: none;">
+        <!--section id="Motorbike_Users" class="container" style=" display: none;"-->
 
         <div class="booking-widget" id="divUserDetails" class="modal" style="display:block">
 
@@ -884,101 +691,123 @@
             🏍 View Account
           </h2>
 
-          <form action="{% url 'motorbike_rental:edit_bikeuser' 1 %}" id="frmUser">
+
+          {% if user.id %}
+          <form method="POST" action="{% url 'motorbike_rental:edit_bikeuser' user.id %}" id="frmUser">
             {% csrf_token %}
 
-            <!-- This section will visibly display why your fields are failing -->
-            {% if form.errors %}
-            <div style="color: red; font-weight: bold;">
-              Please fix the errors below:
-              {{ form.errors }}
-            </div>
-            {% endif %}
+            {% else %}
+            <form method="POST" action="{% url 'motorbike_rental:edit_bikeuser' 0 %}" id="frmUser">
+              {% csrf_token %}
+              {% endif %}
+
+              <!-- This section will visibly display why your fields are failing -->
+              {% if form.errors %}
+              <div style="color: red; font-weight: bold;">
+                Please fix the errors below:
+                {{ form.errors }}
+              </div>
+              {% endif %}
 
 
-            {{ form.as_p }}
+              <div class="booking-grid">
 
-            <div class="booking-grid">
+                <div class="form-group">
+                  <label>First Name</label>
+                  <input type="text" id="first_name" name="first_name" required>
+                </div>
 
-              <div class="form-group">
-                <label>First Name</label>
-                <input type="text" id="first_name" name="first_name" required>
+                <div class="form-group">
+                  <label>Last Name</label>
+                  <input type="text" id="last_name" name="last_name" required>
+                </div>
+
+                <div class="form-group">
+                  <label>Email</label>
+                  <input type="email" id="useremail" name="email" required>
+                </div>
+
+                <div class="form-group">
+                  <label>Username</label>
+                  <input type="text" id="username" name="username" required>
+                </div>
+
+                <div class="form-group">
+                  <label>Password</label>
+                  <input type="password" id="password" name="password" required>
+                </div>
+
+                <div class="form-group">
+                  <label>Confirm password</label>
+                  <input type="password" id="password2" name="password2" required>
+                </div>
+
+                <div class="form-group">
+                  <label>Phone Number</label>
+                  <input type="text" id="phone_number" value="{{ user.phone_number}}" name="phone_number">
+                </div>
+
+                <div class="form-group">
+                  <label>Driving Licence Number</label>
+                  <input type="text" id="driving_licence_number" name="driving_licence_number" required>
+                </div>
+
+                <div class="form-group">
+                  <label>Date of Birth</label>
+                  <input type="date" id="date_of_birth" name="date_of_birth">
+                </div>
+
+                <div class="form-group">
+                  <label>Role</label>
+
+                  <select id="role" name="role">
+                    <option value="admin" selected>Admin</option>
+                    <option value="staff">Staff</option>
+                    <option value="customer">Customer</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Address</label>
+                  <input type="text" id="address" name="address">
+                </div>
+
               </div>
 
-              <div class="form-group">
-                <label>Last Name</label>
-                <input type="text" id="last_name" name="last_name" required>
-              </div>
+              <hr>
 
-              <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="useremail" name="email" required>
-              </div>
+              <button id="btnCancelUser" type="button" class="btn" onclick="cancelSection('Motorbike_Users')">
+                Cancel
+              </button>
 
-              <div class="form-group">
-                <label>Username</label>
-                <input type="text" id="username" name="username" required>
-              </div>
+              <button id="btnshowMembers" type="button" class="btn" onclick="makeaselection('Motorbike_Users_Listing')">
+                Members
+              </button>
 
-              <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="password1" name="password1" required>
-              </div>
+              <button id="btnDeleteUser" type="button" class="btn"
+                onclick="DeleteUser(document.getElementById('frmUser'), document.getElementById('user_id').value)">
+                Delete
+              </button>
 
-              <div class="form-group">
-                <label>Confirm password</label>
-                <input type="password" id="password2" name="password2" required>
-              </div>
+              <button id="btnSaveUser" type="submit" class="btn">
+                Save
+              </button>
 
-              <div class="form-group">
-                <label>Phone Number</label>
-                <input type="text" id="phone_number" name="phone_number">
-              </div>
+              <button id="btnClear" type="button" class="btn" onclick="clearformdata(this.form)">
+                Clear
+              </button>
 
-              <div class="form-group">
-                <label>Driving Licence Number</label>
-                <input type="text" id="driving_licence_number" name="driving_licence_number" required>
-              </div>
+              <button id="btnAddUser" type="button" class="btn" onclick="AddBikeUser(this.form)">
+                Add User
+              </button>
 
-              <div class="form-group">
-                <label>Date of Birth</label>
-                <input type="date" id="date_of_birth" name="date_of_birth">
-              </div>
-
-              <div class="form-group">
-                <label>Role</label>
-                <input type="text" id="role" name="role">
-              </div>
-
-              <div class="form-group">
-                <label>Address</label>
-                <input type="text" id="address" name="address">
-              </div>
-
-            </div>
-
-            <hr>
-
-            <button id="btnCancelUser" type="button" class="btn" onclick="cancelSection('Motorbike_Users')">
-              Cancel
-            </button>
-
-            <button id="btnshowMembers" type="button" class="btn" onclick="makeaselection('Motorbike_Users_Listing')">
-              Members
-            </button>
-
-            <button id="btnDeleteUser" type="button" class="btn"
-              onclick="DeleteUser(document.getElementById('frmUser'), document.getElementById('user_id').value)">
-              Delete
-            </button>
-
-            <button id="btnSaveUser" type="submit" class="btn"
+              <!--button id="btnSaveUser" type="submit" class="btn"
               onclick="SaveUserChanges(document.getElementById('frmUser'), document.getElementById('user_id').value)">
               Save
-            </button>
+            </button-->
 
-            <input type="input" id="user_id" value="{{ user.id }}" name="user_id" hidden>
-          </form>
+              <input type="input" id="user_id" value="{{ user.id }}" name="user_id" hidden>
+            </form>
 
         </div>
 
@@ -997,7 +826,7 @@
         <br>
 
 
-        <div id="userlist" style="display:block">
+        <div class="card" id="userlist" style="display:block">
 
           <h2 style="color:white; padding: 10px; background-color: #493399; border-radius: 8px;">Bike Wonders Users
             listing --- Double Click to View User Account Details </h2>
@@ -1007,17 +836,17 @@
           <div id="selecteduser{{user.id}}" data-userid="{{ user.id }}" data-userfirstname="{{ user.first_name }}"
             data-userlastname="{{ user.last_name }}" data-useremail="{{ user.email }}"
             data-userphone="{{ user.phone_number }}" data-username="{{ user.username }}"
-            data-userpassword1="{{ user.password }}" data-userpassword2="{{ user.password }}"
+            data-userpassword="{{ user.password }}" data-userpassword2="{{ user.password }}"
             data-userdrivinglicence="{{ user.driving_licence_number }}"
             data-userdateofbirth="{{ user.date_of_birth|date:'Y-m-d' }}" data-useraddress="{{ user.address }}"
             data-userrole="{{ user.role }}">
 
             <div
-              onclick=" showuserdetails(document.getElementById('frmUser'), document.getElementById('selecteduser{{user.id}}'));"
+              onclick="showuserdetails(document.getElementById('frmUser'), document.getElementById('selecteduser{{user.id}}'));"
               class="userrow">
               <p style="font-size: 0.92rem; font-weight: 600;">
-                <strong> {{user.first_name}} {{ user.last_name }} {{ user.email}}
-                  {{ user.phone_number }} </strong>
+                <strong> {{user.first_name}} {{ user.last_name }} email: {{ user.email}}
+                  phone: {{ user.phone_number }} </strong>
               </p>
             </div>
 
@@ -1028,6 +857,249 @@
 
       </section>
 
+
+      <style>
+        .accessories {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 12px;
+        }
+
+        .checkbox-card {
+          position: relative;
+          cursor: pointer;
+        }
+
+        .checkbox-card input {
+          display: none;
+        }
+
+        .checkbox-card span {
+          display: inline-block;
+          padding: 12px 14px;
+          border: 2px solid #ddd;
+          border-radius: 12px;
+          background: white;
+          transition: all 0.3s ease;
+          font-weight: 600;
+        }
+
+        .checkbox-card:hover span {
+          border-color: #6c63ff;
+          transform: translateY(-2px);
+        }
+
+        .checkbox-card input:checked+span {
+          background: #6c63ff;
+          color: white;
+          border-color: #6c63ff;
+          /*box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3); */
+        }
+
+        .checkbox-card input:checked+span::after {
+          content: "✓";
+          margin-left: 8px;
+          font-weight: bold;
+        }
+
+        .modal {
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.6);
+          display: none;
+          justify-content: center;
+          align-items: center;
+          backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+          background: #fff;
+          padding: 30px;
+          width: 350px;
+          border-radius: 20px;
+          text-align: center;
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+          animation: popIn 0.3s ease;
+        }
+
+        .error-icon {
+          font-size: 60px;
+          margin-bottom: 10px;
+        }
+
+        .modal-content h2 {
+          color: #e53935;
+          margin-bottom: 10px;
+        }
+
+        .modal-content p {
+          color: #666;
+          margin-bottom: 20px;
+        }
+
+        .cancel-btn {
+          background: #e53935;
+          color: white;
+          border: none;
+          padding: 12px 25px;
+          border-radius: 10px;
+          cursor: pointer;
+          font-size: 16px;
+          transition: 0.3s;
+        }
+
+        .cancel-btn:hover {
+          background: #c62828;
+          transform: scale(1.05);
+        }
+
+        @keyframes popIn {
+          from {
+            transform: scale(0.7);
+            opacity: 0;
+          }
+
+          to {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+
+        .cards {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 20px;
+        }
+
+        .card {
+          background: white;
+          padding: 20px;
+          border-radius: 10px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .userrow {
+          /*background-color: #6c63ff;*/
+          margin-top: 10px;
+          margin-bottom: 5px;
+          padding: 5px;
+          border-radius: 10px;
+        }
+
+        .userrow:hover {
+          /*background-color: #493399;*/
+
+          background: linear-gradient(to right, #ff3c00, #e63600);
+          color: #ddd;
+          cursor: pointer;
+        }
+
+        .usersearch {
+          margin-bottom: 10px;
+          padding: 5px;
+          border-radius: 5px;
+          border: 1px solid #ccc;
+          width: 100%;
+        }
+
+        .messages-container {
+          margin: 20px 0;
+        }
+
+        .alert {
+          padding: 12px;
+          border-radius: 4px;
+          margin-bottom: 10px;
+          font-family: sans-serif;
+        }
+
+        /* Style for messages.error */
+        .alert-error {
+          background-color: #fde8e8;
+          color: #9b1c1c;
+          border: 1px solid #f8b4b4;
+        }
+
+        /* Style for messages.success */
+        .alert-success {
+          background-color: #def7ec;
+          color: #03543f;
+          border: 1px solid #bfecdc;
+        }
+
+        .alert {
+          padding: 12px;
+          border-radius: 4px;
+          margin-bottom: 10px;
+          font-family: sans-serif;
+          opacity: 1;
+          max-height: 100px;
+          /* High enough to contain the text */
+          overflow: hidden;
+          /* This transition handles everything at once */
+          transition:
+            opacity 0.6s ease,
+            max-height 0.6s ease,
+            padding 0.6s ease,
+            margin 0.6s ease;
+        }
+
+        /* When JavaScript adds this class, the alert will shrink and fade */
+        .alert.disappear {
+          opacity: 0;
+          max-height: 0;
+          padding-top: 0;
+          padding-bottom: 0;
+          margin-bottom: 0;
+          border-top-width: 0;
+          border-bottom-width: 0;
+        }
+
+        /* Colors for message tags */
+        .alert-error {
+          background-color: #fde8e8;
+          color: #9b1c1c;
+          border: 1px solid #f8b4b4;
+        }
+
+        .alert-success {
+          background-color: #def7ec;
+          color: #03543f;
+          border: 1px solid #bfecdc;
+        }
+
+        .containererrormsg {
+          border-radius: 8px;
+          color: #fff;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          overflow: hidden;
+        }
+
+        /* menu restrictions */
+        .menu-disabled {
+          pointer-events: none;
+          /* Prevents clicking */
+          cursor: not-allowed;
+          /* Shows 🚫 cursor */
+          opacity: 0.45;
+          /* Greyed out */
+          color: #999 !important;
+          user-select: none;
+          /* Prevent text selection */
+        }
+
+        .menu-disabled i {
+          color: #999 !important;
+        }
+
+        .menu-disabled-item {
+          pointer-events: none;
+          cursor: not-allowed;
+          opacity: 0.45;
+        }
+      </style>
 
       <section id="Motorbike_Users_Listing" class="content-section" {% if AllUsers %}
         style="display:block; padding-top:20px;" {% else %} style="display:none; padding-top:20px;" {% endif %}>
@@ -1041,26 +1113,66 @@
             <input type="text" style="width: 90%;" id="UserSearch" placeholder="Search users..." />
 
             <button id="searchUser" class="btn"
-              onclick="searchItems(document.getElementById('UserSearch').value, document.getElementById('divuserlist'))">Search</button>
+              onclick="searchItems(document.getElementById('UserSearch').value, document.getElementById('divuserlist'))">
+              Search
+            </button>
 
           </div>
+
+
+          <hr>
+
+          <button id="btnCancelUser" type="button" class="btn" onclick="cancelSection('Motorbike_Users_Listing')">
+            Cancel
+          </button>
+
+          <button id="btnAdmin" type="button" class="btn">
+            <a href="{% url 'motorbike_rental:users_by_role' 'Admin' %}">
+              Administrators
+            </a>
+          </button>
+
+          <button id="btnCustomers" type="button" class="btn">
+
+            <a href="{% url 'motorbike_rental:users_by_role' 'Customer' %}">
+              Customers
+            </a>
+          </button>
+
+          <button id="btnStaff" type="button" class="btn">
+
+            <a href="{% url 'motorbike_rental:users_by_role' 'Staff' %}">
+              Staff
+            </a>
+          </button>
+
+          <button id="btnAllMembers" type="button" class="btn">
+            <a href="{% url 'motorbike_rental:user_list' %}">
+              All Categories
+            </a>
+          </button>
+
+
         </div>
 
         <br>
+
 
         <div class="cards" id="divuserlist">
 
           {% for user in userlist %}
 
-          <div class="card" id="selecteduser{{user.id}}" data-userid="{{ user.id }}"
+          <!-- <div class="card" id="selecteduser{{user.id}}" data-userid="{{ user.id }}"-->
+          <div class="card" id="selecteduser" {{ user.id }} data-userid="{{ user.id }}"
             data-userfirstname="{{ user.first_name }}" data-userlastname="{{ user.last_name }}"
             data-useremail="{{ user.email }}" data-userphone="{{ user.phone_number }}"
-            data-username="{{ user.username }}" data-userpassword1="{{ user.password }}"
+            data-username="{{ user.username }}" data-userpassword="{{ user.password }}"
             data-userpassword2="{{ user.password }}" data-userdrivinglicence="{{ user.driving_licence_number }}"
             data-userdateofbirth="{{ user.date_of_birth|date:'Y-m-d' }}" data-useraddress="{{ user.address }}"
             data-userrole="{{ user.role }}"
             style="padding: 10px; border-radius: 8px; margin-bottom: 5px; cursor:pointer;"
-            onclick=" getuserdetails(document.getElementById('selecteduser{{user.id}}'));">
+            onclick="getuserdetails(document.getElementById('selecteduser{{user.id}}'));">
+
             <!-- onclick=" showuserdetails(document.getElementById('frmUser'), document.getElementById('selecteduser{{user.id}}'));">  -->
             <p><strong>First Name :</strong> {{user.first_name}}</p>
             <p><strong>Last Name:</strong> {{ user.last_name }}</p>
@@ -1089,13 +1201,13 @@
           <div id="selecteduser" data-userid="{{ user.id }}" data-userfirstname="{{ user.first_name }}"
             data-userlastname="{{ user.last_name }}" data-useremail="{{ user.email }}"
             data-userphone="{{ user.phone_number }}" data-username="{{ user.username }}"
-            data-userpassword1="{{ user.password }}" data-userpassword2="{{ user.password }}"
+            data-userpassword="{{ user.password }}" data-userpassword2="{{ user.password }}"
             data-userdrivinglicence="{{ user.driving_licence_number }}"
             data-userdateofbirth="{{ user.date_of_birth|date:'Y-m-d' }}" data-useraddress="{{ user.address }}"
             data-userrole="{{ user.role }}">
 
             <div
-              onclick=" showuserdetails(document.getElementById('selecteduser'), document.getElementById('selecteduser{{user.id}}'));"
+              onclick="showuserdetails(document.getElementById('selecteduser'), document.getElementById('selecteduser{{user.id}}'));"
               class="userrow">
               <p style="font-size: 0.92rem; font-weight: 600;">
                 <strong> {{user.first_name}} {{ user.last_name }} {{ user.email}}
@@ -1166,11 +1278,14 @@
             </div>
             <hr>
             <div class="accessories" style=" margin-top:10px; margin-bottom:10px;">
+
+              {% if request.session.bikeuser_role == "Staff" or request.session.bikeuser_role == "staff" %}
+
               <button type="button" class="hire-btn"
                 onclick="loadMotorbikeBooking(document.getElementById('frmBikeDetails'))">
                 View Booking
               </button>
-
+              {% endif %}
             </div>
 
           </form>
@@ -1324,7 +1439,7 @@
             <h2 style="color: green;">
               <h1>🏍️ Bike Wonders Sign in</h1>
 
-              <form id="hireForm" class="form-container">
+              <form id="frmSignin" class="form-container">
                 {% csrf_token %}
 
                 <div class="booking-grid">
@@ -1388,7 +1503,52 @@
       </section>
 
 
-      <section id="Motorbike_Error_Messages" class="content-section containererrormsg" style="display: none;">
+      <style>
+        #message-box {
+          width: 100%;
+          margin: 20px auto;
+          text-align: center;
+        }
+
+        .message {
+          padding: 15px;
+          border-radius: 8px;
+          margin-bottom: 10px;
+          font-size: 16px;
+          font-weight: bold;
+          transition: opacity .6s ease;
+        }
+
+        .message.success {
+          background: #d4edda;
+          color: #155724;
+          border: 1px solid #28a745;
+        }
+
+        .message.error {
+          background: #f8d7da;
+          color: #721c24;
+          border: 1px solid #dc3545;
+        }
+
+        .message.warning {
+          background: #fff3cd;
+          color: #856404;
+          border: 1px solid #ffc107;
+        }
+
+        .message.info {
+          background: #d1ecf1;
+          color: #0c5460;
+          border: 1px solid #17a2b8;
+        }
+      </style>
+
+
+      <section id="Motorbike_Error_Messages" class="content-section" {% if errormsg %}
+        style="display:block; padding-top:20px;" {% else %} style="display:none; padding-top:20px;" {% endif %}>
+
+        <!--section id="Motorbike_Error_Messages" class="content-section containererrormsg" style="display: block;"-->
 
         <h2>Motorbike Rental Bike Wonders</h2>
 
@@ -1401,16 +1561,19 @@
         {% endfor %}
         {% endif %}
 
+        <button type="button" class="btn" onclick="cancelSection('Motorbike_Error_Messages')">
+          Cancel
+        </button>
 
       </section>
 
 
-      <section id="Bike_Details_Section" class="container" style=" margin-bottom: 20px; display:none">
-        <div class="booking-widget" id="AddEditBikeModal" class="modal">
+      <section id="Bike_Details_Section" class="content-section" style=" margin-bottom: 20px; display:none">
+
+        <div class="booking-widget" class="modal">
 
           <h3 id="bike_info_title"> Motorbike Details </h3>
 
-          <!--form method="POST" action="{% url 'motorbike_rental:add_motorbike' %}" id="frmMotorbikeDetails"-->
           <form id="frmMotorbikeDetails">
             {% csrf_token %}
 
@@ -1419,25 +1582,21 @@
               <div class="form-group">
                 <label>Brand </label>
                 <input type="text" id="bike_make" name="bike_make">
-
               </div>
 
               <div class="form-group">
                 <label>Model</label>
                 <input type="text" id="bike_model" name="bike_model">
-
               </div>
 
               <div class="form-group">
                 <label>Year</label>
                 <input type="text" id="bike_year" name="bike_year">
-
               </div>
 
               <div class="form-group">
                 <label>Rate</label>
                 <input type="text" id="bike_daily_rate" name="bike_daily_rate">
-
               </div>
 
               <div class="form-group">
@@ -1455,15 +1614,21 @@
               <div class="form-group">
                 <label>Plate Number</label>
                 <input type="text" id="bike_plate_number" name="bike_plate_number">
-
               </div>
 
               <input type="hidden" id="bike_id" name="bike_id">
 
-
               <div class="form-group">
                 <label>Image URL</label>
                 <input type="text" id="bike_imgsrc" name="bike_imgsrc">
+              </div>
+
+
+              <div class="form-group">
+
+                <div class="bike-image">
+                  <img id="imgbike" alt="bike">
+                </div>
 
               </div>
 
@@ -1484,7 +1649,7 @@
 
 
             <button type="button" class="btn" onclick="EditMotorbike(document.getElementById('frmMotorbikeDetails'))">
-              Edit
+              Save
             </button>
 
             <button type="button" class="btn" onclick="AddMotorbike(document.getElementById('frmMotorbikeDetails'))">
@@ -1500,175 +1665,208 @@
       <section id="Motorbike_Booking" class="content-section" {% if show_motorbikebooking %}
         style="display:block; padding-top:20px;" {% else %} style="display:none; padding-top:20px;" {% endif %}>
 
-        <!--section class="card shadow-lg border-0 mt-4">
-          <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">
+        <div class="booking-grid" style="padding-top: 10px;">
 
-              <i class="bi bi-gear-fill"></i>
+          <div class="form-group">
 
-              Booking Workflow
+            <label style="color:whitesmoke"><strong style="color:black">Full Name:</strong>
+              {{ user.first_name }} {{ user.last_name }}
+            </label>
 
-            </h3>
+            <label style="color:whitesmoke"><strong style="color:black">Phone:</strong>
+              {{ user.phone_number }}
+            </label>
+
+            <label style="color:whitesmoke"><strong style="color:black">Email:</strong>
+              {{ user.email }}
+            </label>
+
+            <label style="color:whitesmoke"><strong style="color:black">License :</strong>
+              {{ user.driving_licence_number }}
+            </label>
+
+            <label style="color:whitesmoke"><strong style="color:black">Address :</strong>
+              {{ user.address }}
+            </label>
+
 
           </div>
 
+          <div class="form-group">
+            <label style="color:whitesmoke"><strong style="color:black">Booking Status:</strong>
+            </label>
 
-          <div class="card-body">
-           
-            <div class="row mb-4">
-              <div class="col-lg-4">
-                <label class="fw-bold">
-                  Booking Reference
-                </label>
-                <input class="form-control" value="{{ booking.booking_reference }}" readonly>
-              </div>
+            <select name="booking_status" class="form-select">
+              {% for value, label in booking.STATUS_CHOICES %}
 
-              <div class="col-lg-4">
-                <label class="fw-bold">
-                  Customer
-                </label>
-
-                <input class="form-control"
-                  value="{{ booking.rentaluser.first_name }} {{ booking.rentaluser.last_name }}" readonly>
-              </div>
-
-
-              <div class="col-lg-4">
-                <label class="fw-bold">
-                  Current Status
-                </label>
-                <div class="alert alert-warning text-center mb-0">
-                  <strong>
-                    {{ booking.get_booking_status_display }}
-                  </strong>
-                </div>
-              </div>
-
-            </div>
-
-
-            <h5 class="mb-3">
-              Booking Progress
-            </h5>
-
-            <div class="progress-tracker">
-
-              {% for status,label in stages %}
-
-              <div class="step
-                {% if forloop.counter0 < current_index %}
-                    completed
-                {% elif forloop.counter0 == current_index %}
-                    active
-                {% endif %}
-            ">
-
-                <div class="circle">
-
-                  {% if forloop.counter0 < current_index %} <span> ✓ </span>
-                    {% elif forloop.counter0 == current_index %}
-                    <span> ● </span>
-                    {% else %}
-                    <span> ○ </span>
-
-                    {% endif %}
-
-                </div>
-
-
-                <p>{{ label }}</p>
-
-              </div>
+              {% if booking.booking_status == value %}
+              <option value="{{ value }}" selected>{{ label }}</option>
+              {% else %}
+              <option value="{{ value }}">{{ label }}</option>
+              {% endif %}
 
               {% endfor %}
+            </select>
 
-            </div>
+            <label style="color:whitesmoke"><strong style="color:black">Notes:</strong>
+            </label>
 
+            <textarea name="notes" class="form-control" rows="5" style="width:85%">{{ booking.notes }}</textarea>
 
-            <hr>
+            <label style="color:whitesmoke"><strong style="color:black">Actions Needed:</strong>
+            </label>
 
-
-          
-            <h5 class="mb-4">
-              Available Actions
-            </h5>
-
-
+            <p>Status: {{ booking.booking_status }}</p>
+            <p>Actions count: {{ actions|length }}</p>
             <form method="POST">
-
               {% csrf_token %}
 
-              <div class="row">
+              <select name="next_status" class="form-select">
+
+                <option value="">
+                  -- Select Action--
+                </option>
 
                 {% for value,label in actions %}
 
-                <div class="col-lg-4 col-md-6 mb-3">
-
-                  <button type="submit" name="action" value="{{ value }}" class="btn btn-success btn-lg w-100">
-
-                    {{ label }}
-
-                  </button>
-
-                </div>
+                <option value="{{ value }}">
+                  {{ label }}
+                </option>
 
                 {% empty %}
 
-                <div class="col-12">
-
-                  <div class="alert alert-success">
-
-                    <h5 class="mb-1">
-                      Booking Completed
-                    </h5>
-                    There are no further actions.
-                  </div>
-
-                </div>
+                <option disabled>
+                  No actions available
+                </option>
 
                 {% endfor %}
 
-              </div>
+              </select>
 
-
-             
-              <div class="mb-3">
-                <label class="form-label fw-bold">
-                  Staff Notes
-                </label>
-
-                <textarea name="notes" rows="4" class="form-control"
-                  placeholder="Enter notes...">{{ booking.notes }}</textarea>
-
-              </div>
-
-
-              
-              <div class="form-check mb-4">
-
-                <input class="form-check-input" type="checkbox" name="notify_customer" checked>
-
-                <label class="form-check-label">
-                  Notify customer by email
-                </label>
-
-              </div>
-
-              <button class="btn btn-primary btn-lg">
-                Save Progress
+              <button type="submit" class="btn btn-primary mt-2">
+                Update Status
               </button>
 
             </form>
 
           </div>
 
+
+
+        </div>
+
+        <!--form id="frmBookingProgress">
+          {% csrf_token %}
+          <input type="hidden" id="bookingprogress" name="action" value="true">
+          <button type="button" onclick="updateMotorbikeStatus(document.getElementById('frmBookingProgress'))">
+            Save Status
+          </button>
+
+        </form-->
+
+        <!--section class="booking-card">
+
+          <div class="form-group">
+
+            <label style="color:whitesmoke"><strong style="color:black">Full Name:</strong>
+              {{ user.first_name }} {{ user.last_name }}
+            </label>
+
+            <label style="color:whitesmoke"><strong style="color:black">Phone:</strong>
+              {{ user.phone_number }}
+            </label>
+
+            <label style="color:whitesmoke"><strong style="color:black">Email:</strong>
+              {{ user.email }}
+            </label>
+
+            <label style="color:whitesmoke"><strong style="color:black">License :</strong>
+              {{ user.driving_licence_number }}
+            </label>
+
+            <label style="color:whitesmoke"><strong style="color:black">Address :</strong>
+              {{ user.address }}
+            </label>
+
+            <form id="frmBookingProgress">
+              {% csrf_token %}
+              <input type="hidden" id="bookingprogress" name="action" value="true">
+              <button type="button" onclick="updateMotorbikeStatus(document.getElementById('frmBookingProgress'))">
+                Save Status
+              </button>
+
+            </form>
+
+          </div>
+
+          <div class="form-group">
+            <label>Actions needed</label>
+            <select name="action" class="form-select">
+              <option value="">
+                -- Select Action --
+              </option>
+              {% for value,label in actions %}
+
+              <option value="{{ value }}">
+                {{ label }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Notes </label>
+            <textarea name="notes" rows="4" class="form-control" placeholder="Enter notes...">{{ booking.notes }}
+                </textarea>
+          </div>
+
+          <div class="booking-grid" style="padding-top: 10px;">
+
+            <div class="form-group">
+
+              <label style="color:whitesmoke"><strong style="color:black">Full Name:</strong>
+                {{ user.first_name }} {{ user.last_name }}
+              </label>
+
+              <label style="color:whitesmoke"><strong style="color:black">Phone:</strong>
+                {{ user.phone_number }}
+              </label>
+
+              <label style="color:whitesmoke"><strong style="color:black">Email:</strong>
+                {{ user.email }}
+              </label>
+
+              <label style="color:whitesmoke"><strong style="color:black">License :</strong>
+                {{ user.driving_licence_number }}
+              </label>
+
+              <label style="color:whitesmoke"><strong style="color:black">Address :</strong>
+                {{ user.address }}
+              </label>
+
+              <form id="frmBookingProgress">
+                {% csrf_token %}
+                <input type="hidden" id="bookingprogress" name="action" value="true">
+                <button type="button" onclick="updateMotorbikeStatus(document.getElementById('frmBookingProgress'))">
+                  Save Status
+                </button>
+
+              </form>
+
+            </div>
+
+
+
+
+          </div>
+
         </section-->
 
-        <section class="booking-card">
+
+        <!--section class="booking-card">
 
           <div class="bike-image">
             <img src="{{ motorbike.bike_imgsrc }}" alt="bike">
-
           </div>
 
           <div class="booking-info">
@@ -1754,7 +1952,7 @@
 
           </div>
 
-          <!-- the new design-->
+          
           <form method="POST">
             {% csrf_token %}
 
@@ -1786,90 +1984,6 @@
           </form>
 
 
-        </section>
-
-        <!--section class="booking-card">
-          
-          <div class="booking-info">
-            <h2>
-              {{ user.first_name }} {{ user.last_name }}
-            </h2>
-            <p>
-              Email
-              <strong>
-                {{ user.email }}
-              </strong>
-            </p>
-
-            <p>
-              Phone
-              <strong>
-                {{ user.phone_number }}
-              </strong>
-            </p>
-
-            <p>
-              License Number
-              <strong>
-                {{ user.driving_licence_number }}
-              </strong>
-            </p>
-
-
-            <p>
-              Address
-              <strong>
-                {{ user.address }}
-              </strong>
-            </p>
-
-            <form id="frmBookingProgress">
-              {% csrf_token %}
-              
-              <input type="hidden" id="bookingprogress" name="action" value="true">
-
-              <button type="button" onclick="updateMotorbikeStatus(document.getElementById('frmBookingProgress'))">
-                Booking Status
-              </button>
-
-            </form>
-
-          </div>
-
-        </section-->
-
-        <!-- Booking Card -->
-        <!--section class="booking-card">
-
-          <div class="bike-image">
-            <img src="{{ motorbike.bike_imgsrc }}" alt="bike">
-           
-          </div>
-
-          <div class="booking-info">
-            <h2>
-              {{ motorbike.bike_make }} {{ motorbike.bike_model }}
-            </h2>
-            <p>
-              Booking Reference
-              <strong>
-                {{ booking.booking_reference }}
-              </strong>
-            </p>
-
-            <p>
-              Motorbike Registration
-              <strong>
-                {{ motorbike.bike_plate_number }}
-              </strong>
-            </p>
-
-            <span class="booking_status">
-              {{ booking.get_booking_status_display }}
-            </span>
-
-          </div>
-
         </section-->
 
         <!-- Progress -->
@@ -1879,25 +1993,38 @@
 
             <div class="bike-image">
               <img src="{{ motorbike.bike_imgsrc }}" alt="bike">
+
             </div>
 
             <div class="bike-info">
+
               <h2>
                 {{ motorbike.bike_make }}
                 {{ motorbike.bike_model }}
               </h2>
+
               <p>
-                Booking Reference:
+                Booking Reference
                 <strong>
                   {{ booking.booking_reference }}
                 </strong>
               </p>
 
-              <p class="booking-message">
-                {{ booking.get_booking_status_display }}
+              <p>
+                Motorbike Registration
+                <strong>
+                  {{ motorbike.bike_plate_number }}
+                </strong>
               </p>
 
+
+              <span class="booking_status" style="align-items: center;">
+                {{ booking.get_booking_status_display }}
+              </span>
+
+
             </div>
+
 
           </div>
 
@@ -2025,6 +2152,100 @@
           </div>
 
         </section>
+
+      </section>
+
+      <section id="AllMotorbike_Booking" class="content-section" {% if show_allmotorbikebookings %}
+        style="display:block; padding-top:20px;" {% else %} style="display:none; padding-top:20px;" {% endif %}>
+
+
+        <div class="table-container">
+
+          <div class="header" style="padding-top: 10px;">
+            <h2>Motorbike Bookings</h2>
+
+            <table class="table table-striped">
+
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Customer Name</th>
+                  <th>Motorbike Model</th>
+                  <th>Pickup Date</th>
+                  <th>Return Date</th>
+                  <th>Status</th>
+                  <th>Total Price</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                {% for booking in bookings %}
+                <tr>
+                  <td>
+                    {{ booking.id }}
+                  </td>
+
+                  <td>
+                    {{ booking.rentaluser.first_name }}
+                    {{ booking.rentaluser.last_name }}
+                  </td>
+
+                  <td>
+                    {{ booking.motorbike.bike_model }}
+                  </td>
+
+                  <td>
+                    {{ booking.pickup_date }}
+                  </td>
+
+                  <td>
+                    {{ booking.return_date }}
+                  </td>
+
+                  <td>
+                    {{ booking.booking_status }}
+                  </td>
+
+                  <td>
+                    £{{ booking.total_price }}
+                  </td>
+
+
+                  <td>
+                    <!--input type="button" class="btn btn-primary">
+                    <a href="{% url 'motorbike_rental:booking_details' booking.id %}">
+                      View Booking
+                    </a>
+                    <input-->
+                    <button type="button" class="edit-btn">
+                      <a href="{% url 'motorbike_rental:show_booking_details' booking.id %}">
+                        <!--i class="fa-solid fa-file-lines" style="text-decoration: none;color:white"></i-->
+                        <i class="fas fa-eye">View</i>
+                      </a>
+                    </button>
+
+                  </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+                  <td colspan="8">
+                    No bookings found.
+                  </td>
+                </tr>
+
+                {% endfor %}
+
+              </tbody>
+
+            </table>
+
+          </div>
+        </div>
 
       </section>
 
@@ -2185,8 +2406,28 @@
   </div>
 
 
-
   <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const messageBox = document.getElementById("message-box");
+
+      if (messageBox) {
+
+        setTimeout(function () {
+
+          messageBox.style.opacity = "0";
+
+          setTimeout(function () {
+            messageBox.style.display = "none";
+          }, 600);
+
+        }, 5000);
+
+      }
+
+    });
+
+    /*
     document.addEventListener("DOMContentLoaded", function () {
       // Select all messages
       const messages = document.querySelectorAll('.fade-message');
@@ -2215,7 +2456,7 @@
 
 
     });
-
+     */
 
   </script>
 

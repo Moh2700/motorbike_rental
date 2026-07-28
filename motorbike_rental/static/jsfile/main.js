@@ -377,28 +377,6 @@ function showbikedetails(container, bikeElement) {
   showprogSection("Motorbike_Hiring");
 }
 
-function getuserdetails(userElement) {
-  //alert("You have selected to view user details for xxxxx ");
-
-  const container = document.getElementById("frmUser");
-  let data = userElement.dataset;
-
-  container["last_name"].value = data.userlastname;
-  container["first_name"].value = data.userfirstname;
-  container["email"].value = data.useremail;
-  container["phone_number"].value = data.userphone;
-  container["username"].value = data.username;
-  container["password1"].value = data.userpassword1;
-  container["password2"].value = data.userpassword2;
-  container["user_id"].value = data.userid;
-  container["driving_licence_number"].value = data.userdrivinglicence;
-  container["date_of_birth"].value = data.userdateofbirth;
-  container["role"].value = data.userrole;
-  container["address"].value = data.useraddress;
-
-  showprogSection("Motorbike_Users");
-}
-
 function showuserdetails(container, userElement) {
   //alert("You have selected to view user details for xxxxx ");
 
@@ -409,7 +387,7 @@ function showuserdetails(container, userElement) {
   container["email"].value = data.useremail;
   container["phone_number"].value = data.userphone;
   container["username"].value = data.username;
-  container["password1"].value = data.userpassword1;
+  container["password"].value = data.userpassword;
   container["password2"].value = data.userpassword2;
   container["user_id"].value = data.userid;
   container["driving_licence_number"].value = data.userdrivinglicence;
@@ -684,6 +662,7 @@ function showprogSection(showsection) {
       oSection[i].style.display = "block";
     }
   }
+  cancelSection("Motorbike_Error_Messages");
 }
 
 function DeleteMotorbike(container) {
@@ -708,6 +687,18 @@ function DeleteMotorbike(container) {
       });
     }
   });
+}
+
+function AddBikeUser(frm) {
+  /*
+  const btnSave = frm.querySelector("#btnAddUser");
+  if (btnSave) {
+    btnSave.textContent = "Add User";
+  }
+  */
+  frm.method = "POST";
+  frm.action = `/motorbike_rental/add_bikeuser/`;
+  frm.submit();
 }
 
 function clearformdata(frm) {
@@ -759,6 +750,19 @@ function showMotorbikedetails(dataContainer) {
   container["bike_status"].value = data.bikestatus;
   container["bike_daily_rate"].value = data.bikedailyrate;
   container["bike_id"].value = data.bikeid;
+
+  container["imgbike"].src = data.bikeimgsrc;
+
+  /*
+  var image = document.createElement("img");
+  var imageParent = document.getElementById("divimg");
+  image.id = "Id";
+  image.className = "class";
+  image.src = data.bikeimgsrc;
+  imageParent.innerHTML = "";
+  imageParent.appendChild(image);
+  alert(data.bikeimgsrc);
+  */
 
   /*
   const myForm = document.getElementById("frmMotorbikeDetails");
@@ -1276,6 +1280,40 @@ showAvailableMotorbikes.addEventListener("click", function () {
 /*
 AvailableBookings.addEventListener("click", function () {
   makeaselection("availablebikelisting");
+});
+*/
+
+function getuserdetails(userElement) {
+  const container = document.getElementById("frmUser");
+  let data = userElement.dataset;
+
+  /*
+  for (const key in userElement.dataset) {
+    alert(key + " = " + userElement.dataset[key]);
+  }
+  */
+
+  container["last_name"].value = data.userlastname;
+  container["first_name"].value = data.userfirstname;
+  container["email"].value = data.useremail;
+  container["phone_number"].value = data.userphone;
+  container["username"].value = data.username;
+
+  container["password"].value = data.userpassword;
+  container["password2"].value = data.userpassword2;
+
+  container["user_id"].value = data.userid;
+  container["driving_licence_number"].value = data.userdrivinglicence;
+  container["date_of_birth"].value = data.userdateofbirth;
+  container["role"].value = data.userrole;
+  container["address"].value = data.useraddress;
+
+  showprogSection("Motorbike_Users");
+}
+
+/*
+document.addEventListener("DOMContentLoaded", function () {
+  getuserdetails(userElement);
 });
 */
 

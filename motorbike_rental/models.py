@@ -149,7 +149,7 @@ class bikeuser(models.Model):
     date_of_birth = models.DateField(null=True, blank=True)
 
     driving_licence_number = models.CharField(max_length=50, null=True, blank=True)
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='Customer')
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='customer')
     is_verified = models.BooleanField(default=False)
 
     def __str__(self):
@@ -187,11 +187,23 @@ class Booking(models.Model):
     STATUS_CHOICES = [
         ("pending", "Pending"),
         ("approved", "Approved"),
+        ("preparing", "Preparing"),
+        ("ready", "Ready for Collection"),
+        ("active", "Active Hire"),
+        ("completed", "Completed"),
+        ("rejected", "Rejected"),
+        ("cancelled", "Cancelled"),
+    ]
+    '''
+    STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("approved", "Approved"),
         ("rejected", "Rejected"),
         ("active", "Active"),
         ("completed", "Completed"),
         ("cancelled", "Cancelled"),
     ]
+    '''
 
     HIRING_STAGES = [
         ("request", "Request"),
