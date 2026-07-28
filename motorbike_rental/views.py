@@ -142,7 +142,7 @@ def login_view(request):
 class IndexView(TemplateView):
 
     template_name = 'motorbike_rental/index.html'
-    def get_context_data(self, **kwargs):
+def get_context_data(self, **kwargs):
 
         # Call the base implementation to get the default context
         context = super().get_context_data(**kwargs)
@@ -164,9 +164,6 @@ class IndexView(TemplateView):
             context['userlist'] = bikeuser.objects.filter(id=user_id)
 
         return context
-
-
-
 
 def show_booking_details(request, booking_id):
 
@@ -315,11 +312,45 @@ def all_bookings(request):
             context
     )
 
+from django.http import Http404
+
 def motorbike_detail(request, bike_id):
+    booking = (
+        Booking.objects.select_related(
+            "rentaluser",
+            "motorbike"
+        )
+        .filter(motorbike_id=bike_id)
+        .order_by("-booking_date")
+        .first()
+    )
+
+    if booking is None:
+        raise Http404("No booking found for this motorbike.")
+
+    context = {
+        "motorbike": booking.motorbike,
+        "booking": booking,
+        "user": booking.rentaluser,
+    }
+
+    rentaluser = booking.rentaluser
+    for field in rentaluser._meta.fields:
+        print(f"{field.name}: {getattr(rentaluser, field.name)}")
+
+
+    return render(
+        request,
+        "motorbike_rental/motorbikedetail.html",
+        context
+    )
+'''    
     # Fetch the specific motorbike or show a 404 error page
     motorbike = get_object_or_404(tblmotorbike, id=bike_id)
     # We pass the motorbike object directly to the template
+
     return render(request, 'motorbike_rental/motorbikedetail.html', {'motorbike': motorbike})
+'''
 
 def delete_bikeuser(request, user_id):
     # 1. Fetch the user row or throw a 404 page if they don't exist
@@ -466,34 +497,7 @@ def booking_details(request, bike_id):
 
         "completed": []
     }
-
-    '''
-        "REQUESTED": [
-            ("APPROVED", "Approve Booking"),
-            ("REJECTED", "Reject Booking")
-        ],
-
-        "APPROVED": [
-            ("PREPARING", "Start Preparing Bike")
-        ],
-
-        "PREPARING": [
-            ("READY", "Bike Ready for Collection")
-        ],
-
-        "READY": [
-            ("ACTIVE", "Confirm Collection")
-        ],
-
-        "ACTIVE": [
-            ("COMPLETED", "Complete Hire")
-        ],
-
-        "COMPLETED": []
-
-    '''
-    
-
+  
     # Get actions AFTER status update
     next_actions = actions.get(
        booking.booking_status,
@@ -515,7 +519,7 @@ def booking_details(request, bike_id):
     print(request.POST)
     print(request.POST.get("booking_status"))
     print(request.POST.get("notes")) 
-    print("STATUs:", booking.STATUS_CHOICES)    
+    print("STATUS:", booking.STATUS_CHOICES)    
     
     return render(request, "motorbike_rental/index.html", context)  
     

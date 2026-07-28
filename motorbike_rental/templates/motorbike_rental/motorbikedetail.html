@@ -43,12 +43,6 @@
                 </li>
 
 
-
-
-
-
-
-
             </div>
 
 
@@ -68,8 +62,9 @@
     <section id="Motorbike_Hiring_Progress" class="container" style=" width: 100%; display:block; padding-top: 20px;">
 
         {% for booking in motorbike.bookings.all %}
+        <h1>{{ booking.user.first_name }}</h1>
 
-        {% ifchanged booking.customer.username %}
+        {% ifchanged booking.user.username %}
 
         <div class="progress-page-container dashboard-layout">
 
@@ -85,7 +80,7 @@
 
                     <div class="customer-meta-item">
                         <span class="label">Full Name</span>
-                        <span class="value">{{booking.customer.first_name}} {{ booking.customer.last_name }}</span>
+                        <span class="value">{{user.first_name}} {{ user.last_name }}</span>
                     </div>
 
                     <div class="customer-meta-item">
@@ -118,7 +113,7 @@
                 <div class="banner-metrics-grid">
                     <div class="metric-item">
                         <span class="metric-label">Daily Hire Rate</span>
-                        <span class="metric-value">{{booking.motorbike.daily_rate}} / hr</span>
+                        <span class="metric-value">{{motorbike.bike_daily_rate}} / hr</span>
                     </div>
                     <div class="metric-item">
                         <span class="metric-label">Security Deposit</span>
@@ -147,19 +142,19 @@
                     <div class="customer-profile-details">
                         <div class="customer-meta-item">
                             <span class="label">Full Name</span>
-                            <span class="value">{{booking.customer.first_name}} {{ booking.customer.last_name }}</span>
+                            <span class="value">{{user.first_name}} {{ user.last_name }}</span>
                         </div>
                         <div class="customer-meta-item">
                             <span class="label">Telephone</span>
-                            <span class="value">{{booking.customer.phone_number}}</span>
+                            <span class="value">{{user.phone_number}}</span>
                         </div>
                         <div class="customer-meta-item">
                             <span class="label">Email Address</span>
-                            <span class="value">{{booking.customer.email }}</span>
+                            <span class="value">{{ user.email }}</span>
                         </div>
                         <div class="customer-meta-item full-width">
                             <span class="label">Billing / Delivery Address</span>
-                            <span class="value">{{booking.customer.address }}</span>
+                            <span class="value">{{ user.address }}</span>
                         </div>
                     </div>
                 </div>

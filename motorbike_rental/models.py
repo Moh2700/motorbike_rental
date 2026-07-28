@@ -194,17 +194,7 @@ class Booking(models.Model):
         ("rejected", "Rejected"),
         ("cancelled", "Cancelled"),
     ]
-    '''
-    STATUS_CHOICES = [
-        ("pending", "Pending"),
-        ("approved", "Approved"),
-        ("rejected", "Rejected"),
-        ("active", "Active"),
-        ("completed", "Completed"),
-        ("cancelled", "Cancelled"),
-    ]
-    '''
-
+   
     HIRING_STAGES = [
         ("request", "Request"),
         ("verification", "Verification"),
@@ -262,10 +252,6 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.rentaluser.username} - {self.motorbike.bike_model}"
-    
- 
-
-
 
 
 def save(self, *args, **kwargs):
