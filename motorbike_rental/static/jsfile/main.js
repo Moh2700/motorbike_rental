@@ -1,3 +1,39 @@
+/**
+ * UK Vehicle Registration Validation Module
+ */
+
+// Banned positional characters based on DVLA rules
+const RESTRICTED_AREA_LETTERS = /[IQZ]/;
+const RESTRICTED_SUFFIX_LETTERS = /[IQ]/;
+
+// Core profanity/offensive substrings explicitly banned by DVLA across release windows
+const BANNED_OFFENSIVE_PHRASES = [
+  "ARS",
+  "ASS",
+  "BOM",
+  "BNP",
+  "CNT",
+  "CUM",
+  "DCK",
+  "FAG",
+  "FCK",
+  "FUK",
+  "GAY",
+  "HEL",
+  "JAD",
+  "KLL",
+  "NAZ",
+  "NGR",
+  "NOB",
+  "PAK",
+  "PED",
+  "SHG",
+  "SHT",
+  "SEX",
+  "VAG",
+  "WNK",
+];
+
 const modal = document.getElementById("deleteModal");
 const deleteForm = document.getElementById("deleteForm");
 const modalText = document.getElementById("modalText");
@@ -254,13 +290,6 @@ function revealPassword(inputtype) {
   }
 }
 
-/*
-
-function toggleMenu() {
-  navLinks.classList.toggle("active");
-}
-*/
-/* Submenu */
 /* Mobile Menu */
 function toggleMenu() {
   navLinks.classList.toggle("active");
@@ -393,7 +422,18 @@ function showuserdetails(container, userElement) {
   container["driving_licence_number"].value = data.userdrivinglicence;
   container["date_of_birth"].value = data.userdateofbirth;
   container["role"].value = data.userrole;
+  // anotherf code here for role
   container["address"].value = data.useraddress;
+
+  // Scroll to the form
+  //const form = document.getElementById("HireMotorbikeForm");
+
+  container.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
+
+  container["first_name"].focus();
 
   /*
   var image = document.createElement("img");
@@ -429,10 +469,60 @@ function DeleteUser(container, userid) {
   });
 }
 
-function SaveUserChanges(container, userid) {
-  container.method = "POST";
-  container.action = `/motorbike_rental/edit_bikeuser/${userid}/`;
-  container.submit();
+function SaveUserChanges(frm) {
+  const csrf = frm.querySelector('input[name="csrfmiddlewaretoken"]');
+  const userid = frm.querySelector('input[name="user_id"]');
+
+  if (!csrf || csrf.value.trim() === "") {
+    alert("CSRF token is missing or empty.");
+    return;
+  } else if (!userid || userid.value.trim() === "") {
+    alert("USERID is missing or empty.");
+    return;
+  } else {
+    event.preventDefault();
+    frm.method = "POST";
+    frm.action = `/motorbike_rental/edit_bikeuser/${userid.value}/`;
+
+    frm.submit();
+  }
+}
+
+function getuserdetails(userElement) {
+  const container = document.getElementById("frmUser");
+
+  let data = userElement.dataset;
+
+  // const id = userElement.dataset.userid;
+  // const firstname = userElement.dataset.firstname;
+  // const email = userElement.dataset.email;
+  // const lastname = userElement.dataset.lastname;
+
+  /*
+  for (const key in userElement.dataset) {
+    alert(key + " = " + userElement.dataset[key]);
+  }
+
+  */
+
+  container["user_id"].value = data.userid;
+  container["last_name"].value = data.userlastname || "";
+
+  container["first_name"].value = data.userfirstname;
+  container["email"].value = data.useremail;
+  container["phone_number"].value = data.userphone;
+  container["username"].value = data.username;
+
+  container["password"].value = data.userpassword;
+  container["password2"].value = data.userpassword2;
+
+  container["user_id"].value = data.userid;
+  container["driving_licence_number"].value = data.userdrivinglicence;
+  container["date_of_birth"].value = data.userdateofbirth;
+  container["role"].value = data.userrole;
+  container["address"].value = data.useraddress;
+
+  showprogSection("Motorbike_Users");
 }
 
 class clsBooking {
@@ -579,30 +669,11 @@ function makeaselection(option) {
   }
 }
 
-function getMotorbikeHiringInfo(Container) {}
-
 function closeMotorbikeform(sectionname) {
   //alert("You have selected " + sectionname);
   showprogSection(sectionname);
   //alert("You have selected " + sectionname);
   document.getElementById(sectionname).style.display = "none";
-}
-
-function SaveSectionDetailsold(id, formname, sectionname) {
-  //alert( "You have selected " +sectionname +" with id " + id + " and form " + formname);
-
-  showprogSection(sectionname);
-  //alert("You have selected " + sectionname);
-  var oform = document.getElementById(formname);
-
-  document.getElementById(sectionname).style.display = "none";
-  //oform.method = "POST";
-  //oform.action = `{% url 'edit_motorbike' %}`;
-  alert(oform.method + "  Form action set to: " + oform.action);
-
-  oform.action = `/motorbikes/edit/${id}/`;
-
-  showprogSection("Motorbike_Management_Section");
 }
 
 function cancelSection(sectionname) {
@@ -648,9 +719,10 @@ function confirmRegistration() {
   getSiteEvent("SiteRegistration", "none");
 }
 
-function showprogSection(showsection) {
+function showprogSection(sectionId) {
   // alert("You have selected " + showsection);
 
+  /*
   var oSection = document.getElementsByTagName("section");
   for (var i = 0; i <= oSection.length; i++) {
     if (oSection[i].style.display == "block") {
@@ -662,7 +734,14 @@ function showprogSection(showsection) {
       oSection[i].style.display = "block";
     }
   }
-  cancelSection("Motorbike_Error_Messages");
+  */
+
+  document.querySelectorAll(".content-section").forEach((section) => {
+    section.style.display = "none";
+  });
+
+  document.getElementById(sectionId).style.display = "block";
+  // cancelSection("Motorbike_Error_Messages");
 }
 
 function DeleteMotorbike(container) {
@@ -862,6 +941,7 @@ function getValidRate(rateInput) {
 
 function validateMotorbikeDetails(frm) {
   let userInput = frm.bike_plate_number;
+
   let validInput = validateUkRegistration(userInput.value);
 
   if (!validInput.isValid) {
@@ -915,6 +995,7 @@ function checkEmptyFormFields(formElement) {
   // 2. Loop through all controls inside the form
   for (const element of formElement.elements) {
     // 3. Skip items that shouldn't be validated (buttons, CSRF tokens, hidden IDs)
+
     if (
       element.type === "button" ||
       element.type === "submit" ||
@@ -964,12 +1045,16 @@ function AddMotorbike(frm) {
 }
 
 function EditMotorbike(frm) {
+  alert("Editing Motorbike");
+
   // Run the dynamic empty loop checker
   if (!checkEmptyFormFields(frm)) {
     return; // Stop right here if any field was empty
   }
 
   const proceed = validateMotorbikeDetails(frm);
+
+  alert(proceed.isValid);
 
   if (!proceed.isValid) {
     event.preventDefault(); // STOP form submission
@@ -1010,26 +1095,36 @@ function logOutUser(event, frm) {
 function loginUser(frm) {
   const username = frm.username.value.trim();
   const password = frm.password.value.trim();
+
+  const csrf = frm.querySelector('input[name="csrfmiddlewaretoken"]');
+
   if (!username || !password) {
     alert("Please enter both a username and password.");
     return false;
+  } else if (!csrf) {
+    alert("No CSRF token found.");
+    return;
+  } else {
+    event.preventDefault();
+    frm.method = "POST";
+    frm.action = "/motorbike_rental/login/";
+    frm.submit();
   }
-
   /*
   const inputs = frm.querySelectorAll(
     'input[type="text"], input[type="password"], input[type="email"]',
   );
-
-  inputs.forEach((input) => {
-    alert(`${input.name} has a value of: ${input.value}`);
-  });
-
   */
 
-  //return true; // Allow form submission if validation passes
-  frm.method = "POST";
-  frm.action = "/motorbike_rental/login/";
-  frm.submit();
+  /*
+  if (!csrf) {
+    alert("No CSRF token found.");
+  } else {
+    
+
+    
+  }
+  */
 }
 
 function HireMotorbike(frm) {
@@ -1068,6 +1163,7 @@ function updateMotorbikeStatus(frm) {
 
   alert("");
 }
+
 function loadMotorbikeBooking(frm) {
   event.preventDefault();
   frm.method = "POST";
@@ -1283,34 +1379,6 @@ AvailableBookings.addEventListener("click", function () {
 });
 */
 
-function getuserdetails(userElement) {
-  const container = document.getElementById("frmUser");
-  let data = userElement.dataset;
-
-  /*
-  for (const key in userElement.dataset) {
-    alert(key + " = " + userElement.dataset[key]);
-  }
-  */
-
-  container["last_name"].value = data.userlastname;
-  container["first_name"].value = data.userfirstname;
-  container["email"].value = data.useremail;
-  container["phone_number"].value = data.userphone;
-  container["username"].value = data.username;
-
-  container["password"].value = data.userpassword;
-  container["password2"].value = data.userpassword2;
-
-  container["user_id"].value = data.userid;
-  container["driving_licence_number"].value = data.userdrivinglicence;
-  container["date_of_birth"].value = data.userdateofbirth;
-  container["role"].value = data.userrole;
-  container["address"].value = data.useraddress;
-
-  showprogSection("Motorbike_Users");
-}
-
 /*
 document.addEventListener("DOMContentLoaded", function () {
   getuserdetails(userElement);
@@ -1408,42 +1476,6 @@ function filterMotorbikes() {
 // Bind events to listen for instant user actions
 //inputStatus.addEventListener("input", filterMotorbikes);
 statusSelect.addEventListener("change", filterMotorbikes);
-
-/**
- * UK Vehicle Registration Validation Module
- */
-
-// Banned positional characters based on DVLA rules
-const RESTRICTED_AREA_LETTERS = /[IQZ]/;
-const RESTRICTED_SUFFIX_LETTERS = /[IQ]/;
-
-// Core profanity/offensive substrings explicitly banned by DVLA across release windows
-const BANNED_OFFENSIVE_PHRASES = [
-  "ARS",
-  "ASS",
-  "BOM",
-  "BNP",
-  "CNT",
-  "CUM",
-  "DCK",
-  "FAG",
-  "FCK",
-  "FUK",
-  "GAY",
-  "HEL",
-  "JAD",
-  "KLL",
-  "NAZ",
-  "NGR",
-  "NOB",
-  "PAK",
-  "PED",
-  "SHG",
-  "SHT",
-  "SEX",
-  "VAG",
-  "WNK",
-];
 
 /**
  * Strips whitespace and forces uppercase on an input string.

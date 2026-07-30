@@ -3,6 +3,7 @@ const deleteForm = document.getElementById("deleteForm");
 const modalText = document.getElementById("modalText");
 const navLinks = document.getElementById("mnuMotorbikes");
 
+alert("Sometimes");
 //const AddEditBikeModal = document.getElementById("AddEditBikeModal");
 //const AddEditBikeForm = document.getElementById("AddEditBikeForm");
 

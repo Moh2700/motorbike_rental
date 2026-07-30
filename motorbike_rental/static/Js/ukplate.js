@@ -9,7 +9,6 @@ const RESTRICTED_SUFFIX_LETTERS = /[IQ]/;
 // Core profanity/offensive substrings explicitly banned by DVLA across release windows
 const BANNED_OFFENSIVE_PHRASES = [
   "ARS",
-  "ASS",
   "BOM",
   "BNP",
   "CNT",

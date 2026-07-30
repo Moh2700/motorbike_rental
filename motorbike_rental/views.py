@@ -50,18 +50,36 @@ def login_view(request):
 
         try:
             # Search by username only
-            user = bikeuser.objects.get(
+            user = bikeuser.objects.filter(
                 username=username_input,
                 email=email_input,
                 password=password_input,
-            )
+            ).first()
 
-            print("User found in database.")
+            if user:
+                # Login successful  # Store session information
+                print("User found in database.")
+                request.session["bikeuser_id"] = user.id
+                request.session["bikeuser_username"] = user.username
+                request.session["bikeuser_role"] = user.role.lower()
+                request.session["bikeuser_first_name"] = user.first_name
+                request.session["bikeuser_last_name"] = user.last_name
+                
+            else:
+                messages.error(request, "Invalid login details.")
+                
 
+        except bikeuser.DoesNotExist:
+            print(f"Login failed: Username '{username_input}' does not exist.")
+            messages.error(request, "Access Denied: Username does not exist.")
+        
+            
+
+        '''
             # Check email
             if user.email != email_input:
                 print("Login failed: Incorrect email.")
-                messages.error(request, "Access Denied: Incorrect email address.")
+                messages.error(request, 'Access Denied: Incorrect email address.')
 
             # Check password
             elif user.password != password_input:
@@ -92,6 +110,7 @@ def login_view(request):
         except Exception as e:
             print("Unexpected login error:", e)
             messages.error(request, "An unexpected error occurred during login.")
+        '''
 
     return render(request, "motorbike_rental/index.html")
 
@@ -335,10 +354,10 @@ def motorbike_detail(request, bike_id):
     }
 
     rentaluser = booking.rentaluser
+    '''
     for field in rentaluser._meta.fields:
-        print(f"{field.name}: {getattr(rentaluser, field.name)}")
-
-
+    print(f"{field.name}: {getattr(rentaluser, field.name)}")
+    '''
     return render(
         request,
         "motorbike_rental/motorbikedetail.html",
@@ -358,48 +377,56 @@ def delete_bikeuser(request, user_id):
     # 2. Check if the deletion request is submitted via POST
     if request.method == "POST":
         user.delete()  # Removes the row from your database completely
+
+        context = {
+            "Motorbike_Users": True
+        }
         # 3. Redirect back to your home page layout using your namespace
-        return redirect('motorbike_rental:index')
-    # 4. Fallback safeguard: If a user tries to access this URL directly via GET, 
-    # redirect them home without doing anything.
+        return render(request, "motorbike_rental/index.html", context)
+
+    
+      # 4. Fallback safeguard: If a user tries to access this URL directly via GET, 
+      # redirect them home without doing anything.
     return redirect('motorbike_rental:index')
 
 def edit_bikeuser(request, user_id):
     user = get_object_or_404(bikeuser, id=user_id)
-
+    users = bikeuser.objects.all().order_by("first_name", "last_name")
+    err = False
     if request.method == "POST":
-        user.refresh_from_db()
         form = MemberForm(request.POST, instance=user)
 
-        print("POST DATA:", request.POST)   # <-- print submitted data here
-           
-        print("FORM DATA:", form.data)      # <-- print form data
-
         if form.is_valid():
-
-            print("POST DATA:")
-            for key, value in request.POST.items():
-                print(key, "=", value)
-                print("Errors:", form.errors)
-                
+            user = form.save(commit=False)
             user.role = request.POST.get("role").lower()
+            user.save()
 
-            saved_user = form.save()
+            # Tell index page to open Motorbike Users section
+            request.session["MotorbikeUsers"] = True
+            return render(request, "motorbike_rental/index.html", {
+                    "form": form,
+                    "errormsg": err,
+                    "user": user,
+                    "userlist": users,
+                    "MotorbikeUsers": True
+                })   
+            #return redirect("motorbike_rental:index")
 
-            print(saved_user.first_name)
-            print(saved_user.last_name)
-            print(saved_user.email)
-            print(saved_user.role)
-            print(saved_user.phone_number)
-
-            return redirect("motorbike_rental:index")
         else:
             print("Form Validation Errors:", form.errors)
 
     else:
         form = MemberForm(instance=user)
 
-    return redirect("motorbike_rental:index")
+    request.session["MotorbikeUsers"] = True
+    
+    return render(request, "motorbike_rental/index.html", {
+        "form": form,
+        "errormsg": err,
+        "user": user,
+        "userlist": users,
+        "MotorbikeUsers": True
+    })   
 
 def my_bookings(request):
 
@@ -692,15 +719,21 @@ def hire_motorbike(request, bike_id):
 
 def add_bikeuser(request):
     if request.method == "POST":
+
+        context = {
+            "Motorbike_Users": True
+        }
         form = MemberForm(request.POST)
 
         if form.is_valid():
             form.save()
-            return redirect("motorbike_rental:index")
+            #return redirect("motorbike_rental:index")
+            return render (request, 'motorbike_rental:index', context)
     else:
         form = MemberForm()
 
-    return render(request, "add_bikeuser.html", {"form": form})
+    #return render(request, "add_bikeuser.html", {"form": form})
+    return render (request, 'motorbike_rental:index', context)
 
 def add_motorbike(request):
     if request.method == 'POST':
@@ -738,7 +771,6 @@ def add_motorbike(request):
             messages.success(request, "Motorbike added successfully!")
             
             # Redirect using the URL pattern NAME 'index' from your urls.py
-            #return redirect('motorbike_rental/index.html') 
             return render(request, 'motorbike_rental/index.html')
         else:
             # Handle validation failure
