@@ -6,11 +6,13 @@ app_name = 'motorbike_rental'
 
 urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
+    
     path('login/', views.login_view, name='login'),
     path('motorbike_list/', views.motorbike_list, name='motorbike_list'),
     path('user_list/', views.user_list, name='user_list'),
     path('logout/', views.logout_view, name='logout'),
     path('get_user_details/', views.get_user_details, name='get_user_details'),
+    path('get_user_profile/', views.get_user_profile, name='get_user_profile'),
     path(
         'edit_bikeuser/<int:user_id>/',
         views.edit_bikeuser,

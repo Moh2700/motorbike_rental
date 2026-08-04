@@ -111,10 +111,11 @@ body::before {
      */
 }
 
+/*
 .bikecard:hover {
   transform: scale(0.5);
   transform: scale(1.05);
-  /* transition: transform 0.3s ease; */
+   transition: transform 0.3s ease; 
 }
 
 .bikecard img {
@@ -123,6 +124,7 @@ body::before {
   object-fit: cover;
   border-radius: 10px;
 }
+
 
 .bikecard {
   background: var(--surface);
@@ -135,11 +137,14 @@ body::before {
   width: 200px;
 }
 
+
 .motorbikescard {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 16px;
 }
+
+*/
 
 button {
   margin-top: 10px;
@@ -633,4 +638,311 @@ tbody tr:nth-child(even) {
 
 .confirm-delete-btn:hover {
   background: #b52a37;
+}
+
+#message-box {
+  width: 100%;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.message {
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  transition: opacity 0.6s ease;
+}
+
+.message.success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #28a745;
+}
+
+.message.error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #dc3545;
+}
+
+.message.warning {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffc107;
+}
+
+.message.info {
+  background: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #17a2b8;
+}
+
+.button-group {
+  display: grid;
+  grid-template-columns: repeat(6, auto);
+  gap: 10px;
+  justify-content: center;
+}
+
+.button-group .btn {
+  width: 100%;
+  white-space: nowrap;
+}
+
+/*  Mobile */
+@media (max-width: 768px) {
+  .signin-container {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .button-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .form-group input {
+    width: 100%;
+    font-size: 16px;
+    margin: 0 auto; /* centers input */
+  }
+
+  .btn {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .button-group {
+    display: flex;
+    flex-direction: row; /* Keep buttons side by side */
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .button-group .btn {
+    flex: 1;
+    max-width: 140px;
+  }
+
+  .button-group .btn {
+    flex: 1;
+    max-width: 140px;
+  }
+}
+
+.myform-group {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.myform-group .btn {
+  flex: 1;
+  white-space: nowrap;
+}
+
+.motorbikescard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.bikecard {
+  margin-top: 5px;
+
+  width: 100%;
+  max-width: 100%;
+  background: var(--surface);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+/*
+.bikecard {
+  margin-top: 5px;
+  cursor: pointer;
+  background: var(--surface);
+  border: none;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 6px 18px rgba(46, 34, 22, 0.06);
+
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+*/
+.bike-info {
+  padding: 10px;
+}
+
+.bike-info p {
+  margin: 5px 0;
+}
+
+/*  Mobile */
+@media (max-width: 768px) {
+  .myform-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+    padding: 10px;
+    gap: 15px;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    padding: 12px;
+  }
+
+  .card-info {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 15px;
+  }
+
+  .booking-grid {
+    grid-template-columns: 1fr;
+    align-items: center; /* centers the children */
+  }
+
+  /* Adjust the width of the content-section for mobile */
+  .content-section {
+    width: 100%;
+    max-width: 1200px;
+  }
+
+  .form-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .myform-group .btn {
+    /* Forces two equal columns minus the gap spacing */
+    width: 100px;
+    /*
+    width: calc(50% - 5px);
+    box-sizing: border-box;
+    */
+  }
+
+  .form-group button {
+    width: 100%;
+  }
+
+  .form-group btn {
+    width: 100%;
+  }
+
+  .motorbikescard {
+    /*grid-template-columns: 1fr;*/
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    padding: 10px;
+  }
+
+  .bikecard {
+    width: 100%;
+  }
+
+  .bikecard img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.booking-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+/* responsive tablet  */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .myform-group {
+    flex-wrap: nowrap;
+    justify-content: space-between; /* Spreads buttons evenly across the row */
+  }
+
+  .myform-group .btn {
+    width: auto; /* Lets buttons shrink to fit their text */
+    flex: 1; /* Optional: Makes all buttons equal width in the row */
+  }
+}
+/*  reponsive desktop */
+
+@media (min-width: 1025px) {
+  .card-info {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 8px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  .cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .button-group {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: 100%;
+  }
+
+  .button-group .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .myform-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+
+    width: 100%;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .booking-summary {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  .mobile-row {
+    grid-column: span 1;
+  }
 }

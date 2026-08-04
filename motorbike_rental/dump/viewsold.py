@@ -325,3 +325,72 @@ def edit_bikeuser(request, user_id):
         form = MemberForm(instance=user)
     return redirect("motorbike_rental:index")
 '''
+
+'''
+def login_view(request):
+
+    # If the user is already inside the session table, bypass login
+    if 'bikeuser_id' in request.session:
+        return redirect('motorbike_rental:index')
+
+    if request.method == 'POST':
+
+        request.session.flush()
+
+        username_input = request.POST.get('username')
+        password_input = request.POST.get('password')
+        email_input = request.POST.get('email')
+
+        # 1. Look up the user safely by username only to prevent a crash
+        try:
+            user = bikeuser.objects.get(username=username_input, email=email_input, password=password_input)
+
+            # 2. Check if the password matches your plain-text database record
+            if user.password == password_input:
+
+                # 3. Log them in manually by assigning items to the session cookie
+                request.session['bikeuser_id'] = user.id
+                request.session['bikeuser_username'] = user.username
+                request.session['bikeuser_role'] = user.role.lower()
+                request.session['bikeuser_first_name'] = user.first_name
+                request.session['bikeuser_last_name'] = user.last_name
+
+                messages.success(request, f"Welcome back, {user.first_name}! Access granted.")
+                return redirect('motorbike_rental:index')
+
+            else:
+                messages.error(request, "Access Denied: Incorrect password.")
+
+        except bikeuser.DoesNotExist:
+            messages.error(request, "Access Denied: Username does not exist.")
+
+    # Render your actual login HTML page on a GET request
+    return render(request, 'motorbike_rental/index.html')
+
+'''
+
+'''
+    #Call the base implementation to get the default context
+    context = super().get_context_data(**kwargs)
+
+    role = self.request.session.get("bikeuser_role")
+    user_id = self.request.session.get("bikeuser_id")
+
+    if role in ["staff", "admin"]:
+
+        #bookings = Booking.objects.all()
+        #Fetch all users from the database
+        context['userlist'] = bikeuser.objects.all()
+
+        # Fetch all motorbikes from the database
+        context['bikeslist'] = tblmotorbike.objects.all()
+
+    else:
+        context['bikeslist'] = tblmotorbike.objects.filter(id=user_id)
+        context['userlist'] = bikeuser.objects.filter(id=user_id)
+
+    context['bikeslist'] = tblmotorbike.objects.all()
+
+    return context
+'''
+

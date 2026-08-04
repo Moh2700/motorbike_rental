@@ -181,6 +181,7 @@ body {
   font-weight: bold;
 }
 
+/*
 .booking-summary {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -197,7 +198,7 @@ body {
 .booking-summary label {
   color: #777;
 }
-
+*/
 .progress-tracker {
   display: flex;
   justify-content: space-between;

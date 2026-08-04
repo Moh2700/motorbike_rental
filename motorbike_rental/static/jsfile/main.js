@@ -39,18 +39,13 @@ const deleteForm = document.getElementById("deleteForm");
 const modalText = document.getElementById("modalText");
 const navLinks = document.getElementById("mnuMotorbikes");
 
-//const AddEditBikeModal = document.getElementById("AddEditBikeModal");
-//const AddEditBikeForm = document.getElementById("AddEditBikeForm");
-
-//const AvailableBookings = document.getElementById("submnuAvailBookings");
-
 const inputStatus = document.getElementById("searchStatus");
 const statusSelect = document.getElementById("bike_status");
 const bikeCards = document.querySelectorAll(".bikecard");
 
 const showAvailableMotorbikes = document.getElementById("btnAvailMotorbikes");
-const signin = document.getElementById("hyplinkSignin");
-const registration = document.getElementById("mnuRegistration");
+//const signin = document.getElementById("hyplinkSignin");
+//const registration = document.getElementById("mnuRegistration");
 const browsemotorbikes = document.getElementById("submnubikelisting");
 const motorbikeStatus = document.getElementById("submnuMotorbikeStatus");
 
@@ -69,49 +64,60 @@ const startDate = document.getElementById("pickup_date");
 const endDate = document.getElementById("return_date");
 const rate = document.getElementById("bike_daily_rate");
 
-let openHam = document.querySelector("#openHam");
-let closeHam = document.querySelector("#closeHam");
-let navigationItems = document.querySelector("#navigation-items");
+const hamburger = document.getElementById("hamburger");
+const menu = document.querySelector(".navigation-items");
 
-const hamburgerEvent = (navigation, close, open) => {
-  navigationItems.style.display = navigation;
-  navigationItems.style.width = "86%";
-  navigationItems.style.gap = "2px";
-  navigationItems.style.marginRight = "20px";
-  closeHam.style.display = close;
-  openHam.style.display = open;
-};
-
-openHam.addEventListener("click", () =>
-  hamburgerEvent("flex", "block", "none"),
-);
-closeHam.addEventListener("click", () =>
-  hamburgerEvent("none", "none", "block"),
-);
-
-/*
-const menu = document.getElementById("navigation-items");
-const hamburger = document.getElementById("btnhamburger");
+const openHam = document.getElementById("openHam");
+const closeHam = document.getElementById("closeHam");
 
 hamburger.addEventListener("click", () => {
   menu.classList.toggle("active");
+
+  if (menu.classList.contains("active")) {
+    openHam.style.display = "none";
+    closeHam.style.display = "inline";
+  } else {
+    openHam.style.display = "inline";
+    closeHam.style.display = "none";
+  }
 });
 
-document.querySelectorAll(".menu-item").forEach((item) => {
-  item.addEventListener("click", () => {
-    menu.style.display = "none";
+document.querySelectorAll(".navigation-items a").forEach((link) => {
+  link.addEventListener("click", () => {
+    if (window.innerWidth > 768) return;
+
+    // Don't close the menu if this is a submenu heading
+    if (this.parentElement.classList.contains("dropdownsubmenu")) {
+      return;
+    }
+
     menu.classList.remove("active");
+    openHam.style.display = "inline";
+    closeHam.style.display = "none";
+
+    /*
+    if (window.innerWidth <= 768) {
+      document.querySelector(".navigation-items").classList.remove("active");
+
+      document.getElementById("openHam").style.display = "inline";
+      document.getElementById("closeHam").style.display = "none";
+      
+    }
+
+    */
   });
 });
 
-document.querySelectorAll(".menu-item").forEach((item) => {
-  item.addEventListener("mouseout", () => {
-    menu.style.display = "none";
-   // menu.classList.remove("active");
+document.querySelectorAll(".dropdownsubmenu > a").forEach((link) => {
+  link.addEventListener("click", function (e) {
+    if (window.innerWidth <= 768) {
+      e.preventDefault();
+
+      const submenu = this.nextElementSibling;
+      submenu.classList.toggle("show");
+    }
   });
 });
-
-*/
 
 class usrRegistration {
   validateName(usrname) {
@@ -307,7 +313,7 @@ function toggleSubmenu(event) {
 
     case "mnuMotorbikes":
       toggle_visibility("submnuMotorbikes");
-      //alert("");
+      //alert("" + dropdown.id);
       break;
 
     case "mnuBookings":
@@ -447,6 +453,8 @@ function showuserdetails(container, userElement) {
 }
 
 function DeleteUser(container, userid) {
+  //alert("You have selected to delete user details for " + userid);
+
   modal.style.display = "flex";
   modalText.innerHTML = `Are you sure you want to delete <b>${container["first_name"].value} ${container["last_name"].value}</b>?`;
 
@@ -720,28 +728,14 @@ function confirmRegistration() {
 }
 
 function showprogSection(sectionId) {
-  // alert("You have selected " + showsection);
-
-  /*
-  var oSection = document.getElementsByTagName("section");
-  for (var i = 0; i <= oSection.length; i++) {
-    if (oSection[i].style.display == "block") {
-      oSection[i].style.display = "none";
-    }
-
-    if (oSection[i].id == showsection) {
-      oSection[i].style.visibility = "visible";
-      oSection[i].style.display = "block";
-    }
-  }
-  */
+  console.log("Clicked:", sectionId);
 
   document.querySelectorAll(".content-section").forEach((section) => {
+    console.log("Hiding:", section.id);
     section.style.display = "none";
   });
 
   document.getElementById(sectionId).style.display = "block";
-  // cancelSection("Motorbike_Error_Messages");
 }
 
 function DeleteMotorbike(container) {
@@ -1110,21 +1104,6 @@ function loginUser(frm) {
     frm.action = "/motorbike_rental/login/";
     frm.submit();
   }
-  /*
-  const inputs = frm.querySelectorAll(
-    'input[type="text"], input[type="password"], input[type="email"]',
-  );
-  */
-
-  /*
-  if (!csrf) {
-    alert("No CSRF token found.");
-  } else {
-    
-
-    
-  }
-  */
 }
 
 function HireMotorbike(frm) {
@@ -1152,7 +1131,7 @@ function HireMotorbike(frm) {
 }
 
 function updateMotorbikeStatus(frm) {
-  alert(frm["bookingprogress"].value);
+  //alert(frm["bookingprogress"].value);
 
   // event.preventDefault();
   // frm.method = "POST";
@@ -1160,8 +1139,6 @@ function updateMotorbikeStatus(frm) {
   //frm.submit();
 
   showprogSection("Motorbike_Booking_Progress");
-
-  alert("");
 }
 
 function loadMotorbikeBooking(frm) {
@@ -1384,12 +1361,13 @@ document.addEventListener("DOMContentLoaded", function () {
   getuserdetails(userElement);
 });
 */
-
+/*
 document.addEventListener("DOMContentLoaded", function () {
   document
     .getElementById("submnuMotorbikeStatus")
     .addEventListener("click", function () {});
 });
+*/
 
 /*
 motorbikeStatus.addEventListener("click", function () {
@@ -1397,6 +1375,7 @@ motorbikeStatus.addEventListener("click", function () {
 });
 */
 
+/*
 registration.addEventListener("click", function () {
   showprogSection("User_Registration");
 });
@@ -1406,20 +1385,49 @@ signin.addEventListener("click", function () {
 
   //navigationItems.style.display = "flex";
 });
-
+*/
+/*
 showmembers.addEventListener("click", function () {
-  //alert("You have selected to view members listing");
   makeaselection("allmotorbikelisting");
 });
+*/
 
+document.addEventListener("DOMContentLoaded", () => {
+  /*
+  if (motorbikelisting) {
+    motorbikelisting.addEventListener("click", function () {
+      makeaselection("MotorbikeManagement");
+    });
+  }
+  */
+  if (showmembers) {
+    showmembers.addEventListener("click", function () {
+      makeaselection("allmotorbikelisting");
+    });
+  }
+
+  if (browsemotorbikes) {
+    browsemotorbikes.addEventListener("click", function () {
+      makeaselection("MotorbikeManagement");
+    });
+  }
+});
+
+/*
+motorbikelisting.addEventListener("click", function () {
+  makeaselection("MotorbikeManagement");
+});
+*/
+/*
 browsemembers.addEventListener("click", function () {
   makeaselection("allmotorbikelisting");
 });
-
+*/
+/*
 browsemotorbikes.addEventListener("click", function () {
   makeaselection("MotorbikeManagement");
 });
-
+*/
 usrpass.addEventListener("click", function () {
   revealPassword(document.getElementById("userpassword"));
 });
@@ -1602,4 +1610,15 @@ function highlightTableRows() {
 
 document.addEventListener("DOMContentLoaded", function () {
   highlightTableRows();
+});
+
+//const menu = document.getElementById("navigation-items");
+
+const observer = new MutationObserver(() => {
+  console.log("MENU CHANGED:", menu.className);
+});
+
+observer.observe(menu, {
+  attributes: true,
+  attributeFilter: ["class"],
 });

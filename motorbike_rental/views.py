@@ -1,14 +1,13 @@
 
+from urllib import request
 from django.http import HttpResponse
 from .models import tblmotorbike, bikeuser, Booking
-from django.template import loader
-#from django.views import generic
+from django.template import context, loader
 from .forms import MemberForm, MotorbikeForm
-
-from django.http import  HttpResponseRedirect
+from django.http import Http404
+#from django.http import  HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
-
+#from django.urls import reverse
 from django.views.generic.base import TemplateView
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
@@ -115,74 +114,37 @@ def login_view(request):
     return render(request, "motorbike_rental/index.html")
 
 
-'''
-def login_view(request):
-
-    # If the user is already inside the session table, bypass login
-    if 'bikeuser_id' in request.session:
-        return redirect('motorbike_rental:index')
-
-    if request.method == 'POST':
-
-        request.session.flush()
-
-        username_input = request.POST.get('username')
-        password_input = request.POST.get('password')
-        email_input = request.POST.get('email')
-
-        # 1. Look up the user safely by username only to prevent a crash
-        try:
-            user = bikeuser.objects.get(username=username_input, email=email_input, password=password_input)
-
-            # 2. Check if the password matches your plain-text database record
-            if user.password == password_input:
-
-                # 3. Log them in manually by assigning items to the session cookie
-                request.session['bikeuser_id'] = user.id
-                request.session['bikeuser_username'] = user.username
-                request.session['bikeuser_role'] = user.role.lower()
-                request.session['bikeuser_first_name'] = user.first_name
-                request.session['bikeuser_last_name'] = user.last_name
-
-                messages.success(request, f"Welcome back, {user.first_name}! Access granted.")
-                return redirect('motorbike_rental:index')
-
-            else:
-                messages.error(request, "Access Denied: Incorrect password.")
-
-        except bikeuser.DoesNotExist:
-            messages.error(request, "Access Denied: Username does not exist.")
-
-    # Render your actual login HTML page on a GET request
-    return render(request, 'motorbike_rental/index.html')
-
-'''
-
 class IndexView(TemplateView):
 
     template_name = 'motorbike_rental/index.html'
-def get_context_data(self, **kwargs):
 
-        # Call the base implementation to get the default context
+    def get_context_data(self, **kwargs):
+
         context = super().get_context_data(**kwargs)
 
         role = self.request.session.get("bikeuser_role")
         user_id = self.request.session.get("bikeuser_id")
 
-        if role in ["staff", "admin"]:
+        # Everyone (including visitors) can see all motorbikes
+        context['bikeslist'] = tblmotorbike.objects.all()
 
-            #bookings = Booking.objects.all()
-            #Fetch all users from the database
+        # Only logged-in staff/admin can see all users
+        if role in ["staff", "admin", "customer"]:
             context['userlist'] = bikeuser.objects.all()
+            context['visitor'] = True
 
-            # Fetch all motorbikes from the database
-            context['bikeslist'] = tblmotorbike.objects.all()
-
-        else:
-            context['bikeslist'] = tblmotorbike.objects.filter(id=user_id)
+        # Logged-in customer sees only their own details
+        elif user_id:
             context['userlist'] = bikeuser.objects.filter(id=user_id)
 
+        # Visitor (not logged in)
+        else:
+            context['userlist'] = bikeuser.objects.none()
+            context['visitor'] = True
+            #print("Visitor detected: No user session found.", context)
+
         return context
+
 
 def show_booking_details(request, booking_id):
 
@@ -331,9 +293,9 @@ def all_bookings(request):
             context
     )
 
-from django.http import Http404
 
 def motorbike_detail(request, bike_id):
+    motorbike = get_object_or_404(tblmotorbike, id=bike_id)
     booking = (
         Booking.objects.select_related(
             "rentaluser",
@@ -343,50 +305,55 @@ def motorbike_detail(request, bike_id):
         .order_by("-booking_date")
         .first()
     )
-
+    
     if booking is None:
-        raise Http404("No booking found for this motorbike.")
+        messages.warning(request, "There are no booking records for this motorbike.")
 
+        context = {
+            "booking": None,
+            "show_motorbikebooking": True,
+        }
+        return render(
+                request,
+                "motorbike_rental/index.html",
+                context
+            )
     context = {
-        "motorbike": booking.motorbike,
-        "booking": booking,
-        "user": booking.rentaluser,
-    }
-
-    rentaluser = booking.rentaluser
-    '''
-    for field in rentaluser._meta.fields:
-    print(f"{field.name}: {getattr(rentaluser, field.name)}")
-    '''
-    return render(
-        request,
-        "motorbike_rental/motorbikedetail.html",
-        context
-    )
-'''    
-    # Fetch the specific motorbike or show a 404 error page
-    motorbike = get_object_or_404(tblmotorbike, id=bike_id)
-    # We pass the motorbike object directly to the template
-
-    return render(request, 'motorbike_rental/motorbikedetail.html', {'motorbike': motorbike})
-'''
+           "motorbike": booking.motorbike,
+           "booking": booking,
+           "user": booking.rentaluser,
+           "show_motorbikebooking": True
+        }
+    
+    return render(request, "motorbike_rental/index.html", context)
+     
 
 def delete_bikeuser(request, user_id):
     # 1. Fetch the user row or throw a 404 page if they don't exist
     user = get_object_or_404(bikeuser, id=user_id)
     # 2. Check if the deletion request is submitted via POST
     if request.method == "POST":
+        username = user.username  # Store before deleting
+
         user.delete()  # Removes the row from your database completely
+        # Send success message
+        messages.success(
+            request,
+            f"User '{username} ({user.first_name} "
+            f"{user.last_name})' has been added successfully."
+            
+        )
 
         context = {
             "Motorbike_Users": True
         }
+
         # 3. Redirect back to your home page layout using your namespace
         return render(request, "motorbike_rental/index.html", context)
 
     
-      # 4. Fallback safeguard: If a user tries to access this URL directly via GET, 
-      # redirect them home without doing anything.
+# 4. Fallback safeguard: If a user tries to access this URL
+      # directly via GET, redirect them home without doing anything.
     return redirect('motorbike_rental:index')
 
 def edit_bikeuser(request, user_id):
@@ -403,20 +370,32 @@ def edit_bikeuser(request, user_id):
 
             # Tell index page to open Motorbike Users section
             request.session["MotorbikeUsers"] = True
-            return render(request, "motorbike_rental/index.html", {
-                    "form": form,
-                    "errormsg": err,
-                    "user": user,
-                    "userlist": users,
-                    "MotorbikeUsers": True
-                })   
-            #return redirect("motorbike_rental:index")
+
+            context = {
+                "form": form,
+                "errormsg": err,
+                "user": user,
+                "userlist": users,
+                "MotorbikeUsers": True
+            }
+            return render(request, "motorbike_rental/index.html", context)
+            # return redirect("motorbike_rental:index")
 
         else:
             print("Form Validation Errors:", form.errors)
 
     else:
         form = MemberForm(instance=user)
+        #context = {
+        #            "MotorbikeUsers": True
+        #}   
+        #return redirect("motorbike_rental:index")
+
+        #else:
+        print("Form Validation Errors:", form.errors)
+
+    #else:
+        #form = MemberForm(instance=user)
 
     request.session["MotorbikeUsers"] = True
     
@@ -635,8 +614,16 @@ def user_list(request):
         context
     )    
 
+def index(request):
+    context = {
+            "AllMotorbikes": True,
+            "bikeslist": tblmotorbike.objects.all(),
+    }
+    return render(request,"motorbike_rental/index.html",context)
+
 def motorbike_list(request):
     motorbikes = tblmotorbike.objects.all().order_by("bike_make", "bike_model")
+
     context = {
         "AllMotorbikes": True,
         "bikeslist": motorbikes,
@@ -647,7 +634,29 @@ def motorbike_list(request):
         "motorbike_rental/index.html",
         context
     )    
-      
+
+def get_user_profile(request):
+    bikeuser_id = request.session.get("bikeuser_id")
+    loggeduser = bikeuser.objects.get(id=bikeuser_id)
+    if not bikeuser_id:
+        error_message = "You must be logged in to view your profile."
+        messages.error(request, error_message)
+        
+    try:
+        loggeduser = bikeuser.objects.get(id=bikeuser_id)
+    except bikeuser.DoesNotExist:
+        error_message = "Users not found."
+        messages.error(request, error_message)
+
+    context = {
+        "user": loggeduser,
+        "MotorbikeUsers": True
+    }
+    print("User Profile Context:", context)  # Debugging line 
+    return render(request, "motorbike_rental/index.html", context)
+
+
+
 def get_user_details(request):
 
     user_id = request.session.get("bikeuser_id")
@@ -718,24 +727,70 @@ def hire_motorbike(request, bike_id):
     return render(request, 'motorbike_rental:index.html', {'bike': bike})
 
 def add_bikeuser(request):
+
     if request.method == "POST":
-
         context = {
-            "Motorbike_Users": True
+          "MotorbikeUsers": True
         }
-        form = MemberForm(request.POST)
 
-        if form.is_valid():
-            form.save()
-            #return redirect("motorbike_rental:index")
-            return render (request, 'motorbike_rental:index', context)
-    else:
-        form = MemberForm()
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        address = request.POST.get('address')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        phone_number = request.POST.get('phone_number')
+        date_of_birth = request.POST.get('date_of_birth')
+        driving_licence_number = request.POST.get('driving_licence_number')
+        role = request.POST.get('role')
 
-    #return render(request, "add_bikeuser.html", {"form": form})
-    return render (request, 'motorbike_rental:index', context)
+        try:
+            if bikeuser.objects.filter(
+                username=username,
+                email=email,
+                password=password,
+            ).exists():
+                messages.warning(request, "Username already exists.")
+                return render(request, "motorbike_rental/index.html", context=context)
+
+            user, created = bikeuser.objects.get_or_create(
+                username=username,
+                email=email,
+                address=address,
+                password=password,
+                first_name=first_name,
+                last_name=last_name,
+                phone_number=phone_number,
+                date_of_birth=date_of_birth,
+                driving_licence_number=driving_licence_number,
+                role=role
+            )
+
+            if created:
+                messages.success(
+                    request,
+                    (
+                        f"User '{user.username} ({user.first_name} "
+                        f"{user.last_name})' has been added successfully."
+                    ),
+                )
+
+            else:
+                messages.warning(
+                    request,
+                    "User already exists!"
+                )
+
+        except Exception as e:
+            messages.error(
+                request,
+                f"Registration failed: {str(e)}"
+            )
+        return render(request, 'motorbike_rental/index.html', context=context)   
+    return render(request, 'motorbike_rental/index.html', context=context)
 
 def add_motorbike(request):
+
     if request.method == 'POST':
         # Use .get() to safely fall back to None or an empty string if a field is empty
         bike_make = request.POST.get('bike_make')
@@ -801,13 +856,23 @@ def delete_motorbike(request, bike_id):
     bike = get_object_or_404(tblmotorbike, id=bike_id)
 
     if request.method == 'POST':
+        bike_name = f"{bike.bike_make} {bike.bike_model}"  # Change this to your actual field name
+
         bike.delete()
+
+        messages.success(
+            request,
+            f"Motorbike '{bike_name}' has been deleted successfully."
+            
+        )
         return redirect('motorbike_rental:index')
+    
     return redirect('motorbike_rental:index')
 
 def registeruser(request):
 
     if request.method == 'POST':
+
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
@@ -819,21 +884,42 @@ def registeruser(request):
         driving_licence_number = request.POST.get('driving_licence_number')
         role = request.POST.get('role')
 
-        bikeuser.objects.get_or_create(
-            username=username,
-            email=email,
-            address=address,
-            password=password,
-            first_name=first_name,
-            last_name=last_name,
-            phone_number=phone_number,
-            date_of_birth=date_of_birth,
-            driving_licence_number=driving_licence_number,
-            role=role
-        )
+        try:
+            user, created = bikeuser.objects.get_or_create(
+                username=username,
+                email=email,
+                address=address,
+                password=password,
+                first_name=first_name,
+                last_name=last_name,
+                phone_number=phone_number,
+                date_of_birth=date_of_birth,
+                driving_licence_number=driving_licence_number,
+                role=role
+            )
+
+            if created:
+                messages.success(
+                    request,
+                    "User registered successfully!"
+                )
+            else:
+                messages.warning(
+                    request,
+                    "User already exists!"
+                )
+
+        except Exception as e:
+
+            messages.error(
+                request,
+                f"Registration failed: {str(e)}"
+            )
+
         return render(request, 'motorbike_rental/index.html')
     
     return render(request, 'motorbike_rental/index.html')
+
 
 def customers_view(request):
     # Fetch all customers from the database

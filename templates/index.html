@@ -81,13 +81,20 @@
           </li>
 
           <li style="cursor: pointer" class="menu-item">
-            <a id="mnuRegistration">Registration</a>
+            <a id="mnuRegistration" onclick="showprogSection('User_Registration')">Registration</a>
           </li>
 
-          <li id="mnuSignin" style="cursor: pointer" class="menu-item">
-            <a id="hyplinkSignin">Sign in </a>
+          <!--li id="mnuSignin" style="cursor: pointer" class="menu-item" onclick="alert('')">
+            <a id="hyplinkSignin" onclick="showprogSection('MotorBike_Signin')">Sign in </a>
+          </li-->
+
+          <li id="mnuSignin" class="menu-item" onclick="showprogSection('MotorBike_Signin')">
+            Sign in
           </li>
 
+          <li id="mnuSignin" class="menu-item" onclick="showprogSection('MotorBike_Signin')">
+            Sign in
+          </li>
 
           <style>
             .disabled {
@@ -1235,7 +1242,7 @@
       </section>
 
 
-      <section id="Motorbike_Hiring" class="container" style=" margin-bottom: 20px; display:none">
+      <section id="Motorbike_Hiring" class="content-section" style=" margin-bottom: 20px; display:none">
 
         <div class="booking-widget" class="modal">
 
@@ -1443,7 +1450,9 @@
         }
       </style>
 
-      <section id="MotorBike_Signin" class="container" style=" display:none;">
+      <section id="MotorBike_Signin" class="content-section" style=" margin-bottom: 20px; display:none">
+
+        <!--section id="MotorBike_Signin" class="content-section" style="display:none;"-->
 
         <div id="popupOverlay" class="centered-container">
 
