@@ -945,4 +945,12 @@ tbody tr:nth-child(even) {
   .mobile-row {
     grid-column: span 1;
   }
+
+  .form-group button,
+  .btn {
+    width: 100%;
+    max-width: none;
+    font-size: 14px;
+    padding: 10px;
+  }
 }

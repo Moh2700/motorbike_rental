@@ -1,5 +1,5 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -8,24 +8,14 @@
   <title>Bike Wonders</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
-  <!--link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"-->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-  <link rel="stylesheet" href="{% static '/assets/css/hireprogress.css' %}">
-  <link rel="stylesheet" href="{% static '/assets/css/footer.css' %}">
-  <!--link rel="stylesheet" href="{% static '/assets/css/header.css' %}"-->
-  <!--link rel="stylesheet" href="{% static '/assets/css/menu.css' %}"-->
-  <link rel="stylesheet" href="{% static '/assets/css/rentalheader.css' %}">
-
-  <link rel="stylesheet" href="{% static '/assets/css/motorbike_booking.css' %}">
-  <link rel="stylesheet" href="{% static '/assets/css/styles.css' %}">
-
-  <!--link rel="stylesheet" href="{% static 'assets/css/motorbikes.css' %}"-->
-
-
-  <!--script type="module" src="{% static '/jsfile/ukplate.js' %}"></script-->
-  <script defer type="text/javascript" src="{% static '/jsfile/main.js' %}"></script>
-  <!--script defer type="text/javascript" src="{% static '/jsfile/funchelp.js' %}"></script-->
+  <link rel="stylesheet" href="{% static 'assets/css/hireprogress.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/footer.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/rentalheader.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/motorbike_booking.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/styles.css' %}">
+  <script defer type="text/javascript" src="{% static 'jsfile/main.js' %}"></script>
 
 </head>
 
@@ -60,24 +50,23 @@
           </li>
 
           <li class="user-info">
-            <a>
+            <span style="color:white;font-family: 'Montserrat', sans-serif;">
 
               Role: {{ request.session.bikeuser_role }}
               {{ request.session.bikeuser_first_name }}
               {{ request.session.bikeuser_last_name }}
+            </span>
+          </li>
+
+
+
+          <li id="mnuSignin"> <a href="javascript:void(0);"
+              onclick="showprogSection('MotorBike_Signin'); return false;">
+              SignIn
             </a>
           </li>
 
-          <!--li class="menu-item">
-            <a href="/motorbike_rental">Dashboard</a>
-          </li-->
-
-          <li> <a href="javascript:void(0);" onclick="showprogSection('MotorBike_Signin'); return false;">
-              Sign In
-            </a>
-          </li>
-
-          <li class="menu-item">
+          <li id="mnuRegistration" class="menu-item">
             <a href="javascript:void(0);" onclick="showprogSection('User_Registration'); return false;">
               Registration
             </a>
@@ -89,7 +78,7 @@
 
           <li id="mnuMotorbikes" class="dropdownsubmenu">
 
-            <a onclick="toggleSubmenu(event)">
+            <a href="javascript:void(0);" onclick="toggleSubmenu(event)">
               Motorbikes
             </a>
 
@@ -113,9 +102,9 @@
 
           </li>
 
-          <li id="mnuUsers" class="dropdownsubmenu" class="menu-item">
+          <li id="mnuUsers" class="dropdownsubmenu menu-item">
 
-            <a onclick="toggleSubmenu(event)">
+            <a href="javascript:void(0);" onclick="toggleSubmenu(event)">
               Users
             </a>
 
@@ -140,11 +129,12 @@
 
           </li>
 
+
           {% elif request.session.bikeuser_role == "Staff" or request.session.bikeuser_role == "staff" %}
 
           <li id="mnuBookings" class="dropdownsubmenu menu-item">
 
-            <a onclick="toggleSubmenu(event)">
+            <a href="javascript:void(0);" onclick="toggleSubmenu(event)">
               Bookings
             </a>
 
@@ -163,9 +153,9 @@
 
           </li>
 
-          <li id="mnuUsers" class="dropdownsubmenu" class="menu-item">
+          <li id="mnuUsers" class="dropdownsubmenu menu-item">
 
-            <a onclick="toggleSubmenu(event)">
+            <a href="javascript:void(0);" onclick="toggleSubmenu(event)">
               Users
             </a>
 
@@ -273,9 +263,6 @@
       </nav>
 
     </header>
-
-
-
 
     <main class="site-contentxxx">
 
@@ -419,147 +406,6 @@
 
       </section>
 
-      <!--style>
-        .search-box {
-          margin-bottom: 20px;
-          flex: 1;
-          align-items: end;
-        }
-
-        #searchInput {
-          width: 100%;
-          padding: 8px 12px;
-          border-radius: 8px;
-          border: 1px solid #ccc;
-          font-size: 16px;
-
-        }
-
-        .search-box input {
-          width: 100%;
-          padding: 8px 12px;
-          border-radius: 8px;
-          border: 1px solid #ccc;
-          font-size: 16px;
-
-        }
-
-        #searchInput:focus {
-          border-color: #6c63ff;
-          outline: none;
-          box-shadow: 0 0 5px rgba(108, 99, 255, 0.4);
-        }
-
-        .parent-container {
-          display: flex;
-          /* Activates Flexbox layout */
-          flex-direction: row;
-          /* Arranges children in a row (default) */
-          justify-content: space-between;
-          /* Spreads them apart. Alternatives: center, flex-start, flex-end */
-          align-items: center;
-          /* Aligns them perfectly along their vertical center line */
-          gap: 20px;
-          /* Puts a clean 20px gap between the two boxes */
-          padding-bottom: 20px;
-        }
-
-        /* Optional styling to make the boxes equal width */
-        .box-one,
-        .box-two {
-          flex: 1;
-          padding: 20px;
-          background-color: #f0f0f0;
-          width: 100%;
-          padding: 8px 12px;
-          border-radius: 8px;
-          border: 1px solid #ccc;
-          font-size: 16px;
-        }
-
-
-        .box-one :focus,
-        .box-two :focus {
-          border-color: #6c63ff;
-          outline: none;
-          box-shadow: 0 0 5px rgba(108, 99, 255, 0.4);
-        }
-      </style-->
-
-      <!--style>
-        /*
-        .motorbikescard {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          gap: 15px;
-          width: 100%;
-        }
-        */
-        /*
-        .bikecard {
-          width: 100%;
-          max-width: 100%;
-          box-sizing: border-box;
-          border-radius: 10px;
-          overflow: hidden;
-        }
-
-        .bikecard img {
-          width: 100%;
-          height: auto;
-          display: block;
-          object-fit: cover;
-        }
-
-        .bikecard p {
-          margin: 5px 10px;
-          word-wrap: break-word;
-        }
-         */
- 
-         
-        .parent-container {
-          display: flex;
-          gap: 15px;
-          align-items: center;
-        }
-
-        .box-one,
-        .box-two {
-          flex: 1;
-          padding: 10px;
-          border-color: #6c63ff;
-          outline: none;
-          box-shadow: 0 0 5px rgba(108, 99, 255, 0.4);
-          padding: 20px;
-          background-color: #f0f0f0;
-          width: 100%;
-          padding: 8px 12px;
-          border-radius: 8px;
-          border: 1px solid #ccc;
-          font-size: 16px;
-        }
-
-        /* Mobile */
-        @media (max-width: 768px) {
-          .parent-container {
-            flex-direction: column;
-            align-items: stretch;
-          }
-
-          /*
-          .bikecard {
-            width: 100%;
-          }
-          */
-          .box-one,
-          .box-two {
-            width: 100%;
-          }
-        }
-
-
-      </style-->
 
       <style>
         .motorbikescard {
@@ -749,12 +595,6 @@
 
                   </a>
 
-                  <!--button type="button" class="edit-btn">
-                    <a href="{% url 'motorbike_rental:motorbike_detail' bike.id %}">
-                      <i class="fa-solid fa-file-lines" style="text-decoration: none;color:white"></i> View
-                      <i class="fas fa-eye"></i>
-                    </a>
-                  </button-->
 
                 </td>
 
@@ -791,7 +631,7 @@
 
 
         <div class="parent-container">
-          <input id="searchStatus" class="box-one" placeholder="Search motorbikes..."></input>
+          <input id="searchStatus" class="box-one" placeholder="Search motorbikes...">
 
           <select class="box-two" id="bike_status" name="bike_status">
             <option value="">All Statuses</option>
@@ -804,9 +644,14 @@
         <div class="motorbikescard">
 
           {% for bike in bikeslist %}
+
           <div class="bikecard" id="{{ bike.id }}">
 
-            <img src="{{ bike.bike_imgsrc }}" alt="{{ bike.bike_make }} {{ bike.bike_model }}">
+            <img id="{{ bike.id }}" src="{{ bike.bike_imgsrc }}" data-bikeid="{{ bike.id }}"
+              data-bikemake="{{ bike.bike_make }}" data-bikemodel="{{ bike.bike_model  }}"
+              data-bikeyear="{{ bike.bike_year }}" data-bikestatus="{{ bike.bike_status }}"
+              data-bikeplatenumber="{{ bike.bike_plate_number }}" data-bikeimgsrc="{{ bike.bike_imgsrc }}"
+              data-bikedailyrate="{{ bike.bike_daily_rate  }}" />
 
             <div class="bike-info">
               <p><strong>Make:</strong> {{ bike.bike_make }}</p>
@@ -821,38 +666,12 @@
 
         </div>
 
-        <!--div class="motorbikescard" id="motorbikelist"-->
-        <!--div id="motorbikelist" class="motorbikescard">
-
-          {% for bike in bikeslist %}
-
-          <div class="bikecard" id="{{ bike.id }}" style="margin-top:5px; width: 100%; cursor: pointer;">
-            <img id="{{ bike.id }}" src="{{ bike.bike_imgsrc }}" data-bikeid="{{ bike.id }}"
-              data-bikemake="{{ bike.bike_make }}" data-bikemodel="{{ bike.bike_model  }}"
-              data-bikeyear="{{ bike.bike_year }}" data-bikestatus="{{ bike.bike_status }}"
-              data-bikeplatenumber="{{ bike.bike_plate_number }}" data-bikeimgsrc="{{ bike.bike_imgsrc }}"
-              data-bikedailyrate="{{ bike.bike_daily_rate  }}" />
-
-            <p><strong>Make :</strong> {{bike.bike_make}}</p>
-            <p><strong>Model:</strong> {{ bike.bike_model }}</p>
-            <p><strong>Year:</strong> {{ bike.bike_year }}</p>
-            <p><strong>Status:</strong>{{ bike.bike_status }}</p>
-            <p><strong>Daily Rate:</strong> £{{ bike.bike_daily_rate }}</p>
-          </div>
-
-
-          {% endfor %}
-
-        </div-->
-
       </section>
 
 
       <section id="Motorbike_Users" class="content-section" {% if MotorbikeUsers %}
         style="display:block; padding-top:20px;" {% else %} style="display:none; padding-top:20px;" {% endif %}>
 
-        <!--section id="Motorbike_Users" class="content-section" style="display:none; padding-top:20px;"
-        style="display:none; padding-top:20px;"-->
 
         <div class="booking-widget" id="divUserDetails" class="modal" style="display:block">
 
@@ -1277,62 +1096,14 @@
         }
       </style>
 
-      <style>
-        /*
-        .button-group {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 10px;
-          margin: 20px 0;
-        }
-        */
-        /*
-        .btn {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-
-          min-width: 160px;
-          padding: 12px 20px;
-
-          background: #493399;
-          color: white;
-          text-decoration: none;
-          border: none;
-          border-radius: 8px;
-
-          cursor: pointer;
-          transition: .3s;
-          box-sizing: border-box;
-        }
-        
-        .btn:hover {
-          background: #6c63ff;
-        }
-         */
-      </style>
 
       <section id="Motorbike_Users_Listing" class="content-section" {% if AllUsers %}
         style="display:block; padding-top:20px;" {% else %} style="display:none; padding-top:20px;" {% endif %}>
 
-        <!--section id="Motorbike_Users_Listing" class="container" style="  display: none;"-->
 
         <br>
         <div class="usersearch" id="divSearchUser" style="background-color: #6c63ff; margin-bottom: 10px; ">
 
-          <!--div class="form-group" style="margin-bottom: 5px; margin-top: 5px; ">
-            <input type="text" style="width: 90%;" id="UserSearch" placeholder="Search users..." />
-
-            <button id="searchUser" class="btn"
-              onclick="searchItems(document.getElementById('UserSearch').value, document.getElementById('divuserlist'))">
-              Search
-            </button>
-
-            <button type="button" class="btn" onclick="cancelSection('Motorbike_Users_Listing')">
-              Cancel
-            </button>
-
-          </div-->
 
           <style>
             .search-container {
@@ -1399,53 +1170,8 @@
 
         <br>
 
-        <style>
-          /*
-          .card-info {
-            display: grid;
-            grid-template-columns: 120px 1fr;
-            gap: 8px;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-          }
-          */
 
-          /*
-          .card-info strong {
-            color: black;
-          }
-
-          #divuserlist {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-          }
-
-          #divuserlist .card-info {
-            display: grid;
-            grid-template-columns: 120px 1fr;
-            gap: 8px;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-
-          }
-
-          #divuserlist .card-info:hover {
-            background: linear-gradient(to right, #6c63ff, #6c63ff);
-            color: #ddd;
-            cursor: pointer;
-
-          }
-            */
-        </style>
-
-
-
-        <div div="divuserlist" class="cards">
+        <div id="divuserlist" class="cards">
 
           {% for user in userlist %}
 
@@ -1732,63 +1458,17 @@
           margin-bottom: 20px;
         }
 
-        /*
-        .signin-container booking-grid {
-          display: flex;
-          flex-direction: column;
-          gap: 15px;
-        }
-        */
-
-        /*
-        .booking-gridxxx {
-          display: flex;
-          flex-direction: column;
-          gap: 15px;
-        }
-
-        .form-group {
-          display: flex;
-          flex-direction: column;
-        }
-
-        .form-group input {
+        .form-group button,
+        .btn {
           width: 100%;
-          padding: 10px;
+          max-width: 140px;
+          padding: 12px 20px;
+          border: none;
+          border-radius: 10px;
           font-size: 16px;
-          box-sizing: border-box;
+          cursor: pointer;
+          margin: 5px 0;
         }
-        */
-        /*
-        .booking-grid {
-          display: flex;
-          flex-direction: column;
-          gap: 15px;
-        }
-
-        .form-group {
-          display: flex;
-          flex-direction: column;
-        }
-
-        .form-group label {
-          margin-bottom: 5px;
-          font-weight: bold;
-        }
-
-        
-
-        .button-group {
-          display: flex;
-          gap: 10px;
-          margin-top: 10px;
-        }
-
-        .button-group .btn {
-          flex: 1;
-          padding: 10px;
-        }
-          */
       </style>
 
       <section id="MotorBike_Signin" class="content-section" style=" display:none;">
@@ -1833,8 +1513,6 @@
       </section>
 
 
-      <!--section id="Motorbike_Error_Messages" class="content-section" {% if errormsg %}
-        style="display:block; padding-top:20px;" {% else %} style="display:none; padding-top:20px;" {% endif %}-->
 
       <section id="Motorbike_Error_Messages" class="content-section" style="display: none;">
 
@@ -2316,15 +1994,10 @@
 
 
                   <td>
-                    <!--input type="button" class="btn btn-primary">
-                    <a href="{% url 'motorbike_rental:booking_details' booking.id %}">
-                      View Booking
-                    </a>
-                    <input-->
+
                     <button type="button" class="edit-btn">
                       <a href="{% url 'motorbike_rental:show_booking_details' booking.id %}">
-                        <!--i class="fa-solid fa-file-lines" style="text-decoration: none;color:white"></i-->
-                        <i class="fas fa-eye">View</i>
+                        <i class="fas fa-eye" alt="View Booking">View</i>
                       </a>
                     </button>
 
@@ -2430,24 +2103,24 @@
 
     <div class="motorbikescard">
 
-      <div class="bikecard" style="width:100%">
-        <img src="https://images.pexels.com/photos/2569465/pexels-photo-2569465.jpeg" />
+      <div class="bikecard">
+        <img alt="Motorbike" src="https://images.pexels.com/photos/2569465/pexels-photo-2569465.jpeg" />
 
       </div>
 
 
       <div class="bikecard" style="width:100%">
-        <img src="https://images.pexels.com/photos/23524278/pexels-photo-23524278.jpeg" />
+        <img alt="Motorbike" src="https://images.pexels.com/photos/23524278/pexels-photo-23524278.jpeg" />
 
       </div>
 
       <div class="bikecard" style="width:100%">
-        <img src="https://images.pexels.com/photos/30979731/pexels-photo-30979731.jpeg" />
+        <img alt="Motorbike" src="https://images.pexels.com/photos/30979731/pexels-photo-30979731.jpeg" />
 
       </div>
 
       <div class="bikecard" style="width:100%">
-        <img src="https://images.pexels.com/photos/13869680/pexels-photo-13869680.jpeg" />
+        <img alt="Motorbike" src="https://images.pexels.com/photos/13869680/pexels-photo-13869680.jpeg" />
 
       </div>
 

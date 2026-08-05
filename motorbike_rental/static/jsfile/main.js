@@ -43,6 +43,8 @@ const inputStatus = document.getElementById("searchStatus");
 const statusSelect = document.getElementById("bike_status");
 const bikeCards = document.querySelectorAll(".bikecard");
 
+//const bikeCards = document.querySelectorAll(".motorbikescard");
+
 const showAvailableMotorbikes = document.getElementById("btnAvailMotorbikes");
 //const signin = document.getElementById("hyplinkSignin");
 //const registration = document.getElementById("mnuRegistration");
@@ -86,25 +88,24 @@ document.querySelectorAll(".navigation-items a").forEach((link) => {
   link.addEventListener("click", () => {
     if (window.innerWidth > 768) return;
 
+    switch (link.parentElement.id) {
+      case "mnuSignin":
+        closemenu();
+        break;
+      case "mnuRegistration":
+        closemenu();
+        break;
+    }
+
     // Don't close the menu if this is a submenu heading
     if (this.parentElement.classList.contains("dropdownsubmenu")) {
       return;
     }
 
-    menu.classList.remove("active");
-    openHam.style.display = "inline";
-    closeHam.style.display = "none";
-
-    /*
-    if (window.innerWidth <= 768) {
-      document.querySelector(".navigation-items").classList.remove("active");
-
-      document.getElementById("openHam").style.display = "inline";
-      document.getElementById("closeHam").style.display = "none";
-      
-    }
-
-    */
+    closemenu();
+    // menu.classList.remove("active");
+    // openHam.style.display = "inline";
+    // closeHam.style.display = "none";
   });
 });
 
@@ -118,6 +119,12 @@ document.querySelectorAll(".dropdownsubmenu > a").forEach((link) => {
     }
   });
 });
+
+function closemenu() {
+  menu.classList.remove("active");
+  openHam.style.display = "inline";
+  closeHam.style.display = "none";
+}
 
 class usrRegistration {
   validateName(usrname) {
@@ -1322,7 +1329,10 @@ function searchMotorbikes() {
 
 // Window Keydown Event
 window.addEventListener("keydown", function (event) {
+  //alert("Key pressed: " + event.key + " | Target ID: " + event.target.id);
   if (event.key === "Enter") {
+    // alert("Enter key pressed! ID: " + event.target.id);
+
     // Check the ID of the element that triggered the Enter key
     switch (event.target.id) {
       case "searchInput":
@@ -1453,6 +1463,7 @@ function filterMotorbikes() {
   const selectedStatus = statusSelect.value.trim().toLowerCase();
 
   bikeCards.forEach((card) => {
+    //alert("Filtering bike cards based on search and status selection.");
     // Targets the image tag inside each card holding the data attributes
     const bikeImage = card.querySelector("img");
     if (!bikeImage) return;
