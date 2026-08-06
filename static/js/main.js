@@ -89,30 +89,6 @@ closeHam.addEventListener("click", () =>
   hamburgerEvent("none", "none", "block"),
 );
 
-/*
-const menu = document.getElementById("navigation-items");
-const hamburger = document.getElementById("btnhamburger");
-
-hamburger.addEventListener("click", () => {
-  menu.classList.toggle("active");
-});
-
-document.querySelectorAll(".menu-item").forEach((item) => {
-  item.addEventListener("click", () => {
-    menu.style.display = "none";
-    menu.classList.remove("active");
-  });
-});
-
-document.querySelectorAll(".menu-item").forEach((item) => {
-  item.addEventListener("mouseout", () => {
-    menu.style.display = "none";
-   // menu.classList.remove("active");
-  });
-});
-
-*/
-
 class usrRegistration {
   validateName(usrname) {
     const trimmed = usrname.trim();
@@ -686,6 +662,7 @@ function cancelSection(sectionname) {
   return oSection;
 }
 
+/*
 function confirmRegistration() {
   attendeeReg.name = document.getElementById("regname").value.trim();
   attendeeReg.email = document.getElementById("regemail").value.trim();
@@ -718,7 +695,7 @@ function confirmRegistration() {
   document.getElementById("regemail").value = "";
   getSiteEvent("SiteRegistration", "none");
 }
-
+*/
 function showprogSection(sectionId) {
   // alert("You have selected " + showsection);
 

@@ -1100,7 +1100,6 @@
       <section id="Motorbike_Users_Listing" class="content-section" {% if AllUsers %}
         style="display:block; padding-top:20px;" {% else %} style="display:none; padding-top:20px;" {% endif %}>
 
-
         <br>
         <div class="usersearch" id="divSearchUser" style="background-color: #6c63ff; margin-bottom: 10px; ">
 
@@ -1131,7 +1130,14 @@
 
           <div class="search-container">
 
+            <!--input type="text" id="UserSearch" placeholder="Search users..." /-->
             <input type="text" id="UserSearch" placeholder="Search users..." />
+
+
+            <!--button id="searchUser" class="btn"
+              onclick="searchItems(document.getElementById('UserSearch').value,  document.getElementById('selecteduser{{user.id}}'))">
+              Search
+            </button-->
 
             <button id="searchUser" class="btn"
               onclick="searchItems(document.getElementById('UserSearch').value, document.getElementById('divuserlist'))">
@@ -1148,7 +1154,6 @@
 
           <div class="button-group">
           </div>
-
 
           <a href="{% url 'motorbike_rental:users_by_role' 'Admin' %}" class="btn">
             Administrators
@@ -1170,7 +1175,6 @@
 
         <br>
 
-
         <div id="divuserlist" class="cards">
 
           {% for user in userlist %}
@@ -1184,16 +1188,13 @@
             data-userrole="{{ user.role }}"
             style="padding: 10px; border-radius: 8px; margin-bottom: 5px; cursor:pointer;"
             onclick="getuserdetails(document.getElementById('selecteduser{{user.id}}'));">
-
-
-            <strong>First Name</strong>{{ user.first_name }}
-            <strong>Last Name</strong><span>{{ user.last_name }}</span>
-            <strong>Email</strong>{{ user.email }}
-            <strong>Phone</strong><span>{{ user.phone_number }}</span>
-
+            <p>
+              <strong>First Name</strong><span>{{ user.first_name }}</span>
+              <strong>Last Name</strong><span>{{ user.last_name }}</span>
+              <strong>Email</strong><span>{{ user.email }}</span>
+              <strong>Phone</strong><span>{{ user.phone_number }}</span>
+            </p>
           </div>
-
-
 
           {% endfor %}
 

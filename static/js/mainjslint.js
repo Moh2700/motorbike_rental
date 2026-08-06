@@ -6,7 +6,7 @@
 const RESTRICTED_AREA_LETTERS = /[IQZ]/;
 const RESTRICTED_SUFFIX_LETTERS = /[IQ]/;
 
-// Core profanity/offensive substrings explicitly banned by DVLA across release windows
+// Core profanity/offensive substrings explicitly banned by DVLA acr
 const BANNED_OFFENSIVE_PHRASES = [
   "ARS",
   "ASS",
@@ -43,11 +43,9 @@ const inputStatus = document.getElementById("searchStatus");
 const statusSelect = document.getElementById("bike_status");
 const bikeCards = document.querySelectorAll(".bikecard");
 
-//const bikeCards = document.querySelectorAll(".motorbikescard");
-
 const showAvailableMotorbikes = document.getElementById("btnAvailMotorbikes");
-//const signin = document.getElementById("hyplinkSignin");
-//const registration = document.getElementById("mnuRegistration");
+const signin = document.getElementById("hyplinkSignin");
+const registration = document.getElementById("mnuRegistration");
 const browsemotorbikes = document.getElementById("submnubikelisting");
 const motorbikeStatus = document.getElementById("submnuMotorbikeStatus");
 
@@ -66,152 +64,137 @@ const startDate = document.getElementById("pickup_date");
 const endDate = document.getElementById("return_date");
 const rate = document.getElementById("bike_daily_rate");
 
-const hamburger = document.getElementById("hamburger");
-const menu = document.querySelector(".navigation-items");
+let openHam = document.querySelector("#openHam");
+let closeHam = document.querySelector("#closeHam");
+let navigationItems = document.querySelector("#navigation-items");
 
-const openHam = document.getElementById("openHam");
-const closeHam = document.getElementById("closeHam");
+//let registration = new usrRegistration();
 
-hamburger.addEventListener("click", () => {
-  menu.classList.toggle("active");
+//class usrRegistration {
 
-  if (menu.classList.contains("active")) {
-    openHam.style.display = "none";
-    closeHam.style.display = "inline";
-  } else {
-    openHam.style.display = "inline";
-    closeHam.style.display = "none";
+function validateName(usrname) {
+  const trimmed = usrname.trim();
+
+  if (!trimmed) {
+    return { message: "Name is required.", valid: false };
   }
-});
 
-document.querySelectorAll(".navigation-items a").forEach((link) => {
-  link.addEventListener("click", () => {
-    if (window.innerWidth > 768) return;
+  if (trimmed.length < 2 || trimmed.length > 50) {
+    return { message: "Name must be 2-50 characters long.", valid: false };
+  }
 
-    switch (link.parentElement.id) {
-      case "mnuSignin":
-        closemenu();
-        break;
-      case "mnuRegistration":
-        closemenu();
-        break;
-    }
+  let nameRegex = /^[a-zA-Z\s']+$/;
 
-    // Don't close the menu if this is a submenu heading
-    if (this.parentElement.classList.contains("dropdownsubmenu")) {
-      return;
-    }
+  if (!nameRegex.test(trimmed)) {
+    return { message: "Name can only contain letters,", valid: false };
+  }
 
-    closemenu();
-    // menu.classList.remove("active");
-    // openHam.style.display = "inline";
-    // closeHam.style.display = "none";
-  });
-});
-
-document.querySelectorAll(".dropdownsubmenu > a").forEach((link) => {
-  link.addEventListener("click", function (e) {
-    if (window.innerWidth <= 768) {
-      e.preventDefault();
-
-      const submenu = this.nextElementSibling;
-      submenu.classList.toggle("show");
-    }
-  });
-});
-
-function closemenu() {
-  menu.classList.remove("active");
-  openHam.style.display = "inline";
-  closeHam.style.display = "none";
+  return { message: "Valid name", valid: false };
 }
 
-class usrRegistration {
-  validateName(usrname) {
-    const trimmed = usrname.trim();
-    if (!trimmed) {
-      return { valid: false, message: "Name is required." };
-    }
-
-    if (trimmed.length < 2 || trimmed.length > 50) {
-      return { valid: false, message: "Name must be 2-50 characters long." };
-    }
-
-    if (!/^[\p{L}\s'-]+$/u.test(trimmed)) {
-      return {
-        valid: false,
-        message:
-          "Name can only contain letters, spaces, hyphens, and apostrophes.",
-      };
-    }
-
-    return { valid: true, message: "Valid name." };
-  }
-
-  validateforminput(frm) {
-    for (var i = 0; i < frm.length; i++) {
-      if (
-        frm[i].type == "text" ||
-        frm[i].type == "password" ||
-        frm[i].type == "email" ||
-        frm[i].type == "date"
-      ) {
-        if (frm[i].value == "") {
-          this.highlightInput(frm[i]);
-        }
+function validateforminput(frm) {
+  for (let i = 0; i < frm.length; i++) {
+    if (
+      frm[i].type === "text" ||
+      frm[i].type === "password" ||
+      frm[i].type === "email" ||
+      frm[i].type === "date"
+    ) {
+      if (frm[i].value === "") {
+        highlightInput(frm[i]);
       }
     }
   }
-
-  highlightInput(elem) {
-    elem.style.borderWidth = "2px";
-    elem.style.borderColor = "#ff3c00";
-  }
-
-  validateEmail(value) {
-    var input = document.createElement("input");
-
-    input.type = "email";
-    input.required = true;
-    input.value = value;
-
-    return typeof input.checkValidity === "function"
-      ? input.checkValidity()
-      : /\S+@\S+\.\S+/.test(value);
-  }
-
-  is18OrOlder = (dob) => {
-    const birth = new Date(dob);
-    const limit = new Date();
-    limit.setFullYear(limit.getFullYear() - 18);
-    return birth <= limit;
-  };
-
-  confirmpassword(pass1, pass2) {
-    if (pass1 === pass2) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  isValidPhoneNumber(phone) {
-    // Remove spaces, dashes, and parentheses
-    phone = phone.replace(/[\s\-()]/g, "");
-
-    return /^\+?[0-9]{10,15}$/.test(phone);
-  }
 }
 
-function showError(message) {
-  let statement = message;
-  while (statement.includes("<br>")) {
-    statement = statement.replace("<br>", "\n");
+function highlightInput(elem) {
+  elem.style.borderWidth = "2px";
+  elem.style.borderColor = "#ff3c00";
+}
+
+function validateEmail(value) {
+  let input = document.createElement("input");
+
+  input.type = "email";
+  input.required = true;
+  input.value = value;
+
+  if (typeof input.checkValidity === "function") {
+    return input.checkValidity();
   }
 
-  document.querySelector("#errorModal p").innerText = statement;
-  document.querySelector("#errorModal p").style.float = "left";
-  document.getElementById("errorModal").style.display = "flex";
+  return /\S+@\S+\.\S+/.test(value);
+}
+
+/*
+    function validateEmail(value) {
+        let input = document.createElement("input");
+
+        input.type = "email";
+        input.required = true;
+        input.value = value;
+
+        return typeof input.checkValidity === "function"
+            ? input.checkValidity()
+            : /\S+@\S+\.\S+/.test(value);
+    }
+*/
+function is18OrOlder(dob) {
+  let birth = new Date(dob);
+  let limit = new Date();
+
+  limit.setFullYear(limit.getFullYear() - 18);
+
+  return birth <= limit;
+}
+
+function confirmpassword(pass1, pass2) {
+  return pass1 === pass2;
+}
+
+function isValidPhoneNumber(phone) {
+  phone = phone.replace(/[\s\-()]/g, "");
+
+  return /^\+?[0-9]{10,15}$/.test(phone);
+}
+//}
+
+/*
+const hamburgerEvent = (navigation, close, open) => {
+  navigationItems.style.display = navigation;
+  navigationItems.style.width = "86%";
+  navigationItems.style.gap = "2px";
+  navigationItems.style.marginRight = "20px";
+  closeHam.style.display = close;
+  openHam.style.display = open;
+};
+*/
+
+function hamburgerEvent(navigation, close, open) {
+  navigationItems.style.display = navigation;
+  navigationItems.style.width = "86%";
+  navigationItems.style.gap = "2px";
+  navigationItems.style.marginRight = "20px";
+  closeHam.style.display = close;
+  openHam.style.display = open;
+}
+
+openHam.addEventListener("click", function () {
+  hamburgerEvent("flex", "block", "none");
+});
+
+closeHam.addEventListener("click", function () {
+  hamburgerEvent("none", "none", "block");
+});
+
+function showError(message) {
+  let statement = message.replace(/<br>/g, "\n");
+  let errorText = document.querySelector("#errorModal p");
+  let errorModal = document.getElementById("errorModal");
+
+  errorText.innerText = statement;
+  errorText.style.float = "left";
+  errorModal.style.display = "flex";
 }
 
 function closeError() {
@@ -295,7 +278,7 @@ function checkRegistration() {
 }
 
 function revealPassword(inputtype) {
-  var x = inputtype;
+  let x = inputtype;
   if (x.type === "password") {
     x.type = "text";
   } else {
@@ -320,7 +303,7 @@ function toggleSubmenu(event) {
 
     case "mnuMotorbikes":
       toggle_visibility("submnuMotorbikes");
-      //alert("" + dropdown.id);
+      //alert("");
       break;
 
     case "mnuBookings":
@@ -342,18 +325,6 @@ function togglePopup() {
   const overlay = document.getElementById("popupOverlay");
   overlay.classList.toggle("show");
   overlay.style.zIndex = 10;
-  // showbikedetails(document.getElementById('motorbike-title'), this.parentElement.querySelector('img'));
-}
-
-function populateAvailableMotorbikes() {
-  let elements = document.querySelectorAll("img");
-  // let container = document.getElementById("bike-details");
-  elements.forEach((element) => {
-    element.addEventListener("click", function () {
-      //  removeContainerChildren(container)
-      // showbikedetails(container, element)
-    });
-  });
 }
 
 function toggleUserMenu(menu, bltoggle) {
@@ -370,7 +341,7 @@ function toggleUserMenu(menu, bltoggle) {
 }
 
 function toggle_visibility(id) {
-  var e = document.getElementById(id);
+  let e = document.getElementById(id);
   if (e.style.display == "block") {
     e.style.display = "none";
   } else {
@@ -390,22 +361,17 @@ function populateHiringForm(bikeid, container, bikeElement) {
 
 function showbikedetails(container, bikeElement) {
   let data = bikeElement.dataset;
-  container["bike_make"].value = data.bikemake;
-  container["bike_model"].value = data.bikemodel;
-  container["bike_plate_number"].value = data.bikeplatenumber;
-  container["bike_year"].value = data.bikeyear;
-  container["bike_status"].value = data.bikestatus;
-  container["bike_daily_rate"].value = data.bikedailyrate;
+  container.bike_make.value = data.bikemake;
+  container.bike_model.value = data.bikemodel;
+  container.bike_plate_number.value = data.bikeplatenumber;
+  container.bike_year.value = data.bikeyear;
+  container.bike_status.value = data.bikestatus;
+  container.bike_daily_rate.value = data.bikedailyrate;
 
-  container["bike_id"].value = data.bikeid;
+  container.bike_id.value = data.bikeid;
 
-  // alert(data.bikeid);
-  //container["user_id"].value = JSON.parse(
-  //  document.getElementById("user-id-data").textContent,
-  // );
-
-  var image = document.createElement("img");
-  var imageParent = document.getElementById("divimg");
+  let image = document.createElement("img");
+  let imageParent = document.getElementById("divimg");
   image.id = "Id";
   image.className = "class";
   image.src = data.bikeimgsrc;
@@ -413,7 +379,7 @@ function showbikedetails(container, bikeElement) {
   imageParent.appendChild(image);
 
   const frm = document.getElementById("frmMotorbikeHire");
-  frm["bike_id"].value = data.bikeid;
+  frm.bike_id.value = data.bikeid;
 
   getUserCredentials();
   showprogSection("Motorbike_Hiring");
@@ -424,19 +390,20 @@ function showuserdetails(container, userElement) {
 
   let data = userElement.dataset;
 
-  container["last_name"].value = data.userlastname;
-  container["first_name"].value = data.userfirstname;
-  container["email"].value = data.useremail;
-  container["phone_number"].value = data.userphone;
-  container["username"].value = data.username;
-  container["password"].value = data.userpassword;
-  container["password2"].value = data.userpassword2;
-  container["user_id"].value = data.userid;
-  container["driving_licence_number"].value = data.userdrivinglicence;
-  container["date_of_birth"].value = data.userdateofbirth;
-  container["role"].value = data.userrole;
+  //container["last_name"].value = data.userlastname;
+  container.last_name.value = data.userlastname;
+  container.first_name.value = data.userfirstname;
+  container.email.value = data.useremail;
+  container.phone_number.value = data.userphone;
+  container.username.value = data.username;
+  container.password.value = data.userpassword;
+  container.password2.value = data.userpassword2;
+  container.user_id.value = data.userid;
+  container.driving_licence_number.value = data.userdrivinglicence;
+  container.date_of_birth.value = data.userdateofbirth;
+  container.role.value = data.userrole;
   // anotherf code here for role
-  container["address"].value = data.useraddress;
+  container.address.value = data.useraddress;
 
   // Scroll to the form
   //const form = document.getElementById("HireMotorbikeForm");
@@ -446,136 +413,81 @@ function showuserdetails(container, userElement) {
     block: "start",
   });
 
-  container["first_name"].focus();
-
-  /*
-  var image = document.createElement("img");
-  var imageParent = document.getElementById("divimg");
-  image.id = "Id";
-  image.className = "class";
-  image.src = data.bikeimgsrc;
-  imageParent.innerHTML = "";
-  imageParent.appendChild(image);
-  */
+  container.first_name.focus();
 }
 
 function DeleteUser(container, userid) {
-  //alert("You have selected to delete user details for " + userid);
-
   modal.style.display = "flex";
-  modalText.innerHTML = `Are you sure you want to delete <b>${container["first_name"].value} ${container["last_name"].value}</b>?`;
+  let user = container.first_name.value + " " + container.last_name.value;
+  modalText.innerHTML = user;
 
   const buttons = document.querySelectorAll(".modal-buttons button");
 
-  buttons.forEach((button) => {
+  let button;
+
+  for (let i = 0; i < buttons.length; i++) {
+    button = buttons[i];
+
     if (button.id === "btnDelete") {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", function () {
         container.method = "POST";
-        container.action = `/motorbike_rental/delete_bikeuser/${userid}/`;
+        container.action = "/motorbike_rental/delete_bikeuser/" + userid + "/";
         container.submit();
       });
     }
 
     if (button.id === "btnCancel") {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", function () {
         modal.style.display = "none";
       });
     }
-  });
+  }
 }
 
-function SaveUserChanges(frm) {
-  const csrf = frm.querySelector('input[name="csrfmiddlewaretoken"]');
-  const userid = frm.querySelector('input[name="user_id"]');
+function SaveUserChanges(frm, event) {
+  let csrf = frm.querySelector("input[name='csrfmiddlewaretoken']");
+  let userid = frm.querySelector("input[name='user_id']");
 
   if (!csrf || csrf.value.trim() === "") {
     alert("CSRF token is missing or empty.");
     return;
-  } else if (!userid || userid.value.trim() === "") {
+  }
+
+  if (!userid || userid.value.trim() === "") {
     alert("USERID is missing or empty.");
     return;
-  } else {
-    event.preventDefault();
-    frm.method = "POST";
-    frm.action = `/motorbike_rental/edit_bikeuser/${userid.value}/`;
-
-    frm.submit();
   }
-}
 
+  event.preventDefault();
+
+  frm.method = "POST";
+  frm.action = "/motorbike_rental/edit_bikeuser/" + userid.value + "/";
+
+  frm.submit();
+}
 function getuserdetails(userElement) {
   const container = document.getElementById("frmUser");
 
   let data = userElement.dataset;
 
-  // const id = userElement.dataset.userid;
-  // const firstname = userElement.dataset.firstname;
-  // const email = userElement.dataset.email;
-  // const lastname = userElement.dataset.lastname;
+  container.user_id.value = data.userid;
+  container.last_name.value = data.userlastname || "";
 
-  /*
-  for (const key in userElement.dataset) {
-    alert(key + " = " + userElement.dataset[key]);
-  }
+  container.first_name.value = data.userfirstname;
+  container.email.value = data.useremail;
+  container.phone_number.value = data.userphone;
+  container.username.value = data.username;
 
-  */
+  container.password.value = data.userpassword;
+  container.password2.value = data.userpassword2;
 
-  container["user_id"].value = data.userid;
-  container["last_name"].value = data.userlastname || "";
-
-  container["first_name"].value = data.userfirstname;
-  container["email"].value = data.useremail;
-  container["phone_number"].value = data.userphone;
-  container["username"].value = data.username;
-
-  container["password"].value = data.userpassword;
-  container["password2"].value = data.userpassword2;
-
-  container["user_id"].value = data.userid;
-  container["driving_licence_number"].value = data.userdrivinglicence;
-  container["date_of_birth"].value = data.userdateofbirth;
-  container["role"].value = data.userrole;
-  container["address"].value = data.useraddress;
+  container.user_id.value = data.userid;
+  container.driving_licence_number.value = data.userdrivinglicence;
+  container.date_of_birth.value = data.userdateofbirth;
+  container.role.value = data.userrole;
+  container.address.value = data.useraddress;
 
   showprogSection("Motorbike_Users");
-}
-
-class clsBooking {
-  calculatePriceRate() {
-    const start = new Date(startDate.value);
-    const end = new Date(endDate.value);
-
-    if (!startDate.value || !endDate.value)
-      return {
-        total_days: 0,
-        total_price: 0,
-        Proceed: false,
-        message: "Both start date and end date can not be empty.",
-      };
-
-    if (end < start) {
-      //alert("End date must be after the start date.");
-      endDate.value = "";
-      return {
-        total_days: 0,
-        total_price: 0,
-        Proceed: false,
-        message: "End date must be after the start date.",
-      };
-    }
-
-    const oneDay = 1000 * 60 * 60 * 24;
-    // +1 means pickup day counts as a rental day
-    const rentalDays = Math.floor((end - start) / oneDay) + 1;
-    const dailyRate = Number(rate.value);
-    const total = rentalDays * dailyRate;
-
-    return {
-      total_days: rentalDays,
-      total_price: total.toFixed(2),
-      Proceed: true,
-    };
-  }
 }
 
 function calculateMotorbikeRate() {
@@ -583,7 +495,7 @@ function calculateMotorbikeRate() {
 
   let result = objHire.calculatePriceRate();
   let total_Price = 0;
-  const accessories = document.querySelectorAll('input[name="accessories"]');
+  const accessories = document.querySelectorAll("input[name='accessories']");
 
   let accessoryPrice = 50; // £50 per accessory
   let totalAccessoryPrice = 0;
@@ -593,6 +505,15 @@ function calculateMotorbikeRate() {
   let bikePrice = 200; // Base hire price
   let totalPrice = bikePrice + totalAccessoryPrice;
 
+  if (result.Proceed === true) {
+    for (let i = 0; i < accessories.length; i++) {
+      if (accessories[i].checked) {
+        numAccessories++;
+        totalAccessoryPrice += accessoryPrice;
+      }
+    }
+  }
+  /*
   if (result.Proceed == true) {
     accessories.forEach((accessory) => {
       if (accessory.checked) {
@@ -600,30 +521,29 @@ function calculateMotorbikeRate() {
         totalAccessoryPrice += accessoryPrice;
       }
     });
+*/
+  const usraccessory = document.getElementById("numaccessory");
+  const accessorycost = document.getElementById("accessorycost");
+  const basehirecost = document.getElementById("basehirecost");
 
-    const usraccessory = document.getElementById("numaccessory");
-    const accessorycost = document.getElementById("accessorycost");
-    const basehirecost = document.getElementById("basehirecost");
+  totalPrice =
+    Number(totalPrice) + Number(result.total_price) + totalAccessoryPrice;
+  result.total_price = totalPrice;
 
-    totalPrice =
-      Number(totalPrice) + Number(result.total_price) + totalAccessoryPrice;
-    result.total_price = totalPrice;
+  document.getElementById("numaccessory").textContent = numAccessories;
+  document.getElementById("accessorycost").textContent =
+    "£" + totalAccessoryPrice.toFixed(2);
+  document.getElementById("basehirecost").textContent = "£" + bikePrice;
 
-    document.getElementById("numaccessory").textContent = numAccessories;
-    document.getElementById("accessorycost").textContent =
-      "£" + totalAccessoryPrice.toFixed(2);
-    document.getElementById("basehirecost").textContent = "£" + bikePrice;
-  } else {
-    // alert(result.message);
-    result.total_days = 0;
-    result.total_price = 0;
+  // alert(result.message);
+  result.total_days = 0;
+  result.total_price = 0;
 
-    accessoryPrice = 0;
-    totalAccessoryPrice = 0;
-    numAccessories = 0;
-    bikePrice = 0;
-    totalPrice = 0;
-  }
+  accessoryPrice = 0;
+  totalAccessoryPrice = 0;
+  numAccessories = 0;
+  bikePrice = 0;
+  totalPrice = 0;
 
   document.getElementById("total_days").value = result.total_days;
   document.getElementById("total_price").value = result.total_price;
@@ -692,8 +612,8 @@ function closeMotorbikeform(sectionname) {
 }
 
 function cancelSection(sectionname) {
-  var oSection = document.getElementsByTagName("section");
-  for (var i = 0; i < oSection.length; i++) {
+  let oSection = document.getElementsByTagName("section");
+  for (let i = 0; i < oSection.length; i++) {
     if (oSection[i].id == sectionname) {
       oSection[i].style.display = "none";
     }
@@ -701,81 +621,72 @@ function cancelSection(sectionname) {
   return oSection;
 }
 
-function confirmRegistration() {
-  attendeeReg.name = document.getElementById("regname").value.trim();
-  attendeeReg.email = document.getElementById("regemail").value.trim();
-  attendeeReg.dateRegistered = new Date().toLocaleDateString();
+function calculatePriceRate() {
+  const start = new Date(startDate.value);
+  const end = new Date(endDate.value);
 
-  if (!isValidEmail(attendeeReg.email)) {
-    alert("Please enter a valid email address");
-    return;
+  if (!startDate.value || !endDate.value) {
+    return {
+      Proceed: false,
+      message: "Both start",
+      total_days: 0,
+      total_price: 0,
+    };
   }
 
-  if (!attendeeReg.name || !attendeeReg.email) {
-    alert("Please fill in all required fields for both name and email");
-    return;
+  if (end < start) {
+    //alert("End date must be after the start date.");
+    endDate.value = "";
+    return {
+      Proceed: false,
+      message: "End date must be after the start date.",
+      total_days: 0,
+
+      total_price: 0,
+    };
   }
 
-  if (!isValidLetter(attendeeReg.name)) {
-    alert("Please enter a valid name (letters and spaces only)");
-    return;
-  }
+  const oneDay = 1000 * 60 * 60 * 24;
+  // +1 means pickup day counts as a rental day
+  const rentalDays = Math.floor((end - start) / oneDay) + 1;
+  const dailyRate = Number(rate.value);
+  const total = rentalDays * dailyRate;
 
-  attendeeReg.register({
-    name: attendeeReg.name,
-    email: attendeeReg.email,
-    dateRegistered: attendeeReg.dateRegistered,
-  });
-
-  alert("Registration successful! Welcome " + attendeeReg.name);
-
-  document.getElementById("regname").value = "";
-  document.getElementById("regemail").value = "";
-  getSiteEvent("SiteRegistration", "none");
-}
-
-function showprogSection(sectionId) {
-  console.log("Clicked:", sectionId);
-
-  document.querySelectorAll(".content-section").forEach((section) => {
-    console.log("Hiding:", section.id);
-    section.style.display = "none";
-  });
-
-  document.getElementById(sectionId).style.display = "block";
+  return {
+    Proceed: true,
+    total_days: rentalDays,
+    total_price: total.toFixed(2),
+  };
 }
 
 function DeleteMotorbike(container) {
   let data = container.dataset;
   modal.style.display = "flex";
-  modalText.innerHTML = `Are you sure you want to delete motorbike Make: <b>${data.bikemake}</b> Model:<b>${data.bikemodel}</b>?`;
-  const buttons = document.querySelectorAll(".modal-buttons button");
+  modalText.innerHTML = `Delete <b>${data.bikemake} ${data.bikemodel}</b>?`;
 
-  buttons.forEach((button) => {
+  let button;
+
+  for (let i = 0; i < buttons.length; i++) {
+    button = buttons[i];
+
     if (button.id === "btnDelete") {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", function () {
         deleteForm.method = "POST";
-        deleteForm.action = `/motorbike_rental/delete_motorbike/${data.bikeid}/`;
-
+        deleteForm.action =
+          "/motorbike_rental/delete_motorbike/" + data.bikeid + "/";
         deleteForm.submit();
       });
     }
 
     if (button.id === "btnCancel") {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", function () {
         modal.style.display = "none";
       });
     }
-  });
+  }
 }
 
 function AddBikeUser(frm) {
-  /*
-  const btnSave = frm.querySelector("#btnAddUser");
-  if (btnSave) {
-    btnSave.textContent = "Add User";
-  }
-  */
   frm.method = "POST";
   frm.action = `/motorbike_rental/add_bikeuser/`;
   frm.submit();
@@ -785,15 +696,30 @@ function clearformdata(frm) {
   const formData = new FormData(frm);
   const inputs = frm.querySelectorAll("input");
 
-  inputs.forEach((input) => {
+  let input;
+
+  for (let i = 0; i < inputs.length; i++) {
+    input = inputs[i];
+
+    /*
     // CRUCIAL: Do not wipe out Django's CSRF token
     if (input.name === "csrfmiddlewaretoken") {
-      return;
+        continue;
     }
 
     // CRUCIAL: Do not wipe out bike_id
     if (input.name === "bike_id") {
-      return;
+        continue;
+    }
+    */
+    if (
+      input.name !== "csrfmiddlewaretoken" &&
+      input.name !== "bike_id" &&
+      input.type !== "submit" &&
+      input.type !== "button"
+    ) {
+      input.value = "";
+      input.readOnly = false;
     }
 
     // Skip submit or reset buttons so they don't break
@@ -801,13 +727,13 @@ function clearformdata(frm) {
       input.value = "";
       input.readOnly = false;
     }
-  });
+  }
 
-  // FIX: Reset any <select> tags inside this form back to the first placeholder option
-  const selects = frm.querySelectorAll("select");
-  selects.forEach((select) => {
-    select.selectedIndex = 0; // Forces it back to "-- Choose a status --"
-  });
+  let selects = frm.querySelectorAll("select");
+
+  for (let i = 0; i < selects.length; i++) {
+    selects[i].selectedIndex = 0;
+  }
 }
 
 function showMotorbikedetails(dataContainer) {
@@ -819,40 +745,20 @@ function showMotorbikedetails(dataContainer) {
 
   let data = dataContainer.dataset;
 
-  container["bike_make"].value = data.bikemake;
-  container["bike_model"].value = data.bikemodel;
+  container.bike_make.value = data.bikemake;
+  container.bike_model.value = data.bikemodel;
 
-  container["bike_plate_number"].value = data.bikeplatenumber;
-  container["bike_year"].value = data.bikeyear;
+  container.bike_plate_number.value = data.bikeplatenumber;
+  container.bike_year.value = data.bikeyear;
 
-  container["bike_imgsrc"].value = data.bikeimgsrc;
+  container.bike_imgsrc.value = data.bikeimgsrc;
 
-  container["bike_status"].value = data.bikestatus;
-  container["bike_daily_rate"].value = data.bikedailyrate;
-  container["bike_id"].value = data.bikeid;
+  container.bike_status.value = data.bikestatus;
+  container.bike_daily_rate.value = data.bikedailyrate;
+  container.bike_id.value = data.bikeid;
 
-  container["imgbike"].src = data.bikeimgsrc;
+  container.imgbike.src = data.bikeimgsrc;
 
-  /*
-  var image = document.createElement("img");
-  var imageParent = document.getElementById("divimg");
-  image.id = "Id";
-  image.className = "class";
-  image.src = data.bikeimgsrc;
-  imageParent.innerHTML = "";
-  imageParent.appendChild(image);
-  alert(data.bikeimgsrc);
-  */
-
-  /*
-  const myForm = document.getElementById("frmMotorbikeDetails");
-  const formData = new FormData(myForm);
-
-  // Loop through the key/value pairs directly
-  formData.forEach((value, key) => {
-    alert(`${key}: ${value}`);
-  });
-  */
   showprogSection("Bike_Details_Section");
 }
 
@@ -866,7 +772,7 @@ function showMotorbikedetails(dataContainer) {
 function getValidYear(yearInput) {
   // 1. Guard clause: Stop early if the element doesn't exist
   if (!yearInput) {
-    return { isValid: false, error: "Year input field not found." };
+    return { error: "Year input field not found.", isValid: false };
   }
 
   // 2. Safely read and trim the value (Now scoped to the entire function)
@@ -880,8 +786,8 @@ function getValidYear(yearInput) {
   if (!yearRegex.test(yearValue)) {
     yearInput.focus();
     return {
-      isValid: false,
       error: "Please enter a valid 4-digit year (e.g., 2023).",
+      isValid: false,
     };
   }
 
@@ -890,22 +796,22 @@ function getValidYear(yearInput) {
   if (parsedYear < 1900 || parsedYear > currentYear + 1) {
     yearInput.focus();
     return {
-      isValid: false,
       error: `Year must be between 1900 and ${currentYear + 1}.`,
+      isValid: false,
     };
   }
 
   // 6. Success return (yearValue is safely accessible here now)
   return {
+    cleanedValue: parsedYear,
     isValid: true,
-    cleanedValue: parsedYear, // Returning as a number is cleaner for database/math use
   };
 }
 
 function getValidRate(rateInput) {
   // 1. Check if the input element actually exists
   if (!rateInput) {
-    return { isValid: false, error: "Input field not found." };
+    return { error: "Input field not found.", isValid: false };
   }
 
   // 2. Fetch and trim value (Now scoped to the whole function)
@@ -918,8 +824,8 @@ function getValidRate(rateInput) {
   if (!rateRegex.test(rateValue)) {
     rateInput.focus();
     return {
+      error: "Please enter a valid (e.g., 45 or 45.99).",
       isValid: false,
-      error: "Please enter a valid rental rate (e.g., 45 or 45.99).",
     };
   }
 
@@ -928,16 +834,13 @@ function getValidRate(rateInput) {
   if (parsedRate <= 0) {
     rateInput.focus();
     return {
-      isValid: false,
       error: "Rental rate must be greater than 0.",
+      isValid: false,
     };
   }
 
   // 5. Success return (rateValue is safely accessible here now)
-  return {
-    isValid: true,
-    cleanedValue: parsedRate, // Returning it as a clean number is usually better for math later
-  };
+  return { cleanedValue: parsedRate, isValid: true };
 }
 
 function validateMotorbikeDetails(frm) {
@@ -948,11 +851,7 @@ function validateMotorbikeDetails(frm) {
   if (!validInput.isValid) {
     alert(validInput.error);
     userInput.focus();
-    return {
-      isValid: false,
-      error: validInput.error,
-    };
-    //return;
+    return { error: validInput.error, isValid: false };
   }
 
   userInput = frm.bike_year;
@@ -961,10 +860,7 @@ function validateMotorbikeDetails(frm) {
   if (!validInput.isValid) {
     alert(validInput.error);
     userInput.focus();
-    return {
-      isValid: false,
-      error: validInput.error,
-    };
+    return { error: validInput.error, isValid: false };
   }
 
   userInput = frm.bike_daily_rate;
@@ -974,56 +870,66 @@ function validateMotorbikeDetails(frm) {
   if (!validInput.isValid) {
     alert(validInput.error); // 2. SHOW the error message to the user!
     userInput.focus();
-    return {
-      isValid: false,
-      error: validInput.error,
-    };
+    return { error: validInput.error, isValid: false };
   }
 
   // Update input text layout seamlessly for the user
   userInput.value = validInput.cleanedValue;
 
-  return {
-    isValid: true,
-    cleanedValue: validInput.cleanedValue,
-  };
+  return { cleanedValue: validInput.cleanedValue, isValid: false };
 }
 
+function isSkippableField(element) {
+  return (
+    element.type === "button" ||
+    element.type === "submit" ||
+    element.type === "hidden" ||
+    element.name === "csrfmiddlewaretoken"
+  );
+}
+
+/**
+ * Checks if required form fields are empty.
+ * @param {object} formElement
+ * @returns {boolean} True if valid, false if empty fields exist
+ */
 function checkEmptyFormFields(formElement) {
-  // 1. Guard clause: Stop if the form element wasn't passed correctly
-  if (!formElement) return false;
+  let element;
+  let labelElement;
+  let labelText;
+  let label;
 
-  // 2. Loop through all controls inside the form
-  for (const element of formElement.elements) {
-    // 3. Skip items that shouldn't be validated (buttons, CSRF tokens, hidden IDs)
+  if (!formElement) {
+    return false;
+  }
 
-    if (
-      element.type === "button" ||
-      element.type === "submit" ||
-      element.type === "hidden" ||
-      element.name === "csrfmiddlewaretoken"
-    ) {
-      continue;
-    }
+  for (let i = 0; i < formElement.elements.length; i++) {
+    element = formElement.elements[i];
 
-    // 4. Check if the field is empty or contains only spaces
-    if (element.value.trim() === "") {
-      // Get a clean name to show the user (using the closest label text or the input name)
-      const label =
-        element
-          .closest(".form-group")
-          ?.querySelector("label")
-          ?.textContent.trim() ||
-        element.name ||
-        "Required field";
+    if (!isSkippableField(element)) {
+      if (element.value.trim() === "") {
+        labelElement = element.closest(".form-group");
+        labelText = "";
 
-      alert(`The "${label}" field cannot be empty.`);
-      element.focus();
-      return false; // Stop the loop and return false immediately on the first error
+        if (labelElement) {
+          labelText = labelElement.querySelector("label");
+        }
+
+        if (labelText) {
+          labelText = labelText.textContent.trim();
+        }
+
+        label = labelText || element.name || "Required field";
+
+        alert("The " + label + " field cannot be empty.");
+
+        element.focus();
+
+        return false;
+      }
     }
   }
 
-  // 5. If the loop completes without hitting an empty value, the form is valid
   return true;
 }
 
@@ -1081,10 +987,11 @@ function closeModal() {
 function clearSearchInput(searchInput, listContainer) {
   searchInput.value = "";
   const paragraphs = listContainer.querySelectorAll("p");
-  paragraphs.forEach((p) => {
-    p.style.display = "block";
-    p.style.backgroundColor = "";
-  });
+
+  for (let i = 0; i < paragraphs.length; i++) {
+    paragraphs[i].style.display = "block";
+    paragraphs[i].style.backgroundColor = "";
+  }
 }
 
 function logOutUser(event, frm) {
@@ -1093,11 +1000,41 @@ function logOutUser(event, frm) {
   // document.getElementById("" + frm.id).submit();
 }
 
+/**
+ * Submits the login form after validating required fields.
+ * @param {object} frm
+ * @param {object} event
+ * @returns {boolean}
+ */
+function loginUser(frm, event) {
+  let username = frm.username.value.trim();
+  let password = frm.password.value.trim();
+  let csrf = frm.querySelector("input[name='csrfmiddlewaretoken']");
+
+  if (!username || !password) {
+    alert("Please enter both a username and password.");
+    return false;
+  }
+
+  if (!csrf) {
+    alert("No CSRF token found.");
+    return false;
+  }
+
+  event.preventDefault();
+
+  frm.method = "POST";
+  frm.action = "/motorbike_rental/login/";
+  frm.submit();
+
+  return false;
+}
+/*
 function loginUser(frm) {
   const username = frm.username.value.trim();
   const password = frm.password.value.trim();
 
-  const csrf = frm.querySelector('input[name="csrfmiddlewaretoken"]');
+  const csrf = frm.querySelector("input[name='csrfmiddlewaretoken']");
 
   if (!username || !password) {
     alert("Please enter both a username and password.");
@@ -1111,94 +1048,31 @@ function loginUser(frm) {
     frm.action = "/motorbike_rental/login/";
     frm.submit();
   }
-}
-
+ }
+*/
 function HireMotorbike(frm) {
-  /*
-  const bikeUserId = JSON.parse(
-    document.getElementById("user-id-data").textContent,
-  );
-  const bikeUsername = JSON.parse(
-    document.getElementById("user-username-data").textContent,
-  );
-  const bikeUserRole = JSON.parse(
-    document.getElementById("user-role-data").textContent,
-  );
-
-  // Now you can freely use them in your front-end scripts:
-  alert(
-    `Logged in as: ${bikeUsername} (ID: ${bikeUserId}) with role: ${bikeUserRole}`,
-  );
-
-  */
-
   frm.method = "POST";
-  frm.action = `/motorbike_rental/hire_motorbike/${frm["bike_id"].value}/`;
+  frm.action = `/motorbike_rental/hire_motorbike/${frm.bike_id.value}/`;
   frm.submit();
 }
 
 function updateMotorbikeStatus(frm) {
-  //alert(frm["bookingprogress"].value);
-
-  // event.preventDefault();
-  // frm.method = "POST";
-  // frm.action = `/motorbike_rental/booking_details/${frm["bike_id"].value}/`;
-  //frm.submit();
+  alert(frm.bookingprogress.value);
 
   showprogSection("Motorbike_Booking_Progress");
+
+  alert("");
 }
 
 function loadMotorbikeBooking(frm) {
   event.preventDefault();
   frm.method = "POST";
-  frm.action = `/motorbike_rental/booking_details/${frm["bike_id"].value}/`;
+  frm.action = `/motorbike_rental/booking_details/${frm.bike_id.value}/`;
   frm.submit();
   showprogSection("Motorbike_Booking");
-
-  /*
-  alert(bikeId);
-  const response = await fetch(`/motorbike_rental/booking_details/${bikeId}/`);
-  const data = await response.json();
-
-  //console.log(data.user.first_name);
-  //console.log(data.booking.booking_reference);
-  //console.log(data.motorbike.make);
-
-  document.querySelector("[id='selectedbike']").innerText =
-    data.motorbike.bike_make;
-  */
 }
 
 function viewMotorbikeBooking(frm) {
-  //fetch("/motorbike_rental/get_user_details/")
-
-  /*
-  fetch(
-    `/motorbike_rental/booking_details/${document.getElementById("frmBikeDetails")["bike_id"].value}/`,
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      document.querySelector("[id='logfull_name']").value = data.full_name;
-      document.querySelector("[id='logemail']").value = data.email;
-      document.querySelector("[id='logphone']").value = data.phone;
-      document.querySelector("[id='loglicence']").value = data.licence;
-
-      document.querySelector("[id='selectedbike']").innerHTML = data;
-      document.querySelector("[id='hdrBikeMake']").textContent = JSON.parse(data.bike_make);
-    });
-
-    */
-  /*
-  fetch("/motorbike_rental/get_user_details/")
-    .then((response) => response.json())
-    .then((data) => {
-      document.querySelector("[id='logfull_name']").value = data.full_name;
-      document.querySelector("[id='logemail']").value = data.email;
-      document.querySelector("[id='logphone']").value = data.phone;
-      document.querySelector("[id='loglicence']").value = data.licence;
-    });
-
-    */
   showprogSection("Motorbike_Booking");
 }
 
@@ -1206,12 +1080,17 @@ function getUserCredentials() {
   const frm = document.getElementById("frmMotorbikeHire");
 
   fetch("/motorbike_rental/get_user_details/")
-    .then((response) => response.json())
-    .then((data) => {
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
       document.querySelector("[id='logfull_name']").value = data.full_name;
       document.querySelector("[id='logemail']").value = data.email;
       document.querySelector("[id='logphone']").value = data.phone;
       document.querySelector("[id='loglicence']").value = data.licence;
+    })
+    .catch(function (error) {
+      console.log("Error loading user details: " + error);
     });
 }
 
@@ -1227,22 +1106,19 @@ function UserHiringMotorbike(frm) {
     event.preventDefault(); // STOP form submission
     alert(proceed.error); // Show the specific error message returned
   } else {
-    //frm.method = "POST";
-    //frm.action = `/motorbike_rental/add_motorbike/`;
-    //frm.submit();
-
-    //frm["bike_id"].value =
-    //document.getElementById("frmBikeDetails")["bike_id"].value;
-
     frm.method = "POST";
-    frm.action = `/motorbike_rental/hire_motorbike/${frm["bike_id"].value}/`;
+    frm.action = `/motorbike_rental/hire_motorbike/${frm.bike_id.value}/`;
     frm.submit();
   }
 }
 
 function searchItems(searchInput, listContainer) {
+  // alert("Search value " + searchInput);
+
   const filterText = searchInput.toLowerCase();
   const items = listContainer.querySelectorAll("p");
+
+  // alert(listContainer.id);
 
   if (!filterText?.trim()) {
     //alert("Data is missing, null, undefined, or empty!");
@@ -1283,18 +1159,39 @@ function searchDivItems(searchInput, listContainer) {
   // Grab search value and force lowercase for case-insensitivity
   const filterText = searchInput.toLowerCase();
 
-  //alert(listContainer.id);
-
   // Target paragraph elements strictly contained within our container layout
   const paragraphs = listContainer.querySelectorAll("p");
-  //const paragraphs = listContainer.querySelectorAll("#divuserlist .card-info");
 
+  for (let i = 0; i < paragraphs.length; i++) {
+    paragraphs[i].style.display = "block";
+    paragraphs[i].style.backgroundColor = "";
+  }
+  /*
   paragraphs.forEach((p) => {
     p.style.display = "block";
     p.style.backgroundColor = ""; // Reset background color
-    p.style.color = "";
   });
+*/
+  // Loop through every text block inside the container
 
+  let p;
+  let itemText;
+
+  for (let i = 0; i < paragraphs.length; i++) {
+    p = paragraphs[i];
+
+    itemText = p.textContent.toLowerCase();
+
+    // Check if paragraph text includes our search string
+    if (itemText.indexOf(filterText) !== -1 && filterText.trim() !== "") {
+      p.style.display = "block";
+      p.style.backgroundColor = "#ff3c00";
+    } else {
+      p.style.display = "block";
+      p.style.backgroundColor = "";
+    }
+  }
+  /*
   // Loop through every text block inside the container
   paragraphs.forEach((p) => {
     const itemText = p.textContent.toLowerCase();
@@ -1302,41 +1199,38 @@ function searchDivItems(searchInput, listContainer) {
     // Check if paragraph text includes our search string
     if (itemText.includes(filterText) && filterText.trim() !== "") {
       p.style.display = "block"; // Display match
-      p.style.backgroundColor = "#6c63ff"; // Highlight match
-      p.style.color = "white";
-      p.style.fontFamily = "Montserrat, sans-serif";
-      p.style.fontWeight = "200";
-
+      p.style.backgroundColor = "#ff3c00"; // Highlight match
       return; // Exit the current iteration early since we found a match
     } else {
       p.style.display = "block"; // Hide mismatch
     }
   });
+ */
 }
 
 function searchMotorbikes() {
   const filter = searchInput.value.toLowerCase();
 
-  const rows = document.querySelectorAll("#bikeTable tbody tr");
+  let rows = document.querySelectorAll("#bikeTable tbody tr");
 
-  rows.forEach((row) => {
-    const text = row.innerText.toLowerCase();
+  let text;
 
-    if (text.includes(filter)) {
-      row.style.display = "";
-      row.style.backgroundColor = "#fff3cd";
+  for (let i = 0; i < rows.length; i++) {
+    text = rows[i].innerText.toLowerCase();
+
+    if (text.indexOf(filter) !== -1) {
+      rows[i].style.display = "";
+      rows[i].style.backgroundColor = "#fff3cd";
     } else {
-      row.style.display = "none";
+      rows[i].style.display = "none";
+      rows[i].style.backgroundColor = "";
     }
-  });
+  }
 }
 
 // Window Keydown Event
 window.addEventListener("keydown", function (event) {
-  //alert("Key pressed: " + event.key + " | Target ID: " + event.target.id);
   if (event.key === "Enter") {
-    // alert("Enter key pressed! ID: " + event.target.id);
-
     // Check the ID of the element that triggered the Enter key
     switch (event.target.id) {
       case "searchInput":
@@ -1364,32 +1258,15 @@ showAvailableMotorbikes.addEventListener("click", function () {
   //makeaselection("availablebikelisting");
   makeaselection("MotorbikeManagement");
 });
-/*
-AvailableBookings.addEventListener("click", function () {
-  makeaselection("availablebikelisting");
-});
-*/
 
-/*
-document.addEventListener("DOMContentLoaded", function () {
-  getuserdetails(userElement);
-});
-*/
 /*
 document.addEventListener("DOMContentLoaded", function () {
   document
     .getElementById("submnuMotorbikeStatus")
-    .addEventListener("click", function () {});
+    .addEventListener("click", function () {} );
 });
 */
 
-/*
-motorbikeStatus.addEventListener("click", function () {
-  makeaselection("motorbikelistingstatus");
-});
-*/
-
-/*
 registration.addEventListener("click", function () {
   showprogSection("User_Registration");
 });
@@ -1399,49 +1276,20 @@ signin.addEventListener("click", function () {
 
   //navigationItems.style.display = "flex";
 });
-*/
-/*
+
 showmembers.addEventListener("click", function () {
+  //alert("You have selected to view members listing");
   makeaselection("allmotorbikelisting");
 });
-*/
 
-document.addEventListener("DOMContentLoaded", () => {
-  /*
-  if (motorbikelisting) {
-    motorbikelisting.addEventListener("click", function () {
-      makeaselection("MotorbikeManagement");
-    });
-  }
-  */
-  if (showmembers) {
-    showmembers.addEventListener("click", function () {
-      makeaselection("allmotorbikelisting");
-    });
-  }
-
-  if (browsemotorbikes) {
-    browsemotorbikes.addEventListener("click", function () {
-      makeaselection("MotorbikeManagement");
-    });
-  }
-});
-
-/*
-motorbikelisting.addEventListener("click", function () {
-  makeaselection("MotorbikeManagement");
-});
-*/
-/*
 browsemembers.addEventListener("click", function () {
   makeaselection("allmotorbikelisting");
 });
-*/
-/*
+
 browsemotorbikes.addEventListener("click", function () {
   makeaselection("MotorbikeManagement");
 });
-*/
+
 usrpass.addEventListener("click", function () {
   revealPassword(document.getElementById("userpassword"));
 });
@@ -1454,11 +1302,11 @@ btnRate.addEventListener("click", function () {
   calculateMotorbikeRate();
 });
 
-usrpass2.addEventListener("input", () => {
+usrpass2.addEventListener("input", function () {
   if (usrpass.value === usrpass2.value) {
-    // message.textContent = "✓ Passwords match";
+    message.textContent = "✓ Passwords match";
   } else {
-    // message.textContent = "✗ Passwords do not match";
+    message.textContent = "✗ Passwords do not match";
   }
 });
 
@@ -1466,38 +1314,48 @@ function filterMotorbikes() {
   const query = searchStatus.value.trim().toLowerCase();
   const selectedStatus = statusSelect.value.trim().toLowerCase();
 
-  bikeCards.forEach((card) => {
-    //alert("Filtering bike cards based on search and status selection.");
+  let card;
+  let bikeImage;
+  let make;
+  let model;
+  let status;
+  let matchesSearch;
+  let matchesStatus;
+
+  for (let i = 0; i < bikeCards.length; i++) {
+    card = bikeCards[i];
+
     // Targets the image tag inside each card holding the data attributes
-    const bikeImage = card.querySelector("img");
-    if (!bikeImage) return;
+    bikeImage = card.querySelector("img");
 
-    // Extract attributes from your existing custom data attributes
-    const make = (bikeImage.getAttribute("data-bikemake") || "").toLowerCase();
-    const model = (
-      bikeImage.getAttribute("data-bikemodel") || ""
-    ).toLowerCase();
-    const status = (
-      bikeImage.getAttribute("data-bikestatus") || ""
-    ).toLowerCase();
+    if (!bikeImage) {
+      // Extract attributes from existing custom data attributes
+      make = bikeImage.getAttribute("data-bikemake") || "";
+      make = make.toLowerCase();
 
-    // Check text matches against Make OR Model
-    const matchesSearch = make.includes(query) || model.includes(query);
+      model = bikeImage.getAttribute("data-bikemodel") || "";
+      model = model.toLowerCase();
 
-    // Check status matches dropdown (if dropdown is empty/cleared, ignore status check)
-    const matchesStatus = !selectedStatus || status === selectedStatus;
+      status = bikeImage.getAttribute("data-bikestatus") || "";
+      status = status.toLowerCase();
 
-    // Display the card only if it satisfies both the text and dropdown rules
-    if (matchesSearch && matchesStatus) {
-      card.style.display = "block";
-    } else {
-      card.style.display = "none";
+      // Check text matches against Make OR Model
+      matchesSearch = make.indexOf(query) !== -1 || model.indexOf(query) !== -1;
+
+      matchesStatus = !selectedStatus || status === selectedStatus;
+
+      // Display the card only if it satisfies both rules
+      if (matchesSearch && matchesStatus) {
+        card.style.display = "block";
+      } else {
+        card.style.display = "none";
+      }
     }
-  });
+  }
 }
 
 // Bind events to listen for instant user actions
-inputStatus.addEventListener("input", filterMotorbikes);
+//inputStatus.addEventListener("input", filterMotorbikes);
 statusSelect.addEventListener("change", filterMotorbikes);
 
 /**
@@ -1505,8 +1363,13 @@ statusSelect.addEventListener("change", filterMotorbikes);
  * @param {string} value
  * @returns {string} Cleaned value
  */
+
 function sanitizeInput(value) {
-  return (value || "").replace(/\s+/g, "").toUpperCase();
+  if (typeof value !== "string") {
+    return "";
+  }
+
+  return value.replace(/\s+/g, "").toUpperCase();
 }
 
 /**
@@ -1528,112 +1391,76 @@ function hasSpecificAlphanumericLayout(plate) {
   //return specificFormatRegex.test(plate);
 }
 
-/**
- * Checks if the plate structure adheres to official DVLA positional character constraints.
- * @param {string} plate
- * @returns {boolean} True if structural layouts and character combinations are valid.
- */
 function hasValidDvlaCharacters(plate) {
   // For standard 7-character modern plates (e.g., AA11AAA)
   if (plate.length === 7) {
     const areaCode = plate.slice(0, 2);
     const randomSuffix = plate.slice(4, 7);
-    if (RESTRICTED_AREA_LETTERS.test(areaCode)) return false;
-    if (RESTRICTED_SUFFIX_LETTERS.test(randomSuffix)) return false;
-  }
+    if (RESTRICTED_AREA_LETTERS.test(areaCode)) {
+      return false;
+    }
+    if (RESTRICTED_SUFFIX_LETTERS.test(randomSuffix)) {
+      return false;
+    }
 
-  /*
-  if (plate.length === 8) {
-    const areaCode = plate.slice(0, 2);
-    const randomSuffix = plate.slice(5, 8); // Adjusted slice indices for 8-character string
-
-    if (RESTRICTED_AREA_LETTERS.test(areaCode)) return false;
-    if (RESTRICTED_SUFFIX_LETTERS.test(randomSuffix)) return false;
+    return true;
   }
-  */
-  return true;
 }
-
 /**
  * Checks the string against blocked offensive phrases.
  * @param {string} plate
  * @returns {boolean} True if the plate contains no banned substrings.
  */
+
 function hasNoOffensivePhrases(plate) {
-  return !BANNED_OFFENSIVE_PHRASES.some((bannedWord) =>
-    plate.includes(bannedWord),
-  );
+  return !BANNED_OFFENSIVE_PHRASES.some(function (bannedWord) {
+    return plate.indexOf(bannedWord) === -1;
+  });
 }
 
-/**
- * Main Orchestrator: Validates a UK plate against your strict custom layout and DVLA rules.
- * @param {string} rawInput - The raw string from the text input field.
- * @returns {Object} Validation outcome object { isValid: boolean, cleanedValue?: string, error?: string }
- */
 function validateUkRegistration(rawInput) {
   const cleanedPlate = sanitizeInput(rawInput);
 
   // 1. Check for blank input
   if (!cleanedPlate) {
-    return { isValid: false, error: "Registration field cannot be blank." };
+    return { error: "Registration field cannot be blank.", isValid: false };
   }
 
   // 2. Check specific [3 Letters][2 Numbers][3 Letters] format
   if (!hasSpecificAlphanumericLayout(cleanedPlate)) {
-    return { isValid: false, error: "Invalid UK registration format layout." };
+    return { error: "Invalid UK registration format layout.", isValid: false };
   }
 
   // 3. Check DVLA positional restrictions
   if (!hasValidDvlaCharacters(cleanedPlate)) {
-    return {
-      isValid: false,
-      error:
-        "Invalid registration characters (I, Q, or Z restricted in this position).",
-    };
+    return { error: "Invalid reg (I, Q, or Z restricted i).", isValid: false };
   }
 
   // 4. Check offensive phrases
   if (!hasNoOffensivePhrases(cleanedPlate)) {
-    return {
-      isValid: false,
-      error: "Registration matches a restricted or offensive DVLA pattern.",
-    };
+    return { error: "Registration matches a restricted o", isValid: false };
   }
-
   // 5. Success
-  return {
-    isValid: true,
-    cleanedValue: cleanedPlate,
-  };
+  return { cleanedValue: cleanedPlate, isValid: true };
 }
 
 function highlightTableRows() {
-  const rows = document.querySelectorAll("#bikeTable tr");
+  let rows = document.querySelectorAll("#bikeTable tr");
 
-  rows.forEach((row) => {
-    row.addEventListener("mouseover", function () {
-      this.style.backgroundColor = "#6c63ff"; //"#e3f2fd";
-      //this.style.color = "white";
-      this.style.cursor = "pointer";
-    });
+  for (let i = 0; i < rows.length; i++) {
+    (function (row) {
+      row.addEventListener("mouseover", function () {
+        row.style.backgroundColor = "#6c63ff";
+        row.style.cursor = "pointer";
+      });
 
-    row.addEventListener("mouseout", function () {
-      this.style.backgroundColor = "";
-    });
-  });
+      row.addEventListener("mouseout", function () {
+        row.style.backgroundColor = "";
+      });
+    })(rows[i]);
+  }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
   highlightTableRows();
-});
-
-//const menu = document.getElementById("navigation-items");
-
-const observer = new MutationObserver(() => {
-  console.log("MENU CHANGED:", menu.className);
-});
-
-observer.observe(menu, {
-  attributes: true,
-  attributeFilter: ["class"],
 });
