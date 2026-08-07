@@ -58,8 +58,16 @@
             </span>
           </li>
 
-
-
+          <li id="mnuDashboard">
+            <a href="{% url 'motorbike_rental:go_dashboard' %}">Dashboard</a>
+          </li>
+          {% if request.session.bikeuser_role not in "Admin, admin, staff, Staff" %}
+          <li class="menu-item">
+            <a href="{% url 'motorbike_rental:motorbike_list' %}">
+              Motorbikes
+            </a>
+          </li>
+          {% endif %}
           <li id="mnuSignin"> <a href="javascript:void(0);"
               onclick="showprogSection('MotorBike_Signin'); return false;">
               SignIn
@@ -73,7 +81,6 @@
           </li>
 
 
-
           {% if request.session.bikeuser_role == "Admin" or request.session.bikeuser_role == "admin" %}
 
           <li id="mnuMotorbikes" class="dropdownsubmenu">
@@ -81,7 +88,6 @@
             <a href="javascript:void(0);" onclick="toggleSubmenu(event)">
               Motorbikes
             </a>
-
 
             <ul id="submnuMotorbikes" class="submenu" onmouseout="toggle_visibility('submnuMotorbikes')">
 
@@ -311,9 +317,6 @@
         </div>
       </div>
 
-
-
-
       <section id="User_Registration" class="content-section" style=" margin-bottom: 20px; display:none">
 
         <div class="booking-widget" id="divUserRegistration">
@@ -405,7 +408,6 @@
         </div>
 
       </section>
-
 
       <style>
         .motorbikescard {
@@ -625,10 +627,8 @@
       </section>
 
 
-
       <section id="Motorbike_Listing" class="content-section" {% if visitor %} style="display:block; padding-top:20px;"
         {% else %} style="display:none; padding-top:20px;" {% endif %}>
-
 
         <div class="parent-container">
           <input id="searchStatus" class="box-one" placeholder="Search motorbikes...">
@@ -667,7 +667,6 @@
         </div>
 
       </section>
-
 
       <section id="Motorbike_Users" class="content-section" {% if MotorbikeUsers %}
         style="display:block; padding-top:20px;" {% else %} style="display:none; padding-top:20px;" {% endif %}>
@@ -847,7 +846,6 @@
 
       </section>
 
-
       <style>
         .accessories {
           display: flex;
@@ -981,13 +979,26 @@
         }
 
 
-
+        /*
         .cards {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
           gap: 20px;
         }
+       */
 
+        .cards {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+          .cards {
+            grid-template-columns: 1fr;
+            gap: 10px;
+          }
+        }
 
 
         .card {
@@ -1096,7 +1107,6 @@
         }
       </style>
 
-
       <section id="Motorbike_Users_Listing" class="content-section" {% if AllUsers %}
         style="display:block; padding-top:20px;" {% else %} style="display:none; padding-top:20px;" {% endif %}>
 
@@ -1126,18 +1136,90 @@
               padding: 10px 20px;
               white-space: nowrap;
             }
+
+
+            .usercard-section {
+
+              padding: 15px;
+              margin-bottom: 10px;
+              border-radius: 8px;
+              cursor: pointer;
+              background: #fff;
+              transition: 0.3s;
+
+            }
+
+            .usercard-section:hover {
+              background: #6c63ff;
+              color: #fff;
+            }
+
+            .usercard-section:hover .user-row strong,
+            .usercard-section:hover .user-row span {
+              color: #fff;
+            }
+
+            /*
+            .card-info {
+              padding: 15px;
+              margin-bottom: 10px;
+              border-radius: 8px;
+              cursor: pointer;
+              background: #fff;
+              transition: 0.3s;
+            }
+
+            .card-info:hover {
+              background: #6c63ff;
+              color: #fff;
+            }
+
+            .user-row {
+              display: grid;
+              grid-template-columns: 130px 1fr;
+              gap: 10px;
+              align-items: center;
+              margin-bottom: 8px;
+            }
+
+            .user-row strong {
+              color: #6c63ff;
+              font-weight: 600;
+            }
+
+            .card-info:hover .user-row strong,
+            .card-info:hover .user-row span {
+              color: #fff;
+            }
+          */
+            /* Mobile */
+            /*
+            @media (max-width: 768px) {
+
+              .user-row {
+                grid-template-columns: 1fr;
+                gap: 2px;
+              }
+
+              .user-row strong {
+                margin-bottom: 2px;
+              }
+
+              .user-row span {
+                margin-bottom: 8px;
+              }
+            }
+              */
+
+            .user-details span {
+              display: block;
+              margin-bottom: 4px;
+            }
           </style>
 
           <div class="search-container">
 
-            <!--input type="text" id="UserSearch" placeholder="Search users..." /-->
             <input type="text" id="UserSearch" placeholder="Search users..." />
-
-
-            <!--button id="searchUser" class="btn"
-              onclick="searchItems(document.getElementById('UserSearch').value,  document.getElementById('selecteduser{{user.id}}'))">
-              Search
-            </button-->
 
             <button id="searchUser" class="btn"
               onclick="searchItems(document.getElementById('UserSearch').value, document.getElementById('divuserlist'))">
@@ -1179,7 +1261,7 @@
 
           {% for user in userlist %}
 
-          <div class="card-info" id="selecteduser{{user.id}}" data-userid="{{ user.id }}"
+          <div class="usercard-section" id="selecteduser{{user.id}}" data-userid="{{ user.id }}"
             data-userfirstname="{{ user.first_name }}" data-userlastname="{{ user.last_name }}"
             data-useremail="{{ user.email }}" data-userphone="{{ user.phone_number }}"
             data-username="{{ user.username }}" data-userpassword="{{ user.password }}"
@@ -1188,12 +1270,46 @@
             data-userrole="{{ user.role }}"
             style="padding: 10px; border-radius: 8px; margin-bottom: 5px; cursor:pointer;"
             onclick="getuserdetails(document.getElementById('selecteduser{{user.id}}'));">
-            <p>
-              <strong>First Name</strong><span>{{ user.first_name }}</span>
-              <strong>Last Name</strong><span>{{ user.last_name }}</span>
-              <strong>Email</strong><span>{{ user.email }}</span>
-              <strong>Phone</strong><span>{{ user.phone_number }}</span>
+
+            <p class="user-details">
+              <span><strong>First Name:</strong> {{ user.first_name }}</span>
+              <span><strong>Last Name:</strong> {{ user.last_name }}</span>
+              <span><strong>Email:</strong> {{ user.email }}</span>
+              <span><strong>Phone:</strong> {{ user.phone_number }}</span>
             </p>
+
+
+            <!--p>
+
+              <span><strong>First Name: </strong><span>{{ user.first_name }}</span>
+              <span><strong>Last Name: </strong><span>{{ user.last_name }}</span>
+              <span><strong>Email: </strong><span>{{ user.email }}</span>
+              <span><strong>Phone: </strong><span>{{ user.phone_number }}</span>
+
+            </p-->
+
+
+            <!--div class="user-row">
+              <strong>First Name</strong>
+              <span>{{ user.first_name }}</span>
+            </div>
+
+            <div class="user-row">
+              <strong>Last Name</strong>
+              <span>{{ user.last_name }}</span>
+            </div>
+
+            <div class="user-row">
+              <strong>Email</strong>
+              <span>{{ user.email }}</span>
+            </div>
+
+            <div class="user-row">
+              <strong>Phone</strong>
+              <span>{{ user.phone_number }}</span>
+            </div-->
+
+
           </div>
 
           {% endfor %}
@@ -1232,7 +1348,6 @@
         </div>
 
       </section>
-
 
       <section id="Motorbike_Hiring" class="content-section" style=" margin-bottom: 20px; display:none">
 
@@ -1425,7 +1540,6 @@
 
       </section>
 
-
       <style>
         .centered-container {
           display: grid;
@@ -1512,8 +1626,6 @@
         </div>
 
       </section>
-
-
 
       <section id="Motorbike_Error_Messages" class="content-section" style="display: none;">
 

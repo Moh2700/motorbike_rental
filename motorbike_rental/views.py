@@ -136,11 +136,12 @@ class IndexView(TemplateView):
         # Logged-in customer sees only their own details
         elif user_id:
             context['userlist'] = bikeuser.objects.filter(id=user_id)
+            context['visitor'] = False
 
         # Visitor (not logged in)
         else:
             context['userlist'] = bikeuser.objects.none()
-            context['visitor'] = True
+            #context['visitor'] = True
             #print("Visitor detected: No user session found.", context)
 
         return context
@@ -617,15 +618,25 @@ def user_list(request):
 def index(request):
     context = {
             "AllMotorbikes": True,
+            "visitor": False,
             "bikeslist": tblmotorbike.objects.all(),
     }
-    return render(request,"motorbike_rental/index.html",context)
+    return render(request,"motorbike_rental/index.html", context)
+
+def go_dashboard(request):
+    context = {
+            "visitor": False 
+    }
+    return render(request,"motorbike_rental/index.html", context)
+
+
 
 def motorbike_list(request):
     motorbikes = tblmotorbike.objects.all().order_by("bike_make", "bike_model")
 
     context = {
         "AllMotorbikes": True,
+        "visitor": False,
         "bikeslist": motorbikes,
     }
 

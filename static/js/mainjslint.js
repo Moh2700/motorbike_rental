@@ -39,7 +39,9 @@ const deleteForm = document.getElementById("deleteForm");
 const modalText = document.getElementById("modalText");
 const navLinks = document.getElementById("mnuMotorbikes");
 
+const searchStatus = document.getElementById("searchStatus");
 const inputStatus = document.getElementById("searchStatus");
+const searchInput = document.getElementById("searchInput");
 const statusSelect = document.getElementById("bike_status");
 const bikeCards = document.querySelectorAll(".bikecard");
 
@@ -93,7 +95,7 @@ function validateName(usrname) {
 }
 
 function validateforminput(frm) {
-  for (let i = 0; i < frm.length; i++) {
+  for (let i = 0; i < frm.length; i += 1) {
     if (
       frm[i].type === "text" ||
       frm[i].type === "password" ||
@@ -203,67 +205,67 @@ function closeError() {
 
 function checkRegistration() {
   //const max = new UserRegistration("frmUserRegistration");
-  const usrReg = new usrRegistration();
+  // const usrReg = new usrRegistration();
   let Proceed = true;
   let reginfo = "";
 
   const dob = document.getElementById("date_of_birth").value;
-  if (!usrReg.is18OrOlder(dob)) {
+  if (!is18OrOlder(dob)) {
     // document.getElementById("user_reg_info").innerText =
     //   "🏍 Create Account --- " + "You must be 18 or over to register";
     reginfo = reginfo + "- You must be 18 or over to register<br>";
-    usrReg.highlightInput(document.getElementById("date_of_birth"));
+    highlightInput(document.getElementById("date_of_birth"));
     Proceed = false;
   }
 
-  usrReg.validateforminput(frmUser);
+  validateforminput(frmUser);
 
-  if (!usrReg.validateEmail(document.getElementById("useremail").value)) {
+  if (!validateEmail(document.getElementById("useremail").value)) {
     // document.getElementById("useremail").value = "Not valid email";
     reginfo = reginfo + "- Not valid email <br>";
-    usrReg.highlightInput(document.getElementById("useremail"));
+    highlightInput(document.getElementById("useremail"));
     Proceed = false;
   }
 
   //check first name
   let name = document.getElementById("first_name");
   let strfname = name.value;
-  let result = usrReg.validateName(strfname);
+  let result = validateName(strfname);
 
   if (!result.valid) {
     // document.getElementById("user_reg_info").innerText =
     //  "🏍 Create Account --- " + result.message;
     reginfo = reginfo + "- Not valid first name <br>";
-    usrReg.highlightInput(document.getElementById("first_name"));
+    highlightInput(document.getElementById("first_name"));
     Proceed = false;
   }
 
   name = document.getElementById("last_name");
   strfname = name.value;
-  result = usrReg.validateName(strfname);
+  result = validateName(strfname);
 
   if (!result.valid) {
     //document.getElementById("user_reg_info").innerText =
     //"🏍 Create Account --- " + result.message;
     reginfo = reginfo + "- Not valid last name <br>";
-    usrReg.highlightInput(document.getElementById("last_name"));
+    highlightInput(document.getElementById("last_name"));
     Proceed = false;
   }
 
-  if (!usrReg.confirmpassword(usrpass.value, usrpass2.value)) {
+  if (!confirmpassword(usrpass.value, usrpass2.value)) {
     reginfo = reginfo + "- Not valid password <br>";
-    usrReg.highlightInput(usrpass2);
+    highlightInput(usrpass2);
     Proceed = false;
   }
 
   const phone = document.getElementById("phone_number");
-  if (!usrReg.isValidPhoneNumber(phone.value)) {
+  if (!isValidPhoneNumber(phone.value)) {
     reginfo = reginfo + "- Not valid phone <br>";
-    usrReg.highlightInput(phone);
+    highlightInput(phone);
     Proceed = false;
   }
 
-  if (Proceed == true) {
+  if (Proceed === true) {
     //alert("Go ahead submit the form");
     frmUser.method = "POST";
     //form.action = `/motorbikes/edit/${id}/`;
@@ -330,8 +332,8 @@ function togglePopup() {
 function toggleUserMenu(menu, bltoggle) {
   const bikeuserRole = document.getElementById("userRole").value;
 
-  if (bltoggle == true) {
-    if (bikeuserRole.toUpperCase() == "customer".toUpperCase()) {
+  if (bltoggle === true) {
+    if (bikeuserRole.toUpperCase() === "customer".toUpperCase()) {
       alert("Administrator access required.");
       menu.classList.add("disabled");
     }
@@ -342,7 +344,7 @@ function toggleUserMenu(menu, bltoggle) {
 
 function toggle_visibility(id) {
   let e = document.getElementById(id);
-  if (e.style.display == "block") {
+  if (e.style.display === "block") {
     e.style.display = "none";
   } else {
     e.style.display = "block";
@@ -425,7 +427,7 @@ function DeleteUser(container, userid) {
 
   let button;
 
-  for (let i = 0; i < buttons.length; i++) {
+  for (let i = 0; i < buttons.length; i += 1) {
     button = buttons[i];
 
     if (button.id === "btnDelete") {
@@ -491,9 +493,9 @@ function getuserdetails(userElement) {
 }
 
 function calculateMotorbikeRate() {
-  const objHire = new clsBooking();
+  // const objHire = new clsBooking();
 
-  let result = objHire.calculatePriceRate();
+  let result = calculatePriceRate();
   let total_Price = 0;
   const accessories = document.querySelectorAll("input[name='accessories']");
 
@@ -506,9 +508,9 @@ function calculateMotorbikeRate() {
   let totalPrice = bikePrice + totalAccessoryPrice;
 
   if (result.Proceed === true) {
-    for (let i = 0; i < accessories.length; i++) {
+    for (let i = 0; i < accessories.length; i += 1) {
       if (accessories[i].checked) {
-        numAccessories++;
+        numAccessories += 1;
         totalAccessoryPrice += accessoryPrice;
       }
     }
@@ -558,6 +560,25 @@ function removeContainerChildren(container) {
   while (container.firstChild) {
     container.removeChild(container.firstChild);
   }
+}
+
+function showprogSection(sectionId) {
+  console.log("Clicked:", sectionId);
+
+  let section = document.querySelectorAll(".content-section");
+
+  for (let i = 0; i < section.length; i += 1) {
+    console.log("Hiding:", section[i].id);
+    section[i].style.display = "none";
+  }
+
+  /*
+  document.querySelectorAll(".content-section").forEach((section) => {
+    console.log("Hiding:", section.id);
+    section.style.display = "none";
+  });
+ */
+  document.getElementById(sectionId).style.display = "block";
 }
 
 function makeaselection(option) {
@@ -613,8 +634,8 @@ function closeMotorbikeform(sectionname) {
 
 function cancelSection(sectionname) {
   let oSection = document.getElementsByTagName("section");
-  for (let i = 0; i < oSection.length; i++) {
-    if (oSection[i].id == sectionname) {
+  for (let i = 0; i < oSection.length; i += 1) {
+    if (oSection[i].id === sectionname) {
       oSection[i].style.display = "none";
     }
   }
@@ -664,9 +685,10 @@ function DeleteMotorbike(container) {
   modal.style.display = "flex";
   modalText.innerHTML = `Delete <b>${data.bikemake} ${data.bikemodel}</b>?`;
 
+  const buttons = document.querySelectorAll(".modal-buttons button");
   let button;
 
-  for (let i = 0; i < buttons.length; i++) {
+  for (let i = 0; i < buttons.length; i += 1) {
     button = buttons[i];
 
     if (button.id === "btnDelete") {
@@ -698,7 +720,7 @@ function clearformdata(frm) {
 
   let input;
 
-  for (let i = 0; i < inputs.length; i++) {
+  for (let i = 0; i < inputs.length; i += 1) {
     input = inputs[i];
 
     /*
@@ -731,7 +753,7 @@ function clearformdata(frm) {
 
   let selects = frm.querySelectorAll("select");
 
-  for (let i = 0; i < selects.length; i++) {
+  for (let i = 0; i < selects.length; i += 1) {
     selects[i].selectedIndex = 0;
   }
 }
@@ -903,7 +925,7 @@ function checkEmptyFormFields(formElement) {
     return false;
   }
 
-  for (let i = 0; i < formElement.elements.length; i++) {
+  for (let i = 0; i < formElement.elements.length; i += 1) {
     element = formElement.elements[i];
 
     if (!isSkippableField(element)) {
@@ -988,7 +1010,7 @@ function clearSearchInput(searchInput, listContainer) {
   searchInput.value = "";
   const paragraphs = listContainer.querySelectorAll("p");
 
-  for (let i = 0; i < paragraphs.length; i++) {
+  for (let i = 0; i < paragraphs.length; i += 1) {
     paragraphs[i].style.display = "block";
     paragraphs[i].style.backgroundColor = "";
   }
@@ -1060,8 +1082,6 @@ function updateMotorbikeStatus(frm) {
   alert(frm.bookingprogress.value);
 
   showprogSection("Motorbike_Booking_Progress");
-
-  alert("");
 }
 
 function loadMotorbikeBooking(frm) {
@@ -1162,7 +1182,7 @@ function searchDivItems(searchInput, listContainer) {
   // Target paragraph elements strictly contained within our container layout
   const paragraphs = listContainer.querySelectorAll("p");
 
-  for (let i = 0; i < paragraphs.length; i++) {
+  for (let i = 0; i < paragraphs.length; i += 1) {
     paragraphs[i].style.display = "block";
     paragraphs[i].style.backgroundColor = "";
   }
@@ -1177,7 +1197,7 @@ function searchDivItems(searchInput, listContainer) {
   let p;
   let itemText;
 
-  for (let i = 0; i < paragraphs.length; i++) {
+  for (let i = 0; i < paragraphs.length; i += 1) {
     p = paragraphs[i];
 
     itemText = p.textContent.toLowerCase();
@@ -1215,7 +1235,7 @@ function searchMotorbikes() {
 
   let text;
 
-  for (let i = 0; i < rows.length; i++) {
+  for (let i = 0; i < rows.length; i += 1) {
     text = rows[i].innerText.toLowerCase();
 
     if (text.indexOf(filter) !== -1) {
@@ -1322,7 +1342,7 @@ function filterMotorbikes() {
   let matchesSearch;
   let matchesStatus;
 
-  for (let i = 0; i < bikeCards.length; i++) {
+  for (let i = 0; i < bikeCards.length; i += 1) {
     card = bikeCards[i];
 
     // Targets the image tag inside each card holding the data attributes
@@ -1440,6 +1460,7 @@ function validateUkRegistration(rawInput) {
   if (!hasNoOffensivePhrases(cleanedPlate)) {
     return { error: "Registration matches a restricted o", isValid: false };
   }
+
   // 5. Success
   return { cleanedValue: cleanedPlate, isValid: true };
 }
@@ -1447,7 +1468,7 @@ function validateUkRegistration(rawInput) {
 function highlightTableRows() {
   let rows = document.querySelectorAll("#bikeTable tr");
 
-  for (let i = 0; i < rows.length; i++) {
+  for (let i = 0; i < rows.length; i += 1) {
     (function (row) {
       row.addEventListener("mouseover", function () {
         row.style.backgroundColor = "#6c63ff";

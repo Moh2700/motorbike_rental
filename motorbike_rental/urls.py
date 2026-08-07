@@ -6,8 +6,8 @@ app_name = 'motorbike_rental'
 
 urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
-    
     path('login/', views.login_view, name='login'),
+    path('go_dashboard/', views.go_dashboard, name='go_dashboard'),
     path('motorbike_list/', views.motorbike_list, name='motorbike_list'),
     path('user_list/', views.user_list, name='user_list'),
     path('logout/', views.logout_view, name='logout'),
