@@ -997,7 +997,7 @@
 
                 {% if request.session.bikeuser_role == 'admin' %}
 
-                <th>Booking</th>
+                <!--th>Booking</th-->
                 <th>Actions</th>
 
                 {%endif %}
@@ -1022,7 +1022,8 @@
               <tr id="selectedbike{{bike.id}}" data-bikeid="{{ bike.id }}" data-bikemake="{{ bike.bike_make }}"
                 data-bikemodel="{{ bike.bike_model  }}" data-bikeyear="{{ bike.bike_year }}"
                 data-bikestatus="{{ bike.bike_status }}" data-bikeplatenumber="{{ bike.bike_plate_number }}"
-                data-bikeimgsrc="{{ bike.bike_imgsrc }}" data-bikedailyrate="{{ bike.bike_daily_rate  }}">
+                data-bikeimgsrc="{{ bike.bike_imgsrc }}" data-bikedailyrate="{{ bike.bike_daily_rate  }}"
+                onclick="showbikedetails(document.getElementById('frmBikeDetails'), document.getElementById('selectedbike{{bike.id}}'));">
 
 
                 {% endif %}
@@ -1040,32 +1041,23 @@
                 <td>£{{ bike.bike_daily_rate }}</td>
 
                 {% if request.session.bikeuser_role == 'admin' %}
-
-                <td>
-
+                <!--td>
                   <a href="{% url 'motorbike_rental:motorbike_detail' bike.id %}">
                     <i class="fa-solid fa-file-lines" style="text-decoration: none;color:white"></i> View
-
                   </a>
-
-
-                </td>
+                </td-->
 
                 <td>
-
-                  <button type="button" class="edit-btn"
+                  <!--button type="button" class="edit-btn"
                     onclick="showMotorbikedetails(document.getElementById('selectedbike{{bike.id}}'))">
                     <i class="fa-solid fa-pen"></i> Edit
-                  </button>
-
+                  </button-->
                   <button type="button" class="delete-btn"
                     onclick="DeleteMotorbike(document.getElementById('selectedbike{{bike.id}}'))">
                     <i class="fa fa-trash"></i> Delete
                   </button>
 
                 </td>
-
-
 
                 {% endif %}
 
