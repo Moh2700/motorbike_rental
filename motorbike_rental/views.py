@@ -688,7 +688,7 @@ def get_user_details(request):
 def hire_motorbike(request, bike_id):
     bike = get_object_or_404(tblmotorbike, id=bike_id)
     bikeuser_id = request.session.get('bikeuser_id')
-    rentaluser = get_object_or_404(bikeuser,id=bikeuser_id)
+    rentaluser = get_object_or_404(bikeuser, id=bikeuser_id)
 
     # Guard Clause: Check authentication state
     # if not bikeuser_id:

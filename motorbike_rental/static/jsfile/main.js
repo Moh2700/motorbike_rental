@@ -503,6 +503,16 @@ function SaveUserChanges(frm) {
   }
 }
 
+function getuserbooking(frm, element) {
+  let data = element.dataset;
+  const bookingId = data.bookingId;
+
+  event.preventDefault();
+  frm.method = "POST";
+  frm.action = `/motorbike_rental/show_booking_details/${bookingId}/`;
+  frm.submit();
+}
+
 function getuserdetails(userElement) {
   const container = document.getElementById("frmUser");
 
@@ -1055,7 +1065,7 @@ function EditMotorbike(frm) {
 
   const proceed = validateMotorbikeDetails(frm);
 
-  alert(proceed.isValid);
+  //alert(proceed.isValid);
 
   if (!proceed.isValid) {
     event.preventDefault(); // STOP form submission
@@ -1306,6 +1316,13 @@ function searchDivItems(searchInput, listContainer) {
       p.style.color = "white";
       p.style.fontFamily = "Montserrat, sans-serif";
       p.style.fontWeight = "200";
+      p.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+
+      p.setAttribute("tabindex", "-1");
+      p.focus();
 
       return; // Exit the current iteration early since we found a match
     } else {
@@ -1607,6 +1624,22 @@ function validateUkRegistration(rawInput) {
   };
 }
 
+function highlightTableRows(table) {
+  const rows = document.querySelectorAll(`#${table} tr`);
+
+  rows.forEach((row) => {
+    row.addEventListener("mouseover", function () {
+      this.style.backgroundColor = "#6c63ff"; //"#e3f2fd";
+      //this.style.color = "white";
+      this.style.cursor = "pointer";
+    });
+
+    row.addEventListener("mouseout", function () {
+      this.style.backgroundColor = "";
+    });
+  });
+}
+
 function highlightTableRows() {
   const rows = document.querySelectorAll("#bikeTable tr");
 
@@ -1625,6 +1658,8 @@ function highlightTableRows() {
 
 document.addEventListener("DOMContentLoaded", function () {
   highlightTableRows();
+
+  highlightTableRows("bookingsTable");
 });
 
 //const menu = document.getElementById("navigation-items");

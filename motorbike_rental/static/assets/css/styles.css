@@ -965,10 +965,36 @@ tbody tr:nth-child(even) {
     background-color: #338000;
   }
 }
-/*
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .usercard-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+  .usercard-container {
+    grid-template-columns: repeat(4, 1fr);
+    /* or 4 if you prefer */
+  }
+}
+
+/* Mobile */
 @media (max-width: 768px) {
+  .usercard-section {
+    width: 98%;
+  }
+}
+
+@media (max-width: 320px) {
+  /*
   .user-row {
     grid-template-columns: 1fr;
   }
+    */
+  .usercard-section {
+    width: 98%;
+  }
 }
-*/
