@@ -1467,9 +1467,11 @@ usrpass2.addEventListener("click", function () {
   revealPassword(document.getElementById("userpassword2"));
 });
 
+/*
 btnRate.addEventListener("click", function () {
   calculateMotorbikeRate();
 });
+*/
 
 usrpass2.addEventListener("input", () => {
   if (usrpass.value === usrpass2.value) {
@@ -1657,6 +1659,12 @@ function highlightTableRows() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+  if (btnRate) {
+    btnRate.addEventListener("click", function () {
+      calculateMotorbikeRate();
+    });
+  }
+
   highlightTableRows();
 
   highlightTableRows("bookingsTable");

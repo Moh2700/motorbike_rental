@@ -1,21 +1,18 @@
-
-from urllib import request
-from django.http import HttpResponse
+#from django.http import HttpResponse
 from .models import tblmotorbike, bikeuser, Booking
-from django.template import context, loader
+#from django.template import loader
 from .forms import MemberForm, MotorbikeForm
-from django.http import Http404
+#from django.http import Http404
 #from django.http import  HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 #from django.urls import reverse
 from django.views.generic.base import TemplateView
 from django.contrib import messages
-from django.contrib.auth.hashers import check_password
+#from django.contrib.auth.hashers import check_password
 from datetime import datetime
 
 from django.db.models import Q
 from django.http import JsonResponse
-from .models import bikeuser  # Your original models.Model class
 
 from django.views.decorators.cache import never_cache
 
@@ -354,7 +351,7 @@ def delete_bikeuser(request, user_id):
 
     
 # 4. Fallback safeguard: If a user tries to access this URL
-      # directly via GET, redirect them home without doing anything.
+    # directly via GET, redirect them home without doing anything.
     return redirect('motorbike_rental:index')
 
 def edit_bikeuser(request, user_id):
@@ -453,7 +450,7 @@ def booking_details(request, bike_id):
     booking = get_object_or_404(
         Booking.objects.select_related("motorbike"),
         rentaluser_id=user_id,
-        motorbike_id=bike_id,
+        motorbike_id=bike_id
     )
 
 
@@ -520,13 +517,13 @@ def booking_details(request, bike_id):
             "current_index": current_index,
             "actions": next_actions
         }
-    print("Current Status:", booking.booking_status)
-    print("Actions:", next_actions) 
+    #print("Current Status:", booking.booking_status)
+    #print("Actions:", next_actions) 
     
-    print(request.POST)
-    print(request.POST.get("booking_status"))
-    print(request.POST.get("notes")) 
-    print("STATUS:", booking.STATUS_CHOICES)    
+    #print(request.POST)
+    #print(request.POST.get("booking_status"))
+    #print(request.POST.get("notes")) 
+    #print("STATUS:", booking.STATUS_CHOICES)    
     
     return render(request, "motorbike_rental/index.html", context)  
     
@@ -621,13 +618,13 @@ def index(request):
             "visitor": False,
             "bikeslist": tblmotorbike.objects.all(),
     }
-    return render(request,"motorbike_rental/index.html", context)
+    return render(request, "motorbike_rental/index.html", context)
 
 def go_dashboard(request):
     context = {
             "visitor": False 
     }
-    return render(request,"motorbike_rental/index.html", context)
+    return render(request, "motorbike_rental/index.html", context)
 
 
 
@@ -738,12 +735,11 @@ def hire_motorbike(request, bike_id):
     return render(request, 'motorbike_rental:index.html', {'bike': bike})
 
 def add_bikeuser(request):
+    context = {
+        "MotorbikeUsers": True
+    }
 
     if request.method == "POST":
-        context = {
-          "MotorbikeUsers": True
-        }
-
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
@@ -782,7 +778,8 @@ def add_bikeuser(request):
                     request,
                     (
                         f"User '{user.username} ({user.first_name} "
-                        f"{user.last_name})' has been added successfully."
+                        f"{user.last_name})' has been added "
+                        "successfully."
                     ),
                 )
 
@@ -867,14 +864,13 @@ def delete_motorbike(request, bike_id):
     bike = get_object_or_404(tblmotorbike, id=bike_id)
 
     if request.method == 'POST':
-        bike_name = f"{bike.bike_make} {bike.bike_model}"  # Change this to your actual field name
+        # Change this to your actual field name
+        bike_name = f"{bike.bike_make} {bike.bike_model}"
 
         bike.delete()
-
         messages.success(
             request,
             f"Motorbike '{bike_name}' has been deleted successfully."
-            
         )
         return redirect('motorbike_rental:index')
     
@@ -931,7 +927,7 @@ def registeruser(request):
     
     return render(request, 'motorbike_rental/index.html')
 
-
+'''
 def customers_view(request):
     # Fetch all customers from the database
     customers = bikeuser.objects.all()
@@ -943,7 +939,9 @@ def customers_view(request):
     } 
     # Render the template with the context and return an HttpResponse  
     return HttpResponse(template.render(context, request))
+'''
 
+'''
 def tblmotorbikes_view(request):
     # Fetch all motorbikes from the database
     motorbikes = tblmotorbike.objects.all()
@@ -956,4 +954,4 @@ def tblmotorbikes_view(request):
     # Render the template with the context and return an HttpResponse  
     return HttpResponse(template.render(context, request))
     # return render(request, 'customers.html')
-
+'''
